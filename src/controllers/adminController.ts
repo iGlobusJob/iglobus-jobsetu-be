@@ -207,4 +207,39 @@ const getAllClients = async (req: Request, res: Response) => {
     };
 };
 
-export default { adminLogin, updateClientByAdmin, getAllJobsByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients };
+const createRecruiter = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { firstName, lastName, email, password } = req.body;
+
+        const recruiter = await adminService.createRecruiterService(firstName, lastName, email, password);
+
+        return res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            message: ADMIN_SUCCESS_MESSAGE.RECRUITER_CREATED_SUCCESS_MESSAGE,
+            data: {
+                id: recruiter.id,
+                firstName: recruiter.firstName,
+                lastName: recruiter.lastName,
+                email: recruiter.email,
+                createdAt: recruiter.createdAt,
+                updatedAt: recruiter.updatedAt
+            }
+        });
+    } catch (error: any) {
+        const errorConfig = ERROR_MAPPING[error.message];
+
+        if (errorConfig) {
+            return res.status(errorConfig.status).json({
+                success: false,
+                message: errorConfig.message
+            });
+        }
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: ADMIN_ERROR_MESSAGES.RECRUITER_CREATION_FAILED
+        });
+    }
+};
+
+export default { adminLogin, updateClientByAdmin, getAllJobsByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter };

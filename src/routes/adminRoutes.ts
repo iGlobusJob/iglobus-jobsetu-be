@@ -3,7 +3,9 @@ import adminController from '../controllers/adminController';
 import validateRequest from '../middlewares/validateRequest';
 import updateClientByAdminSchema from '../middlewares/schemas/updateClientByAdminSchema';
 import clientIdSchema from '../middlewares/schemas/clientIdSchema';
+import recruiterSchema from '../middlewares/schemas/recruiterSchema';
 import validateJWT from '../middlewares/validateJWT';
+import adminPermission from '../middlewares/adminPermission';
 
 const AdminRouter: Router = express.Router();
 
@@ -243,6 +245,161 @@ AdminRouter.post('/createadmin', validateJWT, adminController.createAdmin);
  *                   example: "Failed to fetch client details."
  */
 AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
+
+/**
+ * @swagger
+ * /createrecruiter:
+ *   post:
+ *     summary: Create a new recruiter (Admin only)
+ *     description: Allows admin to create a new recruiter account. Password will be hashed before storage. Requires JWT authentication and admin permissions.
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - password
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 description: First name of the recruiter (2-50 characters, letters only)
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 description: Last name of the recruiter (2-50 characters, letters only)
+ *                 example: Doe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address of the recruiter (must be unique, will be converted to lowercase)
+ *                 example: john.doe@company.com
+ *               password:
+ *                 type: string
+ *                 description: Password for recruiter account (min 8 chars, must contain uppercase, lowercase, number and special character)
+ *                 example: SecurePass@123
+ *     responses:
+ *       201:
+ *         description: Recruiter created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Recruiter created successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     email:
+ *                       type: string
+ *                       example: john.doe@company.com
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-14T10:30:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-14T10:30:00.000Z
+ *       400:
+ *         description: Bad Request - Validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *                 missingFields:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: email
+ *                       message:
+ *                         type: string
+ *                         example: Email is required
+ *       401:
+ *         description: Unauthorized - No token provided or invalid admin credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid admin credentials. Access denied !
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Insufficient permissions. Admin access required !
+ *       409:
+ *         description: Conflict - Recruiter already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Recruiter with this email already exists !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while creating recruiter. Please try again later !
+ */
+AdminRouter.post('/createrecruiter', validateJWT, adminPermission, validateRequest(recruiterSchema), adminController.createRecruiter);
 
 /**
  * @swagger

@@ -8,6 +8,8 @@ import hashPasswordUtility from '../util/hashPassword';
 import jobsModel from "../model/jobsModel";
 import candidateModel from '../model/candidateModel';
 import ICandidate from '../interfaces/candidate';
+import recruiterModel from '../model/recruiterModel';
+import IRecruiter from '../interfaces/recruiter';
 
 const adminLogin = async (username: string, password: string): Promise<{ admin: IAdmin; token: string }> => {
     const admin = await adminModel.findOne({ username }).select('+password');
@@ -145,4 +147,26 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
     };
 };
 
-export default { adminLogin, createAdminService, updateClientByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService };
+const createRecruiterService = async (firstName: string, lastName: string, email: string, password: string): Promise<IRecruiter> => {
+    // Check if recruiter already exists
+    const existingRecruiter = await recruiterModel.findOne({ email });
+
+    if (existingRecruiter) {
+        throw new Error('RECRUITER_ALREADY_EXISTS');
+    }
+
+    // Hash the password
+    const hashedPassword = await hashPasswordUtility.hashPassword(password);
+
+    // Create recruiter
+    const recruiter = await recruiterModel.create({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword
+    });
+
+    return recruiter;
+};
+
+export default { adminLogin, createAdminService, updateClientByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService };
