@@ -6,7 +6,8 @@ export const ADMIN_SUCCESS_MESSAGE = {
     ADMIN_FETCHED_JOBS_SUCCESS_MESSAGE: 'Jobs fetched successfully !',
     CANDIDATE_DETAILS_FETCHED_SUCCESS_MESSAGE: 'Candidate details fetched successfully !',
     ADMIN_CREATED_SUCCESS_MESSAGE: 'Admin created successfully !',
-    RECRUITER_CREATED_SUCCESS_MESSAGE: 'Recruiter created successfully !'
+    RECRUITER_CREATED_SUCCESS_MESSAGE: 'Recruiter created successfully !',
+    RECRUITERS_FETCHED_SUCCESS_MESSAGE: 'Recruiters fetched successfully !'
 } as const;
 
 export const ADMIN_ERROR_MESSAGES = {
@@ -25,6 +26,7 @@ export const ADMIN_ERROR_MESSAGES = {
     ADMIN_ALREADY_EXISTS: 'Admin with this username already exists !',
     RECRUITER_CREATION_FAILED: 'An error occurred while creating recruiter. Please try again later !',
     RECRUITER_ALREADY_EXISTS: 'Recruiter with this email already exists !',
+    RECRUITERS_FETCH_ERROR_MESSAGE: 'An error occurred while fetching recruiters. Please try again later !'
 } as const;
 
 export const HTTP_STATUS = {

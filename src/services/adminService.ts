@@ -1,7 +1,7 @@
 import adminModel from '../model/adminModel';
 import bcrypt from 'bcrypt';
 import jwtUtil from '../util/jwtUtil';
-import IAdmin, { FetchAllJobsResponse, FetchAllClientsResponse } from '../interfaces/admin';
+import IAdmin, { FetchAllJobsResponse, FetchAllClientsResponse, FetchAllRecruitersResponse } from '../interfaces/admin';
 import vendorModel from '../model/vendorModel';
 import IVendor from '../interfaces/vendor';
 import hashPasswordUtility from '../util/hashPassword';
@@ -169,4 +169,26 @@ const createRecruiterService = async (firstName: string, lastName: string, email
     return recruiter;
 };
 
-export default { adminLogin, createAdminService, updateClientByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService };
+const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> => {
+    try {
+        const recruiters = await recruiterModel.find();
+
+        const formattedRecruiters = recruiters.map(recruiter => ({
+            id: recruiter.id,
+            firstName: recruiter.firstName,
+            lastName: recruiter.lastName,
+            email: recruiter.email,
+            createdAt: recruiter.createdAt,
+            updatedAt: recruiter.updatedAt
+        }));
+
+        return {
+            success: true,
+            recruiters: formattedRecruiters
+        };
+    } catch (error) {
+        throw new Error("Failed to fetch recruiters");
+    }
+};
+
+export default { adminLogin, createAdminService, updateClientByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService };

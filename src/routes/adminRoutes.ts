@@ -403,6 +403,94 @@ AdminRouter.post('/createrecruiter', validateJWT, adminPermission, validateReque
 
 /**
  * @swagger
+ * /getallrecruiters:
+ *   get:
+ *     summary: Get all recruiters (Admin only)
+ *     description: Retrieves a list of all recruiters in the system. Requires JWT authentication and admin permissions.
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Recruiters fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 recruiters:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *                       firstName:
+ *                         type: string
+ *                         example: John
+ *                       lastName:
+ *                         type: string
+ *                         example: Doe
+ *                       email:
+ *                         type: string
+ *                         example: john.doe@company.com
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-14T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-14T10:30:00.000Z
+ *       401:
+ *         description: Unauthorized - No token provided or invalid admin credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid admin credentials. Access denied !
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Insufficient permissions. Admin access required !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while fetching recruiters. Please try again later !
+ */
+AdminRouter.get('/getallrecruiters', validateJWT, adminPermission, adminController.getAllRecruiters);
+
+/**
+ * @swagger
  * /getclientdetailsbyadmin/{clientId}:
  *   get:
  *     summary: Get client details by ID (Admin only)

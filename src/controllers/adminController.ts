@@ -242,4 +242,17 @@ const createRecruiter = async (req: Request, res: Response): Promise<Response> =
     }
 };
 
-export default { adminLogin, updateClientByAdmin, getAllJobsByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter };
+const getAllRecruiters = async (req: Request, res: Response) => {
+    try {
+        const recruitersResponse = await adminService.getAllRecruitersService();
+        return res.status(HTTP_STATUS.OK).json(recruitersResponse);
+    } catch (error) {
+        console.error(`Error in fetching recruiters: ${error}`);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: ADMIN_ERROR_MESSAGES.RECRUITERS_FETCH_ERROR_MESSAGE
+        });
+    }
+};
+
+export default { adminLogin, updateClientByAdmin, getAllJobsByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters };
