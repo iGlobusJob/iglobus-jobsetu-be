@@ -114,13 +114,12 @@ const getAllJobsByAdmin = async (req: Request, res: Response) => {
     };
 };
 
-const getVendorDetailsByAdmin = async (req: Request, res: Response): Promise<Response> => {
+const getClientDetailsByAdmin = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { vendorid } = req.params;
+        const { clientId } = req.params;
+        const client = await adminService.getClientById(clientId);
 
-        const vendor = await adminService.getVendorById(vendorid);
-
-        if (!vendor) {
+        if (!client) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
                 message: ADMIN_ERROR_MESSAGES.VENDOR_NOT_FOUND
@@ -131,22 +130,22 @@ const getVendorDetailsByAdmin = async (req: Request, res: Response): Promise<Res
             success: true,
             message: ADMIN_SUCCESS_MESSAGE.VENDOR_DETAILS_FETCHED_SUCCESS_MESSAGE,
             data: {
-                id: vendor.id,
-                email: vendor.email,
-                organizationName: vendor.organizationName,
-                logo: vendor.logo,
-                status: vendor.status,
-                emailStatus: vendor.emailStatus,
-                mobile: vendor.mobile,
-                mobileStatus: vendor.mobileStatus,
-                location: vendor.location,
-                gstin: vendor.gstin,
-                panCard: vendor.panCard,
-                primaryContact: vendor.primaryContact,
-                secondaryContact: vendor.secondaryContact,
-                category: vendor.category,
-                createdAt: vendor.createdAt,
-                updatedAt: vendor.updatedAt
+                id: client.id,
+                email: client.email,
+                organizationName: client.organizationName,
+                logo: client.logo,
+                status: client.status,
+                emailStatus: client.emailStatus,
+                mobile: client.mobile,
+                mobileStatus: client.mobileStatus,
+                location: client.location,
+                gstin: client.gstin,
+                panCard: client.panCard,
+                primaryContact: client.primaryContact,
+                secondaryContact: client.secondaryContact,
+                category: client.category,
+                createdAt: client.createdAt,
+                updatedAt: client.updatedAt
             }
         });
     } catch (error: any) {
@@ -208,4 +207,4 @@ const getAllClients = async (req: Request, res: Response) => {
     };
 };
 
-export default { adminLogin, updateVendorByAdmin, getAllJobsByAdmin, getVendorDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients };
+export default { adminLogin, updateVendorByAdmin, getAllJobsByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients };

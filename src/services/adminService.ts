@@ -84,9 +84,9 @@ const getAllJobsService = async (): Promise<FetchAllJobsResponse> => {
 
 };
 
-const getVendorById = async (vendorId: string): Promise<IVendor | null> => {
-    const vendor = await vendorModel.findById(vendorId);
-    return vendor;
+const getClientById = async (clientId: string): Promise<IVendor | null> => {
+    const client = await vendorModel.findById(clientId);
+    return client;
 };
 
 const getCandidateDetailsByService = async (candidateId: string): Promise<ICandidate | null> => {
@@ -145,4 +145,4 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
     };
 };
 
-export default { adminLogin, createAdminService, updateVendorByAdmin, getAllJobsService, getVendorById, getCandidateDetailsByService, getAllClientsService };
+export default { adminLogin, createAdminService, updateVendorByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService };

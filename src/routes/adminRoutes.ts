@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 import adminController from '../controllers/adminController';
 import validateRequest from '../middlewares/validateRequest';
 import updateVendorByAdminSchema from '../middlewares/schemas/updateVendorByAdminSchema';
+import clientIdSchema from '../middlewares/schemas/clientIdSchema';
 import validateJWT from '../middlewares/validateJWT';
 
 const AdminRouter: Router = express.Router();
@@ -245,23 +246,23 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
 
 /**
  * @swagger
- * /getvendordetailsbyadmin/{vendorid}:
+ * /getclientdetailsbyadmin/{clientId}:
  *   get:
  *     summary: Get client details by ID (Admin only)
- *     description: Allows admin to retrieve complete details of a specific client by their ID. Requires JWT authentication.
+ *     description: Allows admin to retrieve complete details of a specific client by their ID. Requires JWT authentication. The clientId must be a valid 24-character MongoDB ObjectId.
  *     tags:
  *       - Admin
  *     security:
  *       - BearerAuth: []
  *     parameters:
  *       - in: path
- *         name: vendorid
+ *         name: clientId
  *         required: true
  *         schema:
  *           type: string
  *           pattern: '^[0-9a-fA-F]{24}$'
  *         description: MongoDB ObjectId of the client (24 character hexadecimal string)
- *         example: 
+ *         example: 507f1f77bcf86cd799439011
  *     responses:
  *       200:
  *         description: Vendor details retrieved successfully
@@ -355,6 +356,30 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
  *                 message:
  *                   type: string
  *                   example: "No token provided !"
+ *       400:
+ *         description: Bad Request - Invalid clientId format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Validation failed"
+ *                 missingFields:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: "clientId"
+ *                       message:
+ *                         type: string
+ *                         example: "Invalid client ID format. Must be a valid MongoDB ObjectId"
  *       404:
  *         description: Vendor not found
  *         content:
@@ -382,7 +407,7 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
  *                   type: string
  *                   example: "An error occurred while fetching vendor details. Please try again later !"
  */
-AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminController.getVendorDetailsByAdmin);
+AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateRequest(clientIdSchema, 'params'), adminController.getClientDetailsByAdmin);
 
 /**
  * @swagger
