@@ -15,11 +15,11 @@ const VendorRouter: Router = express.Router();
 
 /**
  * @swagger
- * /registervendor:
+ * /registerclient:
  *   post:
- *     summary: Register a new vendor with optional logo upload
+ *     summary: Register a new client with optional logo upload
  *     description: |
- *       Allows a new vendor to register with their organization details and contact information. Password will be securely hashed before storage. Logo upload is optional.
+ *       Allows a new client to register with their organization details and contact information. Password will be securely hashed before storage. Logo upload is optional.
  *       
  *       **Important**: For nested objects (primaryContact, secondaryContact), send them as JSON strings in multipart form data.
  *       
@@ -195,7 +195,7 @@ const VendorRouter: Router = express.Router();
  *                   type: string
  *                   example: Email already exists!
  */
-VendorRouter.post('/registervendor', uploadLogo.single('logo'), parseFormData, validateRequest(vendorSchema), vendorController.vendorRegistration);
+VendorRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, validateRequest(vendorSchema), vendorController.vendorRegistration);
 
 /**
  * @swagger
