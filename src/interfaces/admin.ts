@@ -22,4 +22,9 @@ export interface FetchAllClientsResponse {
     clients?: any;
 }
 
+export interface FetchAllRecruitersResponse {
+    success: boolean;
+    recruiters?: any;
+}
+
 export default IAdmin;
