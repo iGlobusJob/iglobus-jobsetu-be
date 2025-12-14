@@ -1,7 +1,8 @@
 export const ADMIN_SUCCESS_MESSAGE = {
     ADMIN_LOGIN_SUCCESS_MESSAGE: 'Logged in Successfully !',
-    VENDOR_UPDATED_SUCCESS_MESSAGE: 'Vendor updated successfully !',
+    CLIENT_UPDATED_SUCCESS_MESSAGE: 'Client updated successfully !',
     VENDOR_DETAILS_FETCHED_SUCCESS_MESSAGE: 'Vendor details fetched successfully !',
+    VENDOR_UPDATED_SUCCESS_MESSAGE: 'Vendor updated successfully !',
     ADMIN_FETCHED_JOBS_SUCCESS_MESSAGE: 'Jobs fetched successfully !',
     CANDIDATE_DETAILS_FETCHED_SUCCESS_MESSAGE: 'Candidate details fetched successfully !',
     ADMIN_CREATED_SUCCESS_MESSAGE: 'Admin created successfully !'
@@ -11,6 +12,7 @@ export const ADMIN_ERROR_MESSAGES = {
     ADMIN_NOT_FOUND: 'Admin not found !',
     BAD_CREDENTIALS: 'Bad Credentials !',
     LOGIN_FAILED: 'An error occurred during login. Please try again later !',
+    CLIENT_UPDATE_FAILED: 'An error occurred while updating client details. Please try again later !',
     UPDATE_FAILED: 'An error occurred while updating vendor details. Please try again later !',
     VENDOR_NOT_FOUND: 'Vendor not found !',
     CLIENTS_FETCH_ERROR_MESSAGE: 'Error in fetching client details !',

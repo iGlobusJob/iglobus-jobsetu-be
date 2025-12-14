@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import adminController from '../controllers/adminController';
 import validateRequest from '../middlewares/validateRequest';
-import updateVendorByAdminSchema from '../middlewares/schemas/updateVendorByAdminSchema';
+import updateClientByAdminSchema from '../middlewares/schemas/updateClientByAdminSchema';
 import clientIdSchema from '../middlewares/schemas/clientIdSchema';
 import validateJWT from '../middlewares/validateJWT';
 
@@ -411,10 +411,10 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
 
 /**
  * @swagger
- * /updatevendorbyadmin:
+ * /updateclientbyadmin:
  *   put:
- *     summary: Update vendor details by admin
- *     description: Allows admin to update any vendor details except email. Requires JWT authentication. Password will be hashed if updated.
+ *     summary: Update client details by admin
+ *     description: Allows admin to update any client details except email. Requires JWT authentication. Password will be hashed if updated.
  *     tags:
  *       - Admin
  *     security:
@@ -431,7 +431,7 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *               vendorId:
  *                 type: string
  *                 pattern: '^[0-9a-fA-F]{24}$'
- *                 description: MongoDB ObjectId of the vendor (24 character hexadecimal string)
+ *                 description: MongoDB ObjectId of the client (24 character hexadecimal string)
  *                 example: 507f1f77bcf86cd799439011
  *               primaryContact:
  *                 type: object
@@ -446,11 +446,11 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *                     example: Doe
  *               organizationName:
  *                 type: string
- *                 description: Name of the vendor organization (2-100 characters)
+ *                 description: Name of the client organization (2-100 characters)
  *                 example: XYZ Technologies Pvt Ltd
  *               password:
  *                 type: string
- *                 description: New password for vendor account (min 8 chars, must contain uppercase, lowercase, number and special character)
+ *                 description: New password for client account (min 8 chars, must contain uppercase, lowercase, number and special character)
  *                 example: NewSecurePass@123
  *               secondaryContact:
  *                 type: object
@@ -466,7 +466,7 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *               status:
  *                 type: string
  *                 enum: [registered, active, inactive]
- *                 description: Registration status of the vendor
+ *                 description: Registration status of the client
  *                 example: active
  *               emailStatus:
  *                 type: string
@@ -475,7 +475,7 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *                 example: verified
  *               mobile:
  *                 type: string
- *                 description: Mobile number of the vendor (must be 10 digits)
+ *                 description: Mobile number of the client (must be 10 digits)
  *                 example: "9876543210"
  *               mobileStatus:
  *                 type: string
@@ -484,7 +484,7 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *                 example: verified
  *               location:
  *                 type: string
- *                 description: Location of the vendor
+ *                 description: Location of the client
  *                 example: Mumbai
  *               gstin:
  *                 type: string
@@ -497,11 +497,11 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *               category:
  *                 type: string
  *                 enum: [IT, Non-IT]
- *                 description: Vendor category
+ *                 description: Client category
  *                 example: IT
  *     responses:
  *       200:
- *         description: Vendor updated successfully
+ *         description: Client updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -512,7 +512,7 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Vendor updated successfully !
+ *                   example: Client updated successfully !
  *                 data:
  *                   type: object
  *                   properties:
@@ -582,7 +582,7 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *                   type: string
  *                   example: Invalid token !
  *       404:
- *         description: Vendor not found
+ *         description: Client not found
  *         content:
  *           application/json:
  *             schema:
@@ -606,9 +606,9 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: An error occurred while updating vendor details. Please try again later !
+ *                   example: An error occurred while updating client details. Please try again later !
  */
-AdminRouter.put('/updatevendorbyadmin', validateJWT, validateRequest(updateVendorByAdminSchema), adminController.updateVendorByAdmin);
+AdminRouter.put('/updateclientbyadmin', validateJWT, validateRequest(updateClientByAdminSchema), adminController.updateClientByAdmin);
 
 /**
  * @swagger

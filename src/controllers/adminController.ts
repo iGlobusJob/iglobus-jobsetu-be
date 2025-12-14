@@ -60,32 +60,32 @@ const createAdmin = async (req: Request, res: Response): Promise<Response> => {
     }
 };
 
-const updateVendorByAdmin = async (req: Request, res: Response): Promise<Response> => {
+const updateClientByAdmin = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { vendorId, ...updateData } = req.body;
 
-        const updatedVendor = await adminService.updateVendorByAdmin(vendorId, updateData);
+        const updatedClient = await adminService.updateClientByAdmin(vendorId, updateData);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: ADMIN_SUCCESS_MESSAGE.VENDOR_UPDATED_SUCCESS_MESSAGE,
+            message: ADMIN_SUCCESS_MESSAGE.CLIENT_UPDATED_SUCCESS_MESSAGE,
             data: {
-                id: updatedVendor.id,
-                email: updatedVendor.email,
-                organizationName: updatedVendor.organizationName,
-                status: updatedVendor.status,
-                emailStatus: updatedVendor.emailStatus,
-                mobile: updatedVendor.mobile,
-                mobileStatus: updatedVendor.mobileStatus,
-                location: updatedVendor.location,
-                logo: updatedVendor.logo,
-                gstin: updatedVendor.gstin,
-                panCard: updatedVendor.panCard,
-                category: updatedVendor.category,
-                primaryContact: updatedVendor.primaryContact,
-                secondaryContact: updatedVendor.secondaryContact,
-                createdAt: updatedVendor.createdAt,
-                updatedAt: updatedVendor.updatedAt
+                id: updatedClient.id,
+                email: updatedClient.email,
+                organizationName: updatedClient.organizationName,
+                status: updatedClient.status,
+                emailStatus: updatedClient.emailStatus,
+                mobile: updatedClient.mobile,
+                mobileStatus: updatedClient.mobileStatus,
+                location: updatedClient.location,
+                logo: updatedClient.logo,
+                gstin: updatedClient.gstin,
+                panCard: updatedClient.panCard,
+                category: updatedClient.category,
+                primaryContact: updatedClient.primaryContact,
+                secondaryContact: updatedClient.secondaryContact,
+                createdAt: updatedClient.createdAt,
+                updatedAt: updatedClient.updatedAt
             }
         });
     } catch (error: any) {
@@ -98,7 +98,7 @@ const updateVendorByAdmin = async (req: Request, res: Response): Promise<Respons
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: ADMIN_ERROR_MESSAGES.UPDATE_FAILED
+            message: ADMIN_ERROR_MESSAGES.CLIENT_UPDATE_FAILED
         });
     }
 };
@@ -207,4 +207,4 @@ const getAllClients = async (req: Request, res: Response) => {
     };
 };
 
-export default { adminLogin, updateVendorByAdmin, getAllJobsByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients };
+export default { adminLogin, updateClientByAdmin, getAllJobsByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients };
