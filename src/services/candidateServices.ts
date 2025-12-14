@@ -1,0 +1,168 @@
+import candidateModel from "../model/candidateModel";
+import jobsModel from "../model/jobsModel";
+import ICandidate, { FetchCandidateByIdResponse, FetchAllCandidateResponse } from "../interfaces/candidate";
+import IJobs from "../interfaces/jobs";
+import jwtUtil from "../util/jwtUtil";
+import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
+import uploadResumeUtil from "../util/uploadResumeToS3";
+import presignedUrlUtil from "../util/generatePresignedUrl";
+
+const generateOTP = (): string => {
+    const otp = Math.floor(10000 + Math.random() * 90000).toString();
+    return otp;
+};
+
+const candidateJoin = async (email: string): Promise<{ candidate: ICandidate; otp: string }> => {
+    const otp = generateOTP();
+
+    const otpExpiredAt = new Date();
+    otpExpiredAt.setMinutes(otpExpiredAt.getMinutes() + 10);
+
+    let candidate = await candidateModel.findOne({ email });
+
+    if (candidate) {
+        candidate.otp = otp;
+        candidate.otpexpiredAt = otpExpiredAt;
+        await candidate.save();
+    } else {
+        const newCandidate = new candidateModel({
+            email,
+            otp,
+            otpexpiredAt: otpExpiredAt
+        });
+        candidate = await newCandidate.save();
+    }
+
+    sendOTPEmailUtil.sendOTPEmail(email, otp).catch(error => {
+        console.log('Failed to send OTP email:', error);
+    });
+
+    return { candidate, otp };
+};
+
+const validateOTP = async (email: string, otp: string): Promise<{ candidate: ICandidate; token: string }> => {
+    const candidate = await candidateModel.findOne({ email });
+
+    if (!candidate) {
+        throw new Error('CANDIDATE_NOT_FOUND');
+    }
+
+    const currentTime = new Date();
+    if (currentTime > candidate.otpexpiredAt!) {
+        throw new Error('OTP_EXPIRED');
+    }
+
+    if (candidate.otp !== otp) {
+        throw new Error('INVALID_OTP');
+    }
+
+    const token = jwtUtil.generateToken({
+        candidateId: candidate.id,
+        email: candidate.email
+    });
+
+    return { candidate, token };
+};
+const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse> => {
+    const candidate = await candidateModel.findById(id);
+
+    if (!candidate) {
+        throw new Error('CANDIDATE_NOT_FOUND');
+    }
+
+    let profileUrl: string | null = null;
+    if (candidate.profile) {
+        profileUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profile);
+    }
+
+    return {
+        success: true,
+        data: {
+            id: candidate.id,
+            email: candidate.email,
+            firstName: candidate.firstName || '',
+            lastName: candidate.lastName || '',
+            mobileNumber: candidate.mobileNumber || '',
+            address: candidate.address || '',
+            dateOfBirth: candidate.dateOfBirth || '',
+            gender: candidate.gender || '',
+            category: candidate.category || '',
+            profile: candidate.profile || '',
+            profileUrl: profileUrl,
+            createdAt: candidate.createdAt,
+            updatedAt: candidate.updatedAt
+        }
+    };
+};
+
+const getAllCandidateService = async (): Promise<FetchAllCandidateResponse> => {
+    try {
+        const candidates = await candidateModel.find();
+
+        const formattedCandidates = candidates.map(candidate => ({
+
+            id: candidate.id,
+            email: candidate.email || '',
+            firstName: candidate.firstName || '',
+            lastName: candidate.lastName || '',
+            mobileNumber: candidate.mobileNumber || '',
+            address: candidate.address || '',
+            dateOfBirth: candidate.dateOfBirth || '',
+            gender: candidate.gender || '',
+            createdAt: candidate.createdAt,
+            updatedAt: candidate.updatedAt
+        }));
+
+        return {
+            success: true,
+            candidates: formattedCandidates
+        };
+    } catch (error) {
+        throw new Error("Failed to fetch candidate details");
+    };
+
+};
+
+const getAllJobsByCandidate = async (): Promise<IJobs[]> => {
+    const jobs = await jobsModel.find({ status: 'active' }).sort({ createdAt: -1 });
+    return jobs;
+};
+
+const updateCandidateService = async (
+    candidateId: string,
+    updateData: Partial<ICandidate>,
+    file?: Express.Multer.File
+): Promise<ICandidate> => {
+    if (file) {
+        const timestamp = Date.now();
+        const fileName = `resume_${timestamp}_${file.originalname}`;
+
+        try {
+            const uploadResult = await uploadResumeUtil.uploadResumeToS3(
+                candidateId,
+                fileName,
+                file.buffer,
+                file.mimetype
+            );
+
+            updateData.profile = uploadResult.fileUrl;
+        } catch (error) {
+            console.error('Error uploading resume to S3:', error);
+            throw new Error('RESUME_UPLOAD_FAILED');
+        }
+    }
+
+    const updatedCandidate = await candidateModel.findByIdAndUpdate(
+        candidateId,
+        { $set: updateData },
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedCandidate) {
+        throw new Error('CANDIDATE_NOT_FOUND');
+    }
+
+    return updatedCandidate;
+};
+
+export default { candidateJoin, validateOTP, getCandidateById, getAllCandidateService, getAllJobsByCandidate, updateCandidateService };
