@@ -31,24 +31,24 @@ const adminLogin = async (username: string, password: string): Promise<{ admin: 
     return { admin, token };
 };
 
-const updateVendorByAdmin = async (vendorId: string, updateData: Partial<IVendor>): Promise<IVendor> => {
+const updateClientByAdmin = async (clientId: string, updateData: Partial<IVendor>): Promise<IVendor> => {
     const { email, ...allowedUpdateData } = updateData as any;
 
     if (allowedUpdateData.password) {
         allowedUpdateData.password = await hashPasswordUtility.hashPassword(allowedUpdateData.password);
     }
 
-    const updatedVendor = await vendorModel.findByIdAndUpdate(
-        vendorId,
+    const updatedClient = await vendorModel.findByIdAndUpdate(
+        clientId,
         { $set: allowedUpdateData },
         { new: true, runValidators: true }
     );
 
-    if (!updatedVendor) {
+    if (!updatedClient) {
         throw new Error('VENDOR_NOT_FOUND');
     }
 
-    return updatedVendor;
+    return updatedClient;
 };
 
 const getAllJobsService = async (): Promise<FetchAllJobsResponse> => {
@@ -145,4 +145,4 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
     };
 };
 
-export default { adminLogin, createAdminService, updateVendorByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService };
+export default { adminLogin, createAdminService, updateClientByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService };

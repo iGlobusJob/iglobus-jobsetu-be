@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const updateVendorByAdminSchema = Joi.object({
+const updateClientByAdminSchema = Joi.object({
     vendorId: Joi.string()
         .pattern(/^[0-9a-fA-F]{24}$/)
         .required()
@@ -69,4 +69,4 @@ const updateVendorByAdminSchema = Joi.object({
     'object.min': 'At least one field must be provided for update along with vendorId'
 });
 
-export default updateVendorByAdminSchema;
+export default updateClientByAdminSchema;
