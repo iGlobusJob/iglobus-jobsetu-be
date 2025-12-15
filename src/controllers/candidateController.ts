@@ -59,7 +59,7 @@ const validateOTP = async (req: Request, res: Response): Promise<Response> => {
 
 const getCandidateById = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const candidateId = req.user?.candidateId!;
+        const candidateId = req.user?.candidateId as string;
         const candidateResponse = await candidateService.getCandidateById(candidateId);
 
         return res.status(HTTP_STATUS.OK).json({
@@ -177,7 +177,7 @@ const updateCandidateProfile = async (req: Request, res: Response): Promise<Resp
 
 const applyToJob = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const candidateId = req.user?.candidateId!;
+        const candidateId = req.user?.candidateId as string;
         const { jobId } = req.body;
 
         const candidateJob = await candidateService.applyToJob(candidateId, jobId);
@@ -212,7 +212,7 @@ const applyToJob = async (req: Request, res: Response): Promise<Response> => {
 
 const saveJob = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const candidateId = req.user?.candidateId!;
+        const candidateId = req.user?.candidateId as string;
         const { jobId } = req.body;
 
         const candidateJob = await candidateService.saveJob(candidateId, jobId);
@@ -247,7 +247,7 @@ const saveJob = async (req: Request, res: Response): Promise<Response> => {
 
 const unsaveJob = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const candidateId = req.user?.candidateId!;
+        const candidateId = req.user?.candidateId as string;
         const { jobId } = req.body;
 
         const candidateJob = await candidateService.unsaveJob(candidateId, jobId);
@@ -281,7 +281,7 @@ const unsaveJob = async (req: Request, res: Response): Promise<Response> => {
 
 const getMyJobs = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const candidateId = req.user?.candidateId!;
+        const candidateId = req.user?.candidateId as string;
 
         const myJobs = await candidateService.getMyJobs(candidateId);
 

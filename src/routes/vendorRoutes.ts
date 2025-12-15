@@ -328,17 +328,17 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
 
 /**
  * @swagger
- * /getvendorprofile:
+ * /getclientprofile:
  *   get:
  *     summary: Get authenticated vendor's profile details
- *     description: Retrieves complete profile information of the currently authenticated vendor. The vendor ID is automatically extracted from the JWT token, so vendors can only view their own profile. Requires JWT authentication.
+ *     description: Retrieves complete profile information of the currently authenticated client. The vendor ID is automatically extracted from the JWT token, so clients can only view their own profile. Requires JWT authentication.
  *     tags:
  *       - Vendor
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Vendor details retrieved successfully
+ *         description: Client details retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -349,7 +349,7 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Vendor details fetched successfully!
+ *                   example: Client details fetched successfully!
  *                 data:
  *                   type: object
  *                   properties:
@@ -434,7 +434,7 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Vendor not found
+ *         description: Client not found
  *         content:
  *           application/json:
  *             schema:
@@ -458,9 +458,9 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "An error occurred while fetching vendor details. Please try again later !"
+ *                   example: "An error occurred while fetching client details. Please try again later !"
  */
-VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorController.getVendorById);
+VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorController.getClientById);
 
 /**
  * @swagger
