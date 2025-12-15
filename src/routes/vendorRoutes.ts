@@ -464,11 +464,11 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
 
 /**
  * @swagger
- * /updatevendorprofile:
+ * /updateclientprofile:
  *   put:
- *     summary: Update vendor profile with optional logo upload
+ *     summary: Update client profile with optional logo upload
  *     description: |
- *       Allows an authenticated vendor to update their own profile. Vendor ID is extracted from the JWT token, so vendors can only update their own profile. Logo images are stored in AWS S3 under clients/{vendorId}/logos/ folder and made publicly accessible.
+ *       Allows an authenticated client to update their own profile. Client ID is extracted from the JWT token, so client can only update their own profile. Logo images are stored in AWS S3 under clients/{clientId}/logos/ folder and made publicly accessible.
  *       
  *       **Important**: For nested objects (primaryContact, secondaryContact), send them as JSON strings in multipart form data.
  *       
@@ -490,7 +490,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                 example: '{"firstName":"John","lastName":"Doe"}'
  *               organizationName:
  *                 type: string
- *                 description: Name of the vendor organization (2-100 characters)
+ *                 description: Name of the client organization (2-100 characters)
  *                 example: Tech Solutions Inc.
  *               password:
  *                 type: string
@@ -507,7 +507,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                 example: "9876543210"
  *               location:
  *                 type: string
- *                 description: Vendor location or address
+ *                 description: Client location or address
  *                 example: Mumbai, Maharashtra
  *               gstin:
  *                 type: string
@@ -520,7 +520,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *               category:
  *                 type: string
  *                 enum: [IT, Non-IT]
- *                 description: Vendor category
+ *                 description: Client category
  *                 example: IT
  *               logo:
  *                 type: string
@@ -528,7 +528,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                 description: Company logo image (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF, max 5MB)
  *     responses:
  *       200:
- *         description: Vendor profile updated successfully.
+ *         description: Client profile updated successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -539,7 +539,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Vendor profile updated successfully !"
+ *                   example: "Client profile updated successfully !"
  *                 data:
  *                   type: object
  *                   properties:
@@ -617,7 +617,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "Invalid file type. Only image files (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF) are allowed."
  *       401:
- *         description: Unauthorized - invalid or missing JWT token, or vendor ID not found in token.
+ *         description: Unauthorized - invalid or missing JWT token, or client ID not found in token.
  *         content:
  *           application/json:
  *             schema:
@@ -630,7 +630,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Vendor not found.
+ *         description: Client not found.
  *         content:
  *           application/json:
  *             schema:
@@ -643,7 +643,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "Invalid Account !"
  *       500:
- *         description: Internal server error occurred while updating vendor profile or uploading logo.
+ *         description: Internal server error occurred while updating client profile or uploading logo.
  *         content:
  *           application/json:
  *             schema:
@@ -656,7 +656,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "An error occurred while uploading logo. Please try again later !"
  */
-VendorRouter.put('/updatevendorprofile', validateJWT, vendorPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateVendorProfileSchema), vendorController.updateVendorProfile);
+VendorRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateVendorProfileSchema), vendorController.updateClientProfile);
 
 /**
  * @swagger

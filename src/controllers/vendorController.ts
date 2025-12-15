@@ -253,57 +253,55 @@ const getAllJobsByVendor = async (req: Request, res: Response): Promise<Response
     }
 };
 
-const updateVendorProfile = async (req: Request, res: Response): Promise<Response> => {
+const updateClientProfile = async (req: Request, res: Response): Promise<Response> => {
     try {
-        console.log('UpdateVendorProfile - req.user:', req.user);
-        const vendorId = req.user?.vendorId;
-        console.log('UpdateVendorProfile - extracted vendorId:', vendorId);
+        const clientId = req.user?.vendorId;
 
-        if (!vendorId) {
+        if (!clientId) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({
                 success: false,
-                message: 'Vendor ID not found in token'
+                message: 'Client ID not found in token'
             });
         }
 
         const file = req.file;
-        const updatedVendor = await vendorService.updateVendorProfile(vendorId, req.body, file);
+        const updatedClient = await vendorService.updateClientProfile(clientId, req.body, file);
 
-        if (!updatedVendor) {
+        if (!updatedClient) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.VENDOR_NOT_FOUND
+                message: VENDOR_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.VENDOR_PROFILE_UPDATED_SUCCESS_MESSAGE,
+            message: VENDOR_SUCCESS_MESSAGES.CLIENT_PROFILE_UPDATED_SUCCESS_MESSAGE,
             data: {
-                vendorId: updatedVendor._id,
-                email: updatedVendor.email,
-                organizationName: updatedVendor.organizationName,
-                primaryContact: updatedVendor.primaryContact,
-                secondaryContact: updatedVendor.secondaryContact,
-                mobile: updatedVendor.mobile,
-                location: updatedVendor.location,
-                gstin: updatedVendor.gstin,
-                panCard: updatedVendor.panCard,
-                status: updatedVendor.status,
-                emailStatus: updatedVendor.emailStatus,
-                mobileStatus: updatedVendor.mobileStatus,
-                category: updatedVendor.category,
-                logo: updatedVendor.logo,
-                updatedAt: updatedVendor.updatedAt
+                vendorId: updatedClient._id,
+                email: updatedClient.email,
+                organizationName: updatedClient.organizationName,
+                primaryContact: updatedClient.primaryContact,
+                secondaryContact: updatedClient.secondaryContact,
+                mobile: updatedClient.mobile,
+                location: updatedClient.location,
+                gstin: updatedClient.gstin,
+                panCard: updatedClient.panCard,
+                status: updatedClient.status,
+                emailStatus: updatedClient.emailStatus,
+                mobileStatus: updatedClient.mobileStatus,
+                category: updatedClient.category,
+                logo: updatedClient.logo,
+                updatedAt: updatedClient.updatedAt
             }
         });
     } catch (error: any) {
-        console.error(`Error in updating vendor profile: `, error);
+        console.error(`Error in updating client profile: `, error);
 
-        if (error.message === 'VENDOR_NOT_FOUND') {
+        if (error.message === 'CLIENT_NOT_FOUND') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.VENDOR_NOT_FOUND
+                message: VENDOR_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
@@ -316,7 +314,7 @@ const updateVendorProfile = async (req: Request, res: Response): Promise<Respons
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.VENDOR_PROFILE_UPDATE_FAILED
+            message: VENDOR_ERROR_MESSAGES.CLIENT_PROFILE_UPDATE_FAILED
         });
     }
 };
@@ -351,4 +349,4 @@ const getJobByVendor = async (req: Request, res: Response): Promise<Response> =>
 };
 
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateVendorProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByVendor };
