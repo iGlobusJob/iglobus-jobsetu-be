@@ -4,7 +4,6 @@ import jwtUtil from '../util/jwtUtil';
 import jobsModel from '../model/jobsModel';
 import vendorModel from '../model/vendorModel';
 import candidateModel from '../model/candidateModel';
-
 import IRecruiter from '../interfaces/recruiter';
 import IVendor from '../interfaces/vendor';
 import ICandidate from '../interfaces/candidate';
@@ -33,9 +32,9 @@ const recruiterLogin = async (
 
   const token = jwtUtil.generateToken({
     recruiterId: recruiter.id,
-    firstName:recruiter.firstName,
-    lastName:recruiter.lastName,
-    email:recruiter.email
+    firstName: recruiter.firstName,
+    lastName: recruiter.lastName,
+    email: recruiter.email
   });
 
   return { recruiter, token };
@@ -43,36 +42,36 @@ const recruiterLogin = async (
 
 const getAllJobsService = async () => {
   try {
-        const jobs = await jobsModel.find().populate({
-            path: 'vendorId',
-            select: 'organizationName primaryContact logo'
-        });
+    const jobs = await jobsModel.find().populate({
+      path: 'vendorId',
+      select: 'organizationName primaryContact logo'
+    });
 
-        const alljobs = jobs.map(job => {
-            const vendor = job.vendorId as any;
-            return {
-                id: job.id,
-                vendorId: vendor?._id || job.vendorId,
-                organizationName: vendor?.organizationName || '',
-                primaryContactFirstName: vendor?.primaryContact?.firstName || '',
-                primaryContactLastName: vendor?.primaryContact?.lastName || '',
-                logo: vendor?.logo || '',
-                jobTitle: job.jobTitle,
-                jobDescription: job.jobDescription,
-                postStart: job.postStart,
-                postEnd: job.postEnd,
-                noOfPositions: job.noOfPositions,
-                minimumSalary: job.minimumSalary,
-                maximumSalary: job.maximumSalary,
-                jobType: job.jobType,
-                jobLocation: job.jobLocation,
-                minimumExperience: job.minimumExperience,
-                maximumExperience: job.maximumExperience,
-                status: job.status,
-                createdAt: job.createdAt,
-                updatedAt: job.updatedAt
-            };
-        });
+    const alljobs = jobs.map(job => {
+      const vendor = job.vendorId as any;
+      return {
+        id: job.id,
+        vendorId: vendor?._id || job.vendorId,
+        organizationName: vendor?.organizationName || '',
+        primaryContactFirstName: vendor?.primaryContact?.firstName || '',
+        primaryContactLastName: vendor?.primaryContact?.lastName || '',
+        logo: vendor?.logo || '',
+        jobTitle: job.jobTitle,
+        jobDescription: job.jobDescription,
+        postStart: job.postStart,
+        postEnd: job.postEnd,
+        noOfPositions: job.noOfPositions,
+        minimumSalary: job.minimumSalary,
+        maximumSalary: job.maximumSalary,
+        jobType: job.jobType,
+        jobLocation: job.jobLocation,
+        minimumExperience: job.minimumExperience,
+        maximumExperience: job.maximumExperience,
+        status: job.status,
+        createdAt: job.createdAt,
+        updatedAt: job.updatedAt
+      };
+    });
 
     return {
       success: true,
@@ -88,9 +87,6 @@ const getJobByIdService = async (jobId: string) => {
   return job;
 };
 
-/* =======================
-   Get All Clients
-======================= */
 const getAllClientsService = async () => {
   try {
     const clients = await vendorModel.find();
@@ -122,18 +118,12 @@ const getAllClientsService = async () => {
   }
 };
 
-/* =======================
-   Get Client By ID
-======================= */
 const getClientByIdService = async (
   clientId: string
 ): Promise<IVendor | null> => {
   return vendorModel.findById(clientId);
 };
 
-/* =======================
-   Get All Candidates
-======================= */
 const getAllCandidatesService = async () => {
   try {
     const candidates = await candidateModel.find();
@@ -145,6 +135,8 @@ const getAllCandidatesService = async () => {
       lastName: candidate.lastName || '',
       mobileNumber: candidate.mobileNumber || '',
       gender: candidate.gender || '',
+      dateOfBirth: candidate.dateOfBirth || '',
+      address: candidate.address || '',
       createdAt: candidate.createdAt,
       updatedAt: candidate.updatedAt,
     }));
@@ -158,9 +150,6 @@ const getAllCandidatesService = async () => {
   }
 };
 
-/* =======================
-   Get Candidate By ID
-======================= */
 const getCandidateByIdService = async (
   candidateId: string
 ): Promise<ICandidate | null> => {
