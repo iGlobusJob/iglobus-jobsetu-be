@@ -3,6 +3,7 @@ import candidateController from '../controllers/candidateController';
 import validateRequest from '../middlewares/validateRequest';
 import candidateJoinSchema from '../middlewares/schemas/candidateJoinSchema';
 import validateOTPSchema from '../middlewares/schemas/validateOTPSchema';
+import jobIdSchema from '../middlewares/schemas/jobIdSchema';
 import validateJWT from '../middlewares/validateJWT';
 import candidatePermission from '../middlewares/candidatePermission';
 import updateCandidateProfileSchema from '../middlewares/schemas/updateCandidateProfileSchema';
@@ -587,5 +588,441 @@ CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission,
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
 CandidateRouter.get('/getalljobsbycandidate', validateJWT, candidateController.getAllJobsByCandidate);
+
+/**
+ * @swagger
+ * /applytojob:
+ *   post:
+ *     summary: Apply to a job (Candidate only)
+ *     description: Allows a candidate to apply for a job. Creates a record in candidatejobs collection with isJobApplied set to true. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *                 pattern: '^[0-9a-fA-F]{24}$'
+ *                 description: MongoDB ObjectId of the job (24 character hexadecimal string)
+ *                 example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job applied successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Job applied successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     candidateId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439012
+ *                     jobId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     isJobApplied:
+ *                       type: boolean
+ *                       example: true
+ *                     isJobSaved:
+ *                       type: boolean
+ *                       example: false
+ *                     appliedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-15T10:30:00.000Z
+ *       400:
+ *         description: Bad Request - Invalid job ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *       401:
+ *         description: Unauthorized - No token provided or invalid candidate credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid candidate ID. Access denied !
+ *       404:
+ *         description: Job not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Job not found !
+ *       409:
+ *         description: Already applied to this job
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: You have already applied to this job !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while applying to job. Please try again later !
+ */
+CandidateRouter.post('/applytojob', validateJWT, candidatePermission, validateRequest(jobIdSchema), candidateController.applyToJob);
+
+/**
+ * @swagger
+ * /savejob:
+ *   post:
+ *     summary: Save a job for later (Candidate only)
+ *     description: Allows a candidate to save a job for later viewing. Creates or updates a record in candidatejobs collection with isJobSaved set to true. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *                 pattern: '^[0-9a-fA-F]{24}$'
+ *                 description: MongoDB ObjectId of the job (24 character hexadecimal string)
+ *                 example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job saved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Job saved successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     candidateId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439012
+ *                     jobId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     isJobSaved:
+ *                       type: boolean
+ *                       example: true
+ *                     isJobApplied:
+ *                       type: boolean
+ *                       example: false
+ *                     savedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-15T10:30:00.000Z
+ *       400:
+ *         description: Bad Request - Invalid job ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *       404:
+ *         description: Job not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Job not found !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while saving job. Please try again later !
+ */
+CandidateRouter.post('/savejob', validateJWT, candidatePermission, validateRequest(jobIdSchema), candidateController.saveJob);
+
+/**
+ * @swagger
+ * /unsavejob:
+ *   put:
+ *     summary: Unsave a previously saved job (Candidate only)
+ *     description: Allows a candidate to unsave a job. Updates the candidatejobs record by setting isJobSaved to false. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *                 pattern: '^[0-9a-fA-F]{24}$'
+ *                 description: MongoDB ObjectId of the job (24 character hexadecimal string)
+ *                 example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job unsaved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Job unsaved successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     candidateId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439012
+ *                     jobId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     isJobSaved:
+ *                       type: boolean
+ *                       example: false
+ *                     isJobApplied:
+ *                       type: boolean
+ *                       example: false
+ *       400:
+ *         description: Bad Request - Invalid job ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *       404:
+ *         description: Job not saved yet
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Job is not saved yet !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while unsaving job. Please try again later !
+ */
+CandidateRouter.put('/unsavejob', validateJWT, candidatePermission, validateRequest(jobIdSchema), candidateController.unsaveJob);
+
+/**
+ * @swagger
+ * /getmyjobs:
+ *   get:
+ *     summary: Get all jobs saved or applied by candidate (Candidate only)
+ *     description: Retrieves all jobs from candidatejobs collection for the logged-in candidate, including both saved and applied jobs. Returns complete job details with status flags. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: My jobs fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: My jobs fetched successfully !
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *                       candidateId:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439012
+ *                       jobId:
+ *                         type: object
+ *                         description: Populated job details
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: 507f1f77bcf86cd799439013
+ *                           jobTitle:
+ *                             type: string
+ *                             example: Senior Software Engineer
+ *                           organizationName:
+ *                             type: string
+ *                             example: Tech Corp
+ *                           jobLocation:
+ *                             type: string
+ *                             example: Bangalore
+ *                           minimumSalary:
+ *                             type: number
+ *                             example: 1000000
+ *                           maximumSalary:
+ *                             type: number
+ *                             example: 1500000
+ *                       isJobSaved:
+ *                         type: boolean
+ *                         example: true
+ *                       isJobApplied:
+ *                         type: boolean
+ *                         example: false
+ *                       savedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       appliedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: null
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *       401:
+ *         description: Unauthorized - No token provided or invalid candidate credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid candidate ID. Access denied !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while fetching my jobs. Please try again later !
+ */
+CandidateRouter.get('/getmyjobs', validateJWT, candidatePermission, candidateController.getMyJobs);
 
 export default CandidateRouter;

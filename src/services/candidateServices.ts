@@ -1,7 +1,9 @@
 import candidateModel from "../model/candidateModel";
 import jobsModel from "../model/jobsModel";
+import candidateJobModel from "../model/candidateJobModel";
 import ICandidate, { FetchCandidateByIdResponse, FetchAllCandidateResponse } from "../interfaces/candidate";
 import IJobs from "../interfaces/jobs";
+import ICandidateJob from "../interfaces/candidateJob";
 import jwtUtil from "../util/jwtUtil";
 import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
 import uploadResumeUtil from "../util/uploadResumeToS3";
@@ -165,4 +167,85 @@ const updateCandidateService = async (
     return updatedCandidate;
 };
 
-export default { candidateJoin, validateOTP, getCandidateById, getAllCandidateService, getAllJobsByCandidate, updateCandidateService };
+const applyToJob = async (candidateId: string, jobId: string): Promise<ICandidateJob> => {
+    const job = await jobsModel.findById(jobId);
+    if (!job) {
+        throw new Error('JOB_NOT_FOUND');
+    }
+
+    const candidate = await candidateModel.findById(candidateId);
+    if (!candidate) {
+        throw new Error('CANDIDATE_NOT_FOUND');
+    }
+
+    let candidateJob = await candidateJobModel.findOne({ candidateId, jobId });
+
+    if (candidateJob) {
+        if (candidateJob.isJobApplied) {
+            throw new Error('JOB_ALREADY_APPLIED');
+        }
+
+        candidateJob.isJobApplied = true;
+        candidateJob.appliedAt = new Date();
+        await candidateJob.save();
+    } else {
+        candidateJob = await candidateJobModel.create({
+            candidateId,
+            jobId,
+            isJobApplied: true,
+            appliedAt: new Date()
+        });
+    }
+
+    return candidateJob;
+};
+
+const saveJob = async (candidateId: string, jobId: string): Promise<ICandidateJob> => {
+    const job = await jobsModel.findById(jobId);
+    if (!job) {
+        throw new Error('JOB_NOT_FOUND');
+    }
+
+    const candidate = await candidateModel.findById(candidateId);
+    if (!candidate) {
+        throw new Error('CANDIDATE_NOT_FOUND');
+    }
+
+    let candidateJob = await candidateJobModel.findOne({ candidateId, jobId });
+
+    if (candidateJob) {
+        candidateJob.isJobSaved = true;
+        candidateJob.savedAt = new Date();
+        await candidateJob.save();
+    } else {
+        candidateJob = await candidateJobModel.create({
+            candidateId,
+            jobId,
+            isJobSaved: true,
+            savedAt: new Date()
+        });
+    }
+
+    return candidateJob;
+};
+
+const unsaveJob = async (candidateId: string, jobId: string): Promise<ICandidateJob> => {
+    const candidateJob = await candidateJobModel.findOne({ candidateId, jobId });
+
+    if (!candidateJob || !candidateJob.isJobSaved) {
+        throw new Error('JOB_NOT_SAVED');
+    }
+
+    candidateJob.isJobSaved = false;
+    candidateJob.savedAt = undefined;
+    await candidateJob.save();
+
+    return candidateJob;
+};
+
+const getMyJobs = async (candidateId: string): Promise<ICandidateJob[]> => {
+    const myJobs = await candidateJobModel.find({ candidateId }).populate('jobId').sort({ createdAt: -1 });
+    return myJobs;
+};
+
+export default { candidateJoin, validateOTP, getCandidateById, getAllCandidateService, getAllJobsByCandidate, updateCandidateService, applyToJob, saveJob, unsaveJob, getMyJobs };
