@@ -175,4 +175,129 @@ const updateCandidateProfile = async (req: Request, res: Response): Promise<Resp
     }
 };
 
-export default { candidateJoin, validateOTP, getCandidateById, getAllCandidates, getAllJobsByCandidate, updateCandidateProfile };
+const applyToJob = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const candidateId = req.user?.candidateId!;
+        const { jobId } = req.body;
+
+        const candidateJob = await candidateService.applyToJob(candidateId, jobId);
+
+        return res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            message: CANDIDATE_SUCCESS_MESSAGES.JOB_APPLIED_SUCCESS,
+            data: {
+                id: candidateJob.id,
+                jobId: candidateJob.jobId,
+                candidateId: candidateJob.candidateId,
+                isJobApplied: candidateJob.isJobApplied,
+                appliedAt: candidateJob.appliedAt
+            }
+        });
+    } catch (error: any) {
+        const errorConfig = ERROR_MAPPING[error.message];
+
+        if (errorConfig) {
+            return res.status(errorConfig.status).json({
+                success: false,
+                message: errorConfig.message
+            });
+        }
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: CANDIDATE_ERROR_MESSAGES.JOB_APPLY_FAILED
+        });
+    }
+};
+
+const saveJob = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const candidateId = req.user?.candidateId!;
+        const { jobId } = req.body;
+
+        const candidateJob = await candidateService.saveJob(candidateId, jobId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: CANDIDATE_SUCCESS_MESSAGES.JOB_SAVED_SUCCESS,
+            data: {
+                id: candidateJob.id,
+                jobId: candidateJob.jobId,
+                candidateId: candidateJob.candidateId,
+                isJobSaved: candidateJob.isJobSaved,
+                savedAt: candidateJob.savedAt
+            }
+        });
+    } catch (error: any) {
+        const errorConfig = ERROR_MAPPING[error.message];
+
+        if (errorConfig) {
+            return res.status(errorConfig.status).json({
+                success: false,
+                message: errorConfig.message
+            });
+        }
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: CANDIDATE_ERROR_MESSAGES.JOB_SAVE_FAILED
+        });
+    }
+};
+
+const unsaveJob = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const candidateId = req.user?.candidateId!;
+        const { jobId } = req.body;
+
+        const candidateJob = await candidateService.unsaveJob(candidateId, jobId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: CANDIDATE_SUCCESS_MESSAGES.JOB_UNSAVED_SUCCESS,
+            data: {
+                id: candidateJob.id,
+                jobId: candidateJob.jobId,
+                candidateId: candidateJob.candidateId,
+                isJobSaved: candidateJob.isJobSaved
+            }
+        });
+    } catch (error: any) {
+        const errorConfig = ERROR_MAPPING[error.message];
+
+        if (errorConfig) {
+            return res.status(errorConfig.status).json({
+                success: false,
+                message: errorConfig.message
+            });
+        }
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: CANDIDATE_ERROR_MESSAGES.JOB_UNSAVE_FAILED
+        });
+    }
+};
+
+const getMyJobs = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const candidateId = req.user?.candidateId!;
+
+        const myJobs = await candidateService.getMyJobs(candidateId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: CANDIDATE_SUCCESS_MESSAGES.MY_JOBS_FETCHED_SUCCESS,
+            data: myJobs
+        });
+    } catch (error: any) {
+        console.error(`Error in fetching my jobs: `, error);
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: CANDIDATE_ERROR_MESSAGES.MY_JOBS_FETCH_FAILED
+        });
+    }
+};
+
+export default { candidateJoin, validateOTP, getCandidateById, getAllCandidates, getAllJobsByCandidate, updateCandidateProfile, applyToJob, saveJob, unsaveJob, getMyJobs };
