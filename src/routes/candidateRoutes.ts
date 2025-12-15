@@ -7,7 +7,7 @@ import jobIdSchema from '../middlewares/schemas/jobIdSchema';
 import validateJWT from '../middlewares/validateJWT';
 import candidatePermission from '../middlewares/candidatePermission';
 import updateCandidateProfileSchema from '../middlewares/schemas/updateCandidateProfileSchema';
-import upload from '../middlewares/uploadMiddleware';
+import uploadFields from '../middlewares/uploadFieldsMiddleware';
 
 const CandidateRouter: Router = express.Router();
 
@@ -267,11 +267,19 @@ CandidateRouter.post('/validateOTP', validateRequest(validateOTPSchema), candida
  *                     profile:
  *                       type: string
  *                       description: S3 path to uploaded resume
- *                       example: "candidates/67924fb9a4834c73c16fbab4/resume_1701234567890_resume.pdf"
+ *                       example: "candidates/67924fb9a4834c73c16fbab4/resumes/resume_1701234567890_resume.pdf"
  *                     profileUrl:
  *                       type: string
  *                       description: Presigned URL to download resume (valid for 1 hour)
- *                       example: "https://iglobus-job-sethu.s3.amazonaws.com/candidates/67924fb9a4834c73c16fbab4/resume_1701234567890_resume.pdf?X-Amz-Algorithm=..."
+ *                       example: "https://iglobus-job-sethu.s3.amazonaws.com/candidates/67924fb9a4834c73c16fbab4/resumes/resume_1701234567890_resume.pdf?X-Amz-Algorithm=..."
+ *                     profilePicture:
+ *                       type: string
+ *                       description: S3 path to uploaded profile picture
+ *                       example: "candidates/67924fb9a4834c73c16fbab4/profilepictures/profilepicture_1701234567890_profile.jpg"
+ *                     profilePictureUrl:
+ *                       type: string
+ *                       description: Presigned URL to view profile picture (valid for 1 hour)
+ *                       example: "https://iglobus-job-sethu.s3.amazonaws.com/candidates/67924fb9a4834c73c16fbab4/profilepictures/profilepicture_1701234567890_profile.jpg?X-Amz-Algorithm=..."
  *                     createdAt:
  *                       type: string
  *                       format: date-time
@@ -372,7 +380,11 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *               profile:
  *                 type: string
  *                 format: binary
- *                 description: Resume file (PDF, DOC, or DOCX, max 5MB)
+ *                 description: Resume file (PDF, DOC, or DOCX, max 10MB)
+ *               profilepicture:
+ *                 type: string
+ *                 format: binary
+ *                 description: Profile picture (JPEG, JPG, PNG, GIF, or WEBP, max 10MB)
  *     responses:
  *       200:
  *         description: Candidate profile updated successfully 
@@ -421,7 +433,11 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                     profile:
  *                       type: string
  *                       description: S3 path to uploaded resume
- *                       example: "candidates/507f1f77bcf86cd799439011/resume_1701234567890_John_Doe_Resume.pdf"
+ *                       example: "candidates/507f1f77bcf86cd799439011/resumes/resume_1701234567890_John_Doe_Resume.pdf"
+ *                     profilePicture:
+ *                       type: string
+ *                       description: S3 path to uploaded profile picture
+ *                       example: "candidates/507f1f77bcf86cd799439011/profilepictures/profilepicture_1701234567890_profile.jpg"
  *       400:
  *         description: Invalid file type or file too large
  *         content:
@@ -434,7 +450,20 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Invalid file type. Only PDF, DOC, and DOCX files are allowed."
+ *                   example: "Invalid file type for resume. Only PDF, DOC, and DOCX files are allowed."
+ *             examples:
+ *               invalidResume:
+ *                 value:
+ *                   success: false
+ *                   message: "Invalid file type for resume. Only PDF, DOC, and DOCX files are allowed."
+ *               invalidProfilePicture:
+ *                 value:
+ *                   success: false
+ *                   message: "Invalid file type for profile picture. Only JPEG, JPG, PNG, GIF, and WEBP images are allowed."
+ *               fileTooLarge:
+ *                 value:
+ *                   success: false
+ *                   message: "File too large"
  *       401:
  *         description: Unauthorized – Candidate ID missing in token
  *         content:
@@ -474,8 +503,17 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                 message:
  *                   type: string
  *                   example: "An error occurred while uploading resume. Please try again later !"
+ *             examples:
+ *               resumeUploadFailed:
+ *                 value:
+ *                   success: false
+ *                   message: "An error occurred while uploading resume. Please try again later !"
+ *               profilePictureUploadFailed:
+ *                 value:
+ *                   success: false
+ *                   message: "An error occurred while uploading profile picture. Please try again later !"
  */
-CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission, upload.single('profile'), validateRequest(updateCandidateProfileSchema), candidateController.updateCandidateProfile);
+CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission, uploadFields.fields([{ name: 'profile', maxCount: 1 }, { name: 'profilepicture', maxCount: 1 }]), validateRequest(updateCandidateProfileSchema), candidateController.updateCandidateProfile);
 
 /**
  * @swagger

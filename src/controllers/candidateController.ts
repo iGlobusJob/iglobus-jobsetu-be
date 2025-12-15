@@ -125,8 +125,14 @@ const updateCandidateProfile = async (req: Request, res: Response): Promise<Resp
             });
         }
 
-        const file = req.file;
-        const updatedcandidate = await candidateService.updateCandidateService(candidateId, req.body, file);
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        const resume = files?.profile?.[0];
+        const profilePicture = files?.profilepicture?.[0];
+
+        const updatedcandidate = await candidateService.updateCandidateService(candidateId, req.body, {
+            resume,
+            profilePicture
+        });
 
         if (!updatedcandidate) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -148,7 +154,8 @@ const updateCandidateProfile = async (req: Request, res: Response): Promise<Resp
                 dateOfBirth: updatedcandidate.dateOfBirth,
                 gender: updatedcandidate.gender,
                 category: updatedcandidate.category,
-                profile: updatedcandidate.profile
+                profile: updatedcandidate.profile,
+                profilePicture: updatedcandidate.profilePicture
             }
         });
     } catch (error: any) {
@@ -165,6 +172,13 @@ const updateCandidateProfile = async (req: Request, res: Response): Promise<Resp
             return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: CANDIDATE_ERROR_MESSAGES.RESUME_UPLOAD_FAILED
+            });
+        }
+
+        if (error.message === 'PROFILE_PICTURE_UPLOAD_FAILED') {
+            return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: CANDIDATE_ERROR_MESSAGES.PROFILE_PICTURE_UPLOAD_FAILED
             });
         }
 

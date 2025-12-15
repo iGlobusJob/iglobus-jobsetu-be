@@ -14,6 +14,8 @@ const candidateSchema = new mongoose.Schema(
         category: { type: mongoose.Schema.Types.String, enum: ['IT', 'Non-IT'], trim: true },
         profile: { type: mongoose.Schema.Types.String, trim: true },
         profileUrl: { type: mongoose.Schema.Types.String, trim: true },
+        profilePicture: { type: mongoose.Schema.Types.String, trim: true },
+        profilePictureUrl: { type: mongoose.Schema.Types.String, trim: true },
         otp: {
             type: mongoose.Schema.Types.String,
             minlength: 5,

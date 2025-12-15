@@ -22,6 +22,7 @@ export const CANDIDATE_ERROR_MESSAGES = {
     JOBS_FETCH_FAILED: 'An error occurred while fetching jobs. Please try again later !',
     CANDIDATE_PROFILE_UPDATE_FAILED: 'An error occurred while updating candidate details. Please try again later !',
     RESUME_UPLOAD_FAILED: 'An error occurred while uploading resume. Please try again later !',
+    PROFILE_PICTURE_UPLOAD_FAILED: 'An error occurred while uploading profile picture. Please try again later !',
     JOB_NOT_FOUND: 'Job not found !',
     JOB_APPLY_FAILED: 'An error occurred while applying to job. Please try again later !',
     JOB_ALREADY_APPLIED: 'You have already applied to this job !',

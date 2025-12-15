@@ -11,6 +11,8 @@ interface ICandidate extends Document {
     category?: string;
     profile?: string;
     profileUrl?: string;
+    profilePicture?: string;
+    profilePictureUrl?: string;
     otp?: string;
     otpexpiredAt?: Date;
     createdAt?: Date;
@@ -22,12 +24,12 @@ export interface CandidateTokenPayload {
     email: string;
 };
 
- export interface FetchCandidateByIdResponse {
+export interface FetchCandidateByIdResponse {
     success: boolean;
     data?: any;
 };
 
- export interface FetchAllCandidateResponse {
+export interface FetchAllCandidateResponse {
     success: boolean;
     candidates?: any;
 };

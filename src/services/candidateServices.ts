@@ -7,6 +7,7 @@ import ICandidateJob from "../interfaces/candidateJob";
 import jwtUtil from "../util/jwtUtil";
 import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
 import uploadResumeUtil from "../util/uploadResumeToS3";
+import uploadProfilePictureUtil from "../util/uploadProfilePictureToS3";
 import presignedUrlUtil from "../util/generatePresignedUrl";
 
 const generateOTP = (): string => {
@@ -77,6 +78,11 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
         profileUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profile);
     }
 
+    let profilePictureUrl: string | null = null;
+    if (candidate.profilePicture) {
+        profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
+    }
+
     return {
         success: true,
         data: {
@@ -91,6 +97,8 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             category: candidate.category || '',
             profile: candidate.profile || '',
             profileUrl: profileUrl,
+            profilePicture: candidate.profilePicture || '',
+            profilePictureUrl: profilePictureUrl,
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
@@ -133,24 +141,45 @@ const getAllJobsByCandidate = async (): Promise<IJobs[]> => {
 const updateCandidateService = async (
     candidateId: string,
     updateData: Partial<ICandidate>,
-    file?: Express.Multer.File
+    files?: { resume?: Express.Multer.File; profilePicture?: Express.Multer.File }
 ): Promise<ICandidate> => {
-    if (file) {
+    // Handle resume upload
+    if (files?.resume) {
         const timestamp = Date.now();
-        const fileName = `resume_${timestamp}_${file.originalname}`;
+        const fileName = `resume_${timestamp}_${files.resume.originalname}`;
 
         try {
             const uploadResult = await uploadResumeUtil.uploadResumeToS3(
                 candidateId,
                 fileName,
-                file.buffer,
-                file.mimetype
+                files.resume.buffer,
+                files.resume.mimetype
             );
 
             updateData.profile = uploadResult.fileUrl;
         } catch (error) {
             console.error('Error uploading resume to S3:', error);
             throw new Error('RESUME_UPLOAD_FAILED');
+        }
+    }
+
+    // Handle profile picture upload
+    if (files?.profilePicture) {
+        const timestamp = Date.now();
+        const fileName = `profilepicture_${timestamp}_${files.profilePicture.originalname}`;
+
+        try {
+            const uploadResult = await uploadProfilePictureUtil.uploadProfilePictureToS3(
+                candidateId,
+                fileName,
+                files.profilePicture.buffer,
+                files.profilePicture.mimetype
+            );
+
+            updateData.profilePicture = uploadResult.fileUrl;
+        } catch (error) {
+            console.error('Error uploading profile picture to S3:', error);
+            throw new Error('PROFILE_PICTURE_UPLOAD_FAILED');
         }
     }
 

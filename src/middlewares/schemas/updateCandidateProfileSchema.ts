@@ -42,7 +42,11 @@ const updateCandidateProfileSchema = Joi.object({
         .optional().allow('')
         .messages({
             'any.only': 'Category must be either IT or Non-IT !'
-        })
+        }),
+
+    // File upload fields - handled by multer middleware, just allow them in validation
+    profile: Joi.any().optional().allow(''),
+    profilepicture: Joi.any().optional().allow('')
 });
 
 export default updateCandidateProfileSchema;
