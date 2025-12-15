@@ -156,8 +156,8 @@ const getAllJobsByVendor = async (vendorId: string): Promise<IJobs[]> => {
     return jobs;
 };
 
-const updateVendorProfile = async (
-    vendorId: string,
+const updateClientProfile = async (
+    clientId: string,
     updateData: Partial<IVendor>,
     file?: Express.Multer.File
 ): Promise<IVendor | null> => {
@@ -167,7 +167,7 @@ const updateVendorProfile = async (
 
         try {
             const uploadResult = await uploadLogoUtil.uploadLogoToS3(
-                vendorId,
+                clientId,
                 fileName,
                 file.buffer,
                 file.mimetype
@@ -185,17 +185,17 @@ const updateVendorProfile = async (
         updateData.password = await hashPasswordUtility.hashPassword(updateData.password);
     }
 
-    const updatedVendor = await vendorModel.findByIdAndUpdate(
-        vendorId,
+    const updatedClient = await vendorModel.findByIdAndUpdate(
+        clientId,
         { $set: updateData },
         { new: true, runValidators: true }
     );
 
-    if (!updatedVendor) {
-        throw new Error('VENDOR_NOT_FOUND');
+    if (!updatedClient) {
+        throw new Error('CLIENT_NOT_FOUND');
     }
 
-    return updatedVendor;
+    return updatedClient;
 };
 
 const getJobByVendor = async (vendorId: string, jobId: string): Promise<IJobs> => {
@@ -208,4 +208,4 @@ const getJobByVendor = async (vendorId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJob, getAllJobsByVendor, updateVendorProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByVendor };
