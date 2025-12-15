@@ -94,9 +94,9 @@ const vendorLogin = async (email: string, password: string): Promise<{ vendor: I
     return { vendor, token };
 }
 
-const getVendorById = async (vendorId: string): Promise<IVendor | null> => {
-    const vendor = await vendorModel.findById(vendorId);
-    return vendor;
+const getClientById = async (clientId: string): Promise<IVendor | null> => {
+    const client = await vendorModel.findById(clientId);
+    return client;
 }
 
 const createJobByVendor = async (vendorId: string, jobData: Partial<IJobs>): Promise<IJobs> => {
@@ -208,4 +208,4 @@ const getJobByVendor = async (vendorId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { vendorRegistration, vendorLogin, getVendorById, createJobByVendor, updateJobByVendor, deleteJob, getAllJobsByVendor, updateVendorProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJob, getAllJobsByVendor, updateVendorProfile, getJobByVendor };

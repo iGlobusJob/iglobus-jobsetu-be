@@ -1,7 +1,7 @@
 export const VENDOR_SUCCESS_MESSAGES = {
     VENDOR_ADD_SUCCESS_MESSAGE: 'Vendor registered successfully !',
     VENDOR_LOGIN_SUCCESS_MESSAGE: ' Vendor login successfully !',
-    VENDOR_FETCH_SUCCESS_MESSAGE: 'Vendor details fetched successfully !',
+    CLIENT_FETCH_SUCCESS_MESSAGE: 'Client details fetched successfully !',
     VENDOR_PROFILE_UPDATED_SUCCESS_MESSAGE: 'Vendor profile updated successfully !',
     JOB_CREATED_SUCCESS_MESSAGE: 'Job created successfully !',
     JOB_UPDATED_SUCCESS_MESSAGE: 'Job updated successfully !',
@@ -11,6 +11,7 @@ export const VENDOR_SUCCESS_MESSAGES = {
 } as const;
 
 export const VENDOR_ERROR_MESSAGES = {
+    CLIENT_NOT_FOUND: 'Invalid Account !',
     LOGO_UPLOAD_FAILED: 'An error occurred while uploading logo. Please try again later !',
     VENDOR_ADD_ERROR_MESSAGE: 'Email already exists !',
     VENDOR_FETCH_ERROR_MESSAGE: 'Error in fetching vendor details !',
@@ -22,7 +23,7 @@ export const VENDOR_ERROR_MESSAGES = {
     ACCOUNT_DEACTIVATED: 'Your account has been deactivated. Please contact support !',
     LOGIN_FAILED: 'An error occurred during login. Please try again later !',
     INVALID_VENDOR_ID: 'Invalid vendor ID provided !',
-    FETCH_FAILED: 'An error occurred while fetching vendor details. Please try again later !',
+    FETCH_FAILED: 'An error occurred while fetching client details. Please try again later !',
     VENDOR_PROFILE_UPDATE_FAILED: 'An error occurred while updating vendor profile. Please try again later !',
     JOB_CREATION_FAILED: 'An error occurred while creating the job. Please try again later !',
     JOB_NOT_FOUND_OR_UNAUTHORIZED: 'Job not found or you are not authorized to update this job !',

@@ -77,39 +77,39 @@ const vendorLogin = async (req: Request, res: Response): Promise<Response> => {
     }
 };
 
-const getVendorById = async (req: Request, res: Response): Promise<Response> => {
+const getClientById = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId!;
+        const clientId = req.user?.vendorId!;
 
-        const vendor = await vendorService.getVendorById(vendorId as string);
+        const client = await vendorService.getClientById(clientId as string);
 
-        if (!vendor) {
+        if (!client) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.VENDOR_NOT_FOUND
+                message: VENDOR_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.VENDOR_FETCH_SUCCESS_MESSAGE,
+            message: VENDOR_SUCCESS_MESSAGES.CLIENT_FETCH_SUCCESS_MESSAGE,
             data: {
-                id: vendor.id,
-                email: vendor.email,
-                organizationName: vendor.organizationName,
-                status: vendor.status,
-                emailStatus: vendor.emailStatus,
-                mobile: vendor.mobile,
-                mobileStatus: vendor.mobileStatus,
-                location: vendor.location,
-                gstin: vendor.gstin,
-                panCard: vendor.panCard,
-                primaryContact: vendor.primaryContact,
-                secondaryContact: vendor.secondaryContact,
-                category: vendor.category,
-                logo: vendor.logo,
-                createdAt: vendor.createdAt,
-                updatedAt: vendor.updatedAt
+                id: client.id,
+                email: client.email,
+                organizationName: client.organizationName,
+                status: client.status,
+                emailStatus: client.emailStatus,
+                mobile: client.mobile,
+                mobileStatus: client.mobileStatus,
+                location: client.location,
+                gstin: client.gstin,
+                panCard: client.panCard,
+                primaryContact: client.primaryContact,
+                secondaryContact: client.secondaryContact,
+                category: client.category,
+                logo: client.logo,
+                createdAt: client.createdAt,
+                updatedAt: client.updatedAt
             }
         });
     } catch (error: any) {
@@ -351,4 +351,4 @@ const getJobByVendor = async (req: Request, res: Response): Promise<Response> =>
 };
 
 
-export default { vendorRegistration, vendorLogin, getVendorById, createJobByVendor, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateVendorProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateVendorProfile, getJobByVendor };
