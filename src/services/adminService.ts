@@ -55,26 +55,36 @@ const updateClientByAdmin = async (clientId: string, updateData: Partial<IVendor
 
 const getAllJobsService = async (): Promise<FetchAllJobsResponse> => {
     try {
-        const jobs = await jobsModel.find();
-        const alljobs = jobs.map(job => ({
-            id: job.id,
-            vendorId: job.vendorId,
-            organizationName: job.organizationName,
-            jobTitle: job.jobTitle,
-            jobDescription: job.jobDescription,
-            postStart: job.postStart,
-            postEnd: job.postEnd,
-            noOfPositions: job.noOfPositions,
-            minimumSalary: job.minimumSalary,
-            maximumSalary: job.maximumSalary,
-            jobType: job.jobType,
-            jobLocation: job.jobLocation,
-            minimumExperience: job.minimumExperience,
-            maximumExperience: job.maximumExperience,
-            status: job.status,
-            createdAt: job.createdAt,
-            updatedAt: job.updatedAt
-        }));
+        const jobs = await jobsModel.find().populate({
+            path: 'vendorId',
+            select: 'organizationName primaryContact logo'
+        });
+
+        const alljobs = jobs.map(job => {
+            const vendor = job.vendorId as any;
+            return {
+                id: job.id,
+                vendorId: vendor?._id || job.vendorId,
+                organizationName: vendor?.organizationName || '',
+                primaryContactFirstName: vendor?.primaryContact?.firstName || '',
+                primaryContactLastName: vendor?.primaryContact?.lastName || '',
+                logo: vendor?.logo || '',
+                jobTitle: job.jobTitle,
+                jobDescription: job.jobDescription,
+                postStart: job.postStart,
+                postEnd: job.postEnd,
+                noOfPositions: job.noOfPositions,
+                minimumSalary: job.minimumSalary,
+                maximumSalary: job.maximumSalary,
+                jobType: job.jobType,
+                jobLocation: job.jobLocation,
+                minimumExperience: job.minimumExperience,
+                maximumExperience: job.maximumExperience,
+                status: job.status,
+                createdAt: job.createdAt,
+                updatedAt: job.updatedAt
+            };
+        });
 
         return {
             success: true,
