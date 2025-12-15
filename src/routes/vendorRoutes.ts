@@ -660,10 +660,10 @@ VendorRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLo
 
 /**
  * @swagger
- * /createjobbyvendor:
+ * /createjobbyclient:
  *   post:
- *     summary: Create a new job posting by vendor
- *     description: Allows an authenticated vendor to create a new job posting. The vendor ID is automatically extracted from the JWT token. Organization details are fetched from the vendor record and cannot be overridden.
+ *     summary: Create a new job posting by client
+ *     description: Allows an authenticated client to create a new job posting. The client ID is automatically extracted from the JWT token. Organization details are fetched from the client record and cannot be overridden.
  *     tags:
  *       - Vendor
  *     security:
@@ -824,7 +824,7 @@ VendorRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLo
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-VendorRouter.post('/createjobbyvendor', validateJWT, vendorPermission, validateRequest(createJobSchema), vendorController.createJobByVendor);
+VendorRouter.post('/createjobbyclient', validateJWT, vendorPermission, validateRequest(createJobSchema), vendorController.createJobByClient);
 
 /**
  * @swagger

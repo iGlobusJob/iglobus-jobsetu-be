@@ -99,13 +99,13 @@ const getClientById = async (clientId: string): Promise<IVendor | null> => {
     return client;
 }
 
-const createJobByVendor = async (vendorId: string, jobData: Partial<IJobs>): Promise<IJobs> => {
-    const vendor = await vendorModel.findById(vendorId);
-    if (!vendor) throw new Error("Vendor not found");
+const createJobByClient = async (vendorId: string, jobData: Partial<IJobs>): Promise<IJobs> => {
+    const client = await vendorModel.findById(vendorId);
+    if (!client) throw new Error("Client not found");
     const jobToSave = {
         ...jobData,
         vendorId,
-        organizationName: vendor.organizationName,
+        organizationName: client.organizationName,
     };
 
     const newJob = new jobsModel(jobToSave);
@@ -208,4 +208,4 @@ const getJobByVendor = async (vendorId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByVendor, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByVendor };
