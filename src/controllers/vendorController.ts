@@ -79,7 +79,7 @@ const vendorLogin = async (req: Request, res: Response): Promise<Response> => {
 
 const getClientById = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const clientId = req.user?.vendorId!;
+        const clientId = req.user?.vendorId as string;
 
         const client = await vendorService.getClientById(clientId as string);
 
@@ -122,7 +122,7 @@ const getClientById = async (req: Request, res: Response): Promise<Response> => 
 
 const createJobByVendor = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId!;
+        const vendorId = req.user?.vendorId as string;
         const jobData = req.body;
 
         const job = await vendorService.createJobByVendor(vendorId, jobData);
@@ -141,7 +141,7 @@ const createJobByVendor = async (req: Request, res: Response): Promise<Response>
 
 const updateJobByVendor = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId!;
+        const vendorId = req.user?.vendorId as string;
         const { jobId, ...jobData } = req.body;
 
         const updatedJob = await vendorService.updateJobByVendor(vendorId, jobId, jobData);
@@ -186,7 +186,7 @@ const updateJobByVendor = async (req: Request, res: Response): Promise<Response>
 const deleteJobByVendor = async (req: Request, res: Response) => {
     try {
         const jobId = req.params.jobId;
-        const vendorId = req.user?.vendorId!;
+        const vendorId = req.user?.vendorId as string;
 
         const deleteCandidateJobResponse = await vendorService.deleteJob(jobId, vendorId);
 
@@ -214,7 +214,7 @@ const deleteJobByVendor = async (req: Request, res: Response) => {
 
 const getAllJobsByVendor = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId!;
+        const vendorId = req.user?.vendorId as string;
 
         const jobs = await vendorService.getAllJobsByVendor(vendorId);
 
@@ -323,7 +323,7 @@ const updateVendorProfile = async (req: Request, res: Response): Promise<Respons
 
 const getJobByVendor = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId!;
+        const vendorId = req.user?.vendorId as string;
         const { jobId } = req.params;
 
         const job = await vendorService.getJobByVendor(vendorId, jobId);
