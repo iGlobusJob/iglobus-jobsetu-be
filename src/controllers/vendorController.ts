@@ -120,12 +120,12 @@ const getClientById = async (req: Request, res: Response): Promise<Response> => 
     }
 };
 
-const createJobByVendor = async (req: Request, res: Response): Promise<Response> => {
+const createJobByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
         const vendorId = req.user?.vendorId as string;
         const jobData = req.body;
-
-        const job = await vendorService.createJobByVendor(vendorId, jobData);
+               
+        const job = await vendorService.createJobByClient(vendorId, jobData);
 
         return res.status(HTTP_STATUS.CREATED).json({
             success: true,
@@ -349,4 +349,4 @@ const getJobByVendor = async (req: Request, res: Response): Promise<Response> =>
 };
 
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByVendor, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByVendor };
