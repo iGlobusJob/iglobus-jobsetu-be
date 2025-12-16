@@ -914,11 +914,23 @@ AdminRouter.put('/updateclientbyadmin', validateJWT, validateRequest(updateClien
  *                     gender:
  *                       type: string
  *                       example: "Male"
+ *                     profile:
+ *                       type: string
+ *                       format: uri
+ *                       example: "https://cdn.example.com/profiles/summary.pdf"
+ *                       nullable: true
+ *                     profilePicture:
+ *                       type: string
+ *                       format: uri
+ *                       example: "https://cdn.example.com/images/profile.jpg"
+ *                       nullable: true
  *                     createdAt:
  *                       type: string
+ *                       format: date-time
  *                       example: "2024-01-10T12:45:32.120Z"
  *                     updatedAt:
  *                       type: string
+ *                       format: date-time
  *                       example: "2024-01-10T12:45:32.120Z"
  *
  *       404:

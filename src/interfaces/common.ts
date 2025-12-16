@@ -7,6 +7,8 @@ export interface CandidateData {
     address: string;
     dateOfBirth: string;
     gender: string;
+    profile: string,
+    profilePicture: string,
     createdAt?: Date;
     updatedAt?: Date;
 }
