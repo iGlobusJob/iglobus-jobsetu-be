@@ -311,7 +311,15 @@ const unsaveJob = async (candidateId: string, jobId: string): Promise<ICandidate
 };
 
 const getMyJobs = async (candidateId: string): Promise<ICandidateJob[]> => {
-    const myJobs = await candidateJobModel.find({ candidateId }).populate('jobId').sort({ createdAt: -1 });
+    const myJobs = await candidateJobModel.find({ candidateId })
+        .populate({
+            path: 'jobId',
+            populate: {
+                path: 'vendorId',
+                select: 'organizationName logo'
+            }
+        })
+        .sort({ createdAt: -1 });
     return myJobs;
 };
 
