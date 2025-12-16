@@ -198,7 +198,7 @@ const updateClientProfile = async (
     return updatedClient;
 };
 
-const getJobByVendor = async (vendorId: string, jobId: string): Promise<IJobs> => {
+const getJobByClient = async (vendorId: string, jobId: string): Promise<IJobs> => {
     const job = await jobsModel.findOne({ _id: jobId, vendorId });
 
     if (!job) {
@@ -208,4 +208,4 @@ const getJobByVendor = async (vendorId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByVendor, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByVendor, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByClient };

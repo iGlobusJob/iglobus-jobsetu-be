@@ -940,10 +940,10 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
 
 /**
  * @swagger
- * /getjobbyvendor/{jobId}:
+ * /getjobbyclient/{jobId}:
  *   get:
  *     summary: Get a specific job by ID
- *     description: Allows an authenticated vendor to fetch details of a specific job by its ID. Vendor can only access jobs they have created. The vendor ID is extracted from the JWT token for authorization.
+ *     description: Allows an authenticated client to fetch details of a specific job by its ID. Client can only access jobs they have created. The client ID is extracted from the JWT token for authorization.
  *     tags:
  *       - Vendor
  *     security:
@@ -1028,7 +1028,7 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                       format: date-time
  *                       example: 2025-01-15T14:20:00.000Z
  *       401:
- *         description: Unauthorized - Invalid or missing JWT token, or vendor ID not found in token.
+ *         description: Unauthorized - Invalid or missing JWT token, or client ID not found in token.
  *         content:
  *           application/json:
  *             schema:
@@ -1041,7 +1041,7 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Job not found or vendor is not authorized to access this job.
+ *         description: Job not found or client is not authorized to access this job.
  *         content:
  *           application/json:
  *             schema:
@@ -1067,7 +1067,7 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-VendorRouter.get('/getjobbyvendor/:jobId', validateJWT, vendorPermission, vendorController.getJobByVendor);
+VendorRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendorController.getJobByClient);
 
 /**
  * @swagger

@@ -319,12 +319,12 @@ const updateClientProfile = async (req: Request, res: Response): Promise<Respons
     }
 };
 
-const getJobByVendor = async (req: Request, res: Response): Promise<Response> => {
+const getJobByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
         const vendorId = req.user?.vendorId as string;
         const { jobId } = req.params;
 
-        const job = await vendorService.getJobByVendor(vendorId, jobId);
+        const job = await vendorService.getJobByClient(vendorId, jobId);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
@@ -332,7 +332,7 @@ const getJobByVendor = async (req: Request, res: Response): Promise<Response> =>
             data: job
         });
     } catch (error: any) {
-        console.error(`Error in fetching job by vendor: `, error);
+        console.error(`Error in fetching job by client: ${error}`);
 
         if (error.message === 'JOB_NOT_FOUND_OR_UNAUTHORIZED') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -349,4 +349,4 @@ const getJobByVendor = async (req: Request, res: Response): Promise<Response> =>
 };
 
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByVendor };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByVendor, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByClient };
