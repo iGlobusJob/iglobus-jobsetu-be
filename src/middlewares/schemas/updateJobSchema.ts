@@ -32,7 +32,7 @@ const updateJobSchema = Joi.object({
     jobType: Joi.string().valid('full-time', 'part-time', 'internship', 'freelance', 'contract').optional().messages({
         'any.only': 'Job type must be either full-time, part-time, internship, freelance, or contract'
     }),
-    jobLocation: Joi.string().trim().optional(),
+    jobLocation: Joi.string().trim().optional().allow(''),
     minimumExperience: Joi.number().min(0).optional().messages({
         'number.base': 'Minimum experience must be a number',
         'number.min': 'Minimum experience cannot be negative'

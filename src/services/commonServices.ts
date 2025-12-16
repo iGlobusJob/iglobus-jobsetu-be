@@ -17,6 +17,8 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
             dateOfBirth: candidate.dateOfBirth || '',
             gender: candidate.gender || '',
             category: candidate.category  || '',
+            profile: candidate.profile || '',
+            profilePicture:candidate.profilePicture || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }));
@@ -48,6 +50,8 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             address: candidate.address || '',
             dateOfBirth: candidate.dateOfBirth || '',
             gender: candidate.gender || '',
+            profile: candidate.profile || '',
+            profilePicture: candidate.profilePicture || '' ,
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }

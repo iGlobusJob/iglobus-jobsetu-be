@@ -1,14 +1,16 @@
 import Joi from "joi";
 
 const updateCandidateProfileSchema = Joi.object({
-    firstName: Joi.string().min(2).max(50).trim().optional().allow('').messages({
+    firstName: Joi.string().min(2).max(50).trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
         'string.min': 'First name must be at least 2 characters long !',
-        'string.max': 'First name cannot exceed 50 characters !'
+        'string.max': 'First name cannot exceed 50 characters !',
+        'string.pattern.base': 'First name must contain only letters'
     }),
 
-    lastName: Joi.string().min(2).max(50).trim().optional().allow('').messages({
+    lastName: Joi.string().min(2).max(50).trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
         'string.min': 'Last name must be at least 2 characters long !',
-        'string.max': 'Last name cannot exceed 50 characters !'
+        'string.max': 'Last name cannot exceed 50 characters !',
+        'string.pattern.base': 'Last name must contain only letters'
     }),
 
     mobileNumber: Joi.string().pattern(/^[0-9]{10}$/).optional().allow('').messages({
