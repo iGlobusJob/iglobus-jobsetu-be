@@ -544,18 +544,25 @@ CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission,
  *                   items:
  *                     type: object
  *                     properties:
- *                       _id:
+ *                       id:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439011
  *                       vendorId:
  *                         type: string
  *                         example: 507f191e810c19729de860ea
+ *                       organizationName:
+ *                         type: string
+ *                         example: "Tech Corp"
+ *                       logo:
+ *                         type: string
+ *                         format: uri
+ *                         example: "https://cdn.example.com/logos/company.png"
  *                       jobTitle:
  *                         type: string
  *                         example: Senior Backend Developer
  *                       jobDescription:
  *                         type: string
- *                         example: Looking for an experienced backend developer with Node.js expertise
+ *                         example: Looking for an experienced backend developer
  *                       postStart:
  *                         type: string
  *                         format: date-time
@@ -563,7 +570,7 @@ CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission,
  *                       postEnd:
  *                         type: string
  *                         format: date-time
- *                         example: 2025-03-01T00:00:00.000Z
+ *                         example: 2025-03-01T00:00:00.000Z 
  *                       noOfPositions:
  *                         type: number
  *                         example: 5
