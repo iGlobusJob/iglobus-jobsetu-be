@@ -27,7 +27,7 @@ const validateOTP = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { email, otp } = req.body;
 
-        const { candidate, token } = await candidateService.validateOTP(email, otp);
+        const { candidate, token, profilePictureUrl } = await candidateService.validateOTP(email, otp);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
@@ -36,7 +36,8 @@ const validateOTP = async (req: Request, res: Response): Promise<Response> => {
                 token,
                 candidate: {
                     id: candidate.id,
-                    email: candidate.email
+                    email: candidate.email,
+                    profilePictureUrl: profilePictureUrl
                 }
             }
         });

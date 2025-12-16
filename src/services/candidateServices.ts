@@ -43,7 +43,7 @@ const candidateJoin = async (email: string): Promise<{ candidate: ICandidate; ot
     return { candidate, otp };
 };
 
-const validateOTP = async (email: string, otp: string): Promise<{ candidate: ICandidate; token: string }> => {
+const validateOTP = async (email: string, otp: string): Promise<{ candidate: ICandidate; token: string; profilePictureUrl: string | null }> => {
     const candidate = await candidateModel.findOne({ email });
 
     if (!candidate) {
@@ -64,7 +64,12 @@ const validateOTP = async (email: string, otp: string): Promise<{ candidate: ICa
         email: candidate.email
     });
 
-    return { candidate, token };
+    let profilePictureUrl: string | null = null;
+    if (candidate.profilePicture) {
+        profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
+    }
+
+    return { candidate, token, profilePictureUrl };
 };
 const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse> => {
     const candidate = await candidateModel.findById(id);
