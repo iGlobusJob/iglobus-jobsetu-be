@@ -114,7 +114,7 @@ const createJobByClient = async (vendorId: string, jobData: Partial<IJobs>): Pro
     return savedJob;
 };
 
-const updateJobByVendor = async (vendorId: string, jobId: string, jobData: Partial<IJobs>): Promise<IJobs | null> => {
+const updateJobByClient = async (vendorId: string, jobId: string, jobData: Partial<IJobs>): Promise<IJobs | null> => {
     const job = await jobsModel.findOne({ _id: jobId, vendorId });
 
     if (!job) {
@@ -208,4 +208,4 @@ const getJobByClient = async (vendorId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByVendor, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByClient };
+export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByClient, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByClient };

@@ -1071,10 +1071,10 @@ VendorRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendor
 
 /**
  * @swagger
- * /updatejobbyvendor:
+ * /updatejobbyclient:
  *   put:
- *     summary: Update an existing job posting by vendor
- *     description: Allows an authenticated vendor to update their existing job posting. The vendor ID is automatically extracted from the JWT token. Vendor can only update jobs they created. Job ID is required in the request body along with fields to update.
+ *     summary: Update an existing job posting by client
+ *     description: Allows an authenticated client to update their existing job posting. The client ID is automatically extracted from the JWT token. Client can only update jobs they created. Job ID is required in the request body along with fields to update.
  *     tags:
  *       - Vendor
  *     security:
@@ -1246,7 +1246,7 @@ VendorRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendor
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Job not found or vendor not authorized to update this job.
+ *         description: Job not found or client not authorized to update this job.
  *         content:
  *           application/json:
  *             schema:
@@ -1272,7 +1272,7 @@ VendorRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendor
  *                   type: string
  *                   example: "An error occurred while updating the job. Please try again later !"
  */
-VendorRouter.put('/updatejobbyvendor', validateJWT, vendorPermission, validateRequest(updateJobSchema), vendorController.updateJobByVendor);
+VendorRouter.put('/updatejobbyclient', validateJWT, vendorPermission, validateRequest(updateJobSchema), vendorController.updateJobByClient);
 
 /**
  * @swagger
