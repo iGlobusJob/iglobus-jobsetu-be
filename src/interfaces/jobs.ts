@@ -3,6 +3,7 @@ import mongoose, { Document } from 'mongoose';
 interface IJobs extends Document {
     vendorId: mongoose.Types.ObjectId;
     organizationName: string,
+    logo: string,
     jobTitle: string;
     jobDescription?: string;
     postStart?: Date;

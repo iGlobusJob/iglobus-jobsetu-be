@@ -2,7 +2,7 @@ import candidateModel from "../model/candidateModel";
 import jobsModel from "../model/jobsModel";
 import candidateJobModel from "../model/candidateJobModel";
 import ICandidate, { FetchCandidateByIdResponse, FetchAllCandidateResponse } from "../interfaces/candidate";
-import IJobs from "../interfaces/jobs";
+import IJobs, { FetchAllJobsResponse } from "../interfaces/jobs";
 import ICandidateJob from "../interfaces/candidateJob";
 import jwtUtil from "../util/jwtUtil";
 import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
@@ -133,9 +133,47 @@ const getAllCandidateService = async (): Promise<FetchAllCandidateResponse> => {
 
 };
 
-const getAllJobsByCandidate = async (): Promise<IJobs[]> => {
-    const jobs = await jobsModel.find({ status: 'active' }).sort({ createdAt: -1 });
-    return jobs;
+const getAllJobsByCandidate = async (): Promise<FetchAllJobsResponse> => {
+    try {
+        const jobs = await jobsModel.find({ status: 'active' }).sort({ createdAt: -1 }).populate({
+            path: 'vendorId',
+            select: 'organizationName primaryContact logo'
+        });
+
+        const alljobs = jobs.map(job => {
+            const client = job.vendorId as any;
+            return {
+                id: job.id,
+                vendorId: client?._id || job.vendorId,
+                organizationName: client?.organizationName || '',
+                primaryContactFirstName: client?.primaryContact?.firstName || '',
+                primaryContactLastName: client?.primaryContact?.lastName || '',
+                logo: client?.logo || '',
+                jobTitle: job.jobTitle,
+                jobDescription: job.jobDescription,
+                postStart: job.postStart,
+                postEnd: job.postEnd,
+                noOfPositions: job.noOfPositions,
+                minimumSalary: job.minimumSalary,
+                maximumSalary: job.maximumSalary,
+                jobType: job.jobType,
+                jobLocation: job.jobLocation,
+                minimumExperience: job.minimumExperience,
+                maximumExperience: job.maximumExperience,
+                status: job.status,
+                createdAt: job.createdAt,
+                updatedAt: job.updatedAt
+            };
+        });
+
+        return {
+            success: true,
+            jobs: alljobs
+        };
+    } catch (error) {
+        throw new Error("Failed to fetch all jobs ");
+    };
+
 };
 
 const updateCandidateService = async (

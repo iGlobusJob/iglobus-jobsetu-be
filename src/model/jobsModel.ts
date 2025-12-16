@@ -6,6 +6,7 @@ const JobsSchema = new mongoose.Schema(
     {
         vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
         organizationName: { type: String, required: true, trim: true },
+        logo: { type: String, trim: true },
         jobTitle: { type: String, required: true, trim: true },
         jobDescription: { type: String, trim: true },
         postStart: { type: Date },
