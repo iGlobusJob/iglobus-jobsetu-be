@@ -9,6 +9,7 @@ import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
 import uploadResumeUtil from "../util/uploadResumeToS3";
 import uploadProfilePictureUtil from "../util/uploadProfilePictureToS3";
 import presignedUrlUtil from "../util/generatePresignedUrl";
+import candidateJobApplied  from "../util/sendJobAppliedMail ";
 
 const generateOTP = (): string => {
     const otp = Math.floor(10000 + Math.random() * 90000).toString();
@@ -270,6 +271,10 @@ const applyToJob = async (candidateId: string, jobId: string): Promise<ICandidat
         });
     }
 
+        // send email after applying the job
+    candidateJobApplied (candidate.email, job.jobTitle).catch((error:any) => {
+        console.error('Failed to send job applied email:', error);
+    });
     return candidateJob;
 };
 
