@@ -24,8 +24,8 @@ const updateVendorProfileSchema = Joi.object({
             'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
         }),
     secondaryContact: Joi.object({
-        firstName: Joi.string().trim().optional(),
-        lastName: Joi.string().trim().optional()
+        firstName: Joi.string().trim().optional().allow(''),
+        lastName: Joi.string().trim().optional().allow('')
     }).optional(),
     mobile: Joi.string().pattern(/^\d{10}$/).optional().messages({
         'string.pattern.base': 'Mobile number must be exactly 10 digits'
