@@ -37,7 +37,10 @@ const validateOTP = async (req: Request, res: Response): Promise<Response> => {
                 candidate: {
                     id: candidate.id,
                     email: candidate.email,
-                    profilePictureUrl: profilePictureUrl
+                    profilePictureUrl: profilePictureUrl,
+                    firstName: candidate.firstName ,
+                    lastName: candidate.lastName 
+                    
                 }
             }
         });
