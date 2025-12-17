@@ -17,7 +17,7 @@ const generateOTP = (): string => {
 };
 
 const candidateJoin = async (email: string): Promise<{ candidate: ICandidate; otp: string }> => {
-    const otp = "12345"
+    const otp = generateOTP();
 
     const otpExpiredAt = new Date();
     otpExpiredAt.setMinutes(otpExpiredAt.getMinutes() + 10);
