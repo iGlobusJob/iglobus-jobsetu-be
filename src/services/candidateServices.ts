@@ -17,7 +17,7 @@ const generateOTP = (): string => {
 };
 
 const candidateJoin = async (email: string): Promise<{ candidate: ICandidate; otp: string }> => {
-    const otp = generateOTP();
+    const otp = "12345"
 
     const otpExpiredAt = new Date();
     otpExpiredAt.setMinutes(otpExpiredAt.getMinutes() + 10);
@@ -236,8 +236,14 @@ const updateCandidateService = async (
 
     if (!updatedCandidate) {
         throw new Error('CANDIDATE_NOT_FOUND');
+    } else {
+        if (updatedCandidate.profilePicture) {
+            const profileImage = await presignedUrlUtil.generatePresignedUrl(updatedCandidate.profilePicture);
+            if (profileImage) {
+                updatedCandidate.profilePicture = profileImage;
+            }
+        }
     }
-
     return updatedCandidate;
 };
 

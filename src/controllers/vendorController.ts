@@ -54,7 +54,8 @@ const vendorLogin = async (req: Request, res: Response): Promise<Response> => {
                     organizationName: vendor.organizationName,
                     status: vendor.status,
                     primaryContact: vendor.primaryContact,
-                    category: vendor.category
+                    category: vendor.category,
+                    logo:vendor.logo
                 }
             }
         });
