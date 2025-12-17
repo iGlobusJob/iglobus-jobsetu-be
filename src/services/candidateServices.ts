@@ -61,7 +61,8 @@ const validateOTP = async (email: string, otp: string): Promise<{ candidate: ICa
 
     const token = jwtUtil.generateToken({
         candidateId: candidate.id,
-        email: candidate.email
+        email: candidate.email,
+        role: 'candidate'
     });
 
     let profilePictureUrl: string | null = null;
