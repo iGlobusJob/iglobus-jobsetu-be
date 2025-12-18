@@ -4,7 +4,7 @@ import IJobs from '../interfaces/jobs';
 
 const JobsSchema = new mongoose.Schema(
     {
-        clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
+        clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'client', required: true },
         organizationName: { type: String, required: true, trim: true },
         logo: { type: String, trim: true },
         jobTitle: { type: String, required: true, trim: true },
@@ -33,6 +33,6 @@ JobsSchema.virtual('id').get(function () {
     return String(this._id);
 });
 
-const jobsModel = mongoose.model<IJobs>('JobsSchema', JobsSchema);
+const jobsModel = mongoose.model<IJobs>('Jobs', JobsSchema);
 
 export default jobsModel;

@@ -131,7 +131,7 @@ const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
             jobs: alljobs
         };
     } catch (error) {
-        throw new Error("Failed to fetch all jobs ");
+        throw new Error(`Failed to fetch all jobs: ${error}`);
     };
 
 };
