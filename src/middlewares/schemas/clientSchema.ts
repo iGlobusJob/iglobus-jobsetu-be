@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const vendorSchema = Joi.object({
+const clientSchema = Joi.object({
     primaryContact: Joi.object({
         firstName: Joi.string().min(2).max(50).trim().required().messages({
             'string.empty': 'Primary contact first name is required',
@@ -60,4 +60,4 @@ const vendorSchema = Joi.object({
     })
 });
 
-export default vendorSchema;
+export default clientSchema;

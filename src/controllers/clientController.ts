@@ -1,39 +1,39 @@
 import { Request, Response } from 'express';
-import vendorService from '../services/vendorServices';
-import { VENDOR_SUCCESS_MESSAGES, VENDOR_ERROR_MESSAGES, HTTP_STATUS, CLIENT_LOGIN_ERROR_MAPPING } from '../constants/vendorMessages';
+import clientService from '../services/clientServices';
+import { CLIENT_SUCCESS_MESSAGES, CLIENT_ERROR_MESSAGES, HTTP_STATUS, CLIENT_LOGIN_ERROR_MAPPING } from '../constants/clientMessages';
 
 const DUPLICATE_KEY_ERROR_CODE = 11000;
 
-const vendorRegistration = async (req: Request, res: Response): Promise<Response> => {
+const clientRegistration = async (req: Request, res: Response): Promise<Response> => {
     try {
         const file = req.file;
-        const vendor = await vendorService.vendorRegistration(req.body, file);
+        const client = await clientService.clientRegistration(req.body, file);
 
         return res.status(HTTP_STATUS.CREATED).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.VENDOR_ADD_SUCCESS_MESSAGE,
+            message: CLIENT_SUCCESS_MESSAGES.CLIENT_ADD_SUCCESS_MESSAGE,
             data: {
-                id: vendor.id,
-                email: vendor.email,
-                organizationName: vendor.organizationName,
-                mobile: vendor.mobile,
-                gstin: vendor.gstin,
-                panCard: vendor.panCard,
-                category: vendor.category,
-                logo: vendor.logo
+                id: client.id,
+                email: client.email,
+                organizationName: client.organizationName,
+                mobile: client.mobile,
+                gstin: client.gstin,
+                panCard: client.panCard,
+                category: client.category,
+                logo: client.logo
             }
         });
     } catch (error: any) {
         if (error.code === DUPLICATE_KEY_ERROR_CODE) {
             return res.status(HTTP_STATUS.CONFLICT).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.VENDOR_ADD_ERROR_MESSAGE
+                message: CLIENT_ERROR_MESSAGES.CLIENT_ADD_ERROR_MESSAGE
             });
         }
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.REGISTRATION_FAILED
+            message: CLIENT_ERROR_MESSAGES.REGISTRATION_FAILED
         });
     }
 };
@@ -41,21 +41,21 @@ const vendorRegistration = async (req: Request, res: Response): Promise<Response
 const clientLogin = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { email, password } = req.body;
-        const { vendor, token } = await vendorService.clientLogin(email, password);
+        const { client, token } = await clientService.clientLogin(email, password);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.CLIENT_LOGIN_SUCCESS_MESSAGE,
+            message: CLIENT_SUCCESS_MESSAGES.CLIENT_LOGIN_SUCCESS_MESSAGE,
             data: {
                 token,
-                vendor: {
-                    id: vendor.id,
-                    email: vendor.email,
-                    organizationName: vendor.organizationName,
-                    status: vendor.status,
-                    primaryContact: vendor.primaryContact,
-                    category: vendor.category,
-                    logo:vendor.logo
+                client: {
+                    id: client.id,
+                    email: client.email,
+                    organizationName: client.organizationName,
+                    status: client.status,
+                    primaryContact: client.primaryContact,
+                    category: client.category,
+                    logo: client.logo
                 }
             }
         });
@@ -73,27 +73,27 @@ const clientLogin = async (req: Request, res: Response): Promise<Response> => {
         // Generic error response
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.LOGIN_FAILED
+            message: CLIENT_ERROR_MESSAGES.LOGIN_FAILED
         });
     }
 };
 
 const getClientById = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const clientId = req.user?.vendorId as string;
+        const clientId = req.user?.clientId as string;
 
-        const client = await vendorService.getClientById(clientId as string);
+        const client = await clientService.getClientById(clientId as string);
 
         if (!client) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.CLIENT_NOT_FOUND
+                message: CLIENT_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.CLIENT_FETCH_SUCCESS_MESSAGE,
+            message: CLIENT_SUCCESS_MESSAGES.CLIENT_FETCH_SUCCESS_MESSAGE,
             data: {
                 id: client.id,
                 email: client.email,
@@ -116,43 +116,43 @@ const getClientById = async (req: Request, res: Response): Promise<Response> => 
     } catch (error: any) {
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.FETCH_FAILED
+            message: CLIENT_ERROR_MESSAGES.FETCH_FAILED
         });
     }
 };
 
 const createJobByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId as string;
+        const clientId = req.user?.clientId as string;
         const jobData = req.body;
-               
-        const job = await vendorService.createJobByClient(vendorId, jobData);
+
+        const job = await clientService.createJobByClient(clientId, jobData);
 
         return res.status(HTTP_STATUS.CREATED).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.JOB_CREATED_SUCCESS_MESSAGE
+            message: CLIENT_SUCCESS_MESSAGES.JOB_CREATED_SUCCESS_MESSAGE
         });
     } catch (error: any) {
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.JOB_CREATION_FAILED
+            message: CLIENT_ERROR_MESSAGES.JOB_CREATION_FAILED
         });
     }
 };
 
 const updateJobByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId as string;
+        const clientId = req.user?.clientId as string;
         const { jobId, ...jobData } = req.body;
 
-        const updatedJob = await vendorService.updateJobByClient(vendorId, jobId, jobData);
+        const updatedJob = await clientService.updateJobByClient(clientId, jobId, jobData);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.JOB_UPDATED_SUCCESS_MESSAGE,
+            message: CLIENT_SUCCESS_MESSAGES.JOB_UPDATED_SUCCESS_MESSAGE,
             data: {
                 jobId: updatedJob?.id,
-                vendorId: updatedJob?.vendorId,
+                clientId: updatedJob?.clientId,
                 jobTitle: updatedJob?.jobTitle,
                 jobDescription: updatedJob?.jobDescription,
                 postStart: updatedJob?.postStart,
@@ -173,34 +173,34 @@ const updateJobByClient = async (req: Request, res: Response): Promise<Response>
         if (error.message === 'JOB_NOT_FOUND_OR_UNAUTHORIZED') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.JOB_NOT_FOUND_OR_UNAUTHORIZED
+                message: CLIENT_ERROR_MESSAGES.JOB_NOT_FOUND_OR_UNAUTHORIZED
             });
         }
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.JOB_UPDATE_FAILED
+            message: CLIENT_ERROR_MESSAGES.JOB_UPDATE_FAILED
         });
     }
 };
 
-const deleteJobByVendor = async (req: Request, res: Response) => {
+const deleteJobByClient = async (req: Request, res: Response) => {
     try {
         const jobId = req.params.jobId;
-        const vendorId = req.user?.vendorId as string;
+        const clientId = req.user?.clientId as string;
 
-        const deleteCandidateJobResponse = await vendorService.deleteJob(jobId, vendorId);
+        const deleteCandidateJobResponse = await clientService.deleteJob(jobId, clientId);
 
         if (!deleteCandidateJobResponse.success) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.JOB_NOT_FOUND
+                message: CLIENT_ERROR_MESSAGES.JOB_NOT_FOUND
             });
         }
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.JOB_DELETED_SUCCESS_MESSAGE
+            message: CLIENT_SUCCESS_MESSAGES.JOB_DELETED_SUCCESS_MESSAGE
         });
 
     } catch (error: any) {
@@ -208,19 +208,19 @@ const deleteJobByVendor = async (req: Request, res: Response) => {
 
         return res.status(500).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.JOB_DELETE_ERROR_MESSAGE
+            message: CLIENT_ERROR_MESSAGES.JOB_DELETE_ERROR_MESSAGE
         });
     }
 };
 
-const getAllJobsByVendor = async (req: Request, res: Response): Promise<Response> => {
+const getAllJobsByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId as string;
+        const clientId = req.user?.clientId as string;
 
-        const jobs = await vendorService.getAllJobsByVendor(vendorId);
+        const jobs = await clientService.getAllJobsByClient(clientId);
 
         const formattedJobs = jobs.map(job => ({
-            vendorId: job.vendorId,
+            clientId: job.clientId,
             organizationName: job.organizationName,
             jobTitle: job.jobTitle,
             jobDescription: job.jobDescription,
@@ -241,7 +241,7 @@ const getAllJobsByVendor = async (req: Request, res: Response): Promise<Response
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.JOBS_FETCHED_SUCCESS_MESSAGE,
+            message: CLIENT_SUCCESS_MESSAGES.JOBS_FETCHED_SUCCESS_MESSAGE,
             data: formattedJobs
         });
     } catch (error: any) {
@@ -249,14 +249,14 @@ const getAllJobsByVendor = async (req: Request, res: Response): Promise<Response
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.JOBS_FETCH_FAILED
+            message: CLIENT_ERROR_MESSAGES.JOBS_FETCH_FAILED
         });
     }
 };
 
 const updateClientProfile = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const clientId = req.user?.vendorId;
+        const clientId = req.user?.clientId;
 
         if (!clientId) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({
@@ -266,20 +266,20 @@ const updateClientProfile = async (req: Request, res: Response): Promise<Respons
         }
 
         const file = req.file;
-        const updatedClient = await vendorService.updateClientProfile(clientId, req.body, file);
+        const updatedClient = await clientService.updateClientProfile(clientId, req.body, file);
 
         if (!updatedClient) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.CLIENT_NOT_FOUND
+                message: CLIENT_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.CLIENT_PROFILE_UPDATED_SUCCESS_MESSAGE,
+            message: CLIENT_SUCCESS_MESSAGES.CLIENT_PROFILE_UPDATED_SUCCESS_MESSAGE,
             data: {
-                vendorId: updatedClient._id,
+                clientId: updatedClient._id,
                 email: updatedClient.email,
                 organizationName: updatedClient.organizationName,
                 primaryContact: updatedClient.primaryContact,
@@ -302,34 +302,34 @@ const updateClientProfile = async (req: Request, res: Response): Promise<Respons
         if (error.message === 'CLIENT_NOT_FOUND') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.CLIENT_NOT_FOUND
+                message: CLIENT_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
         if (error.message === 'LOGO_UPLOAD_FAILED') {
             return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.LOGO_UPLOAD_FAILED
+                message: CLIENT_ERROR_MESSAGES.LOGO_UPLOAD_FAILED
             });
         }
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.CLIENT_PROFILE_UPDATE_FAILED
+            message: CLIENT_ERROR_MESSAGES.CLIENT_PROFILE_UPDATE_FAILED
         });
     }
 };
 
 const getJobByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const vendorId = req.user?.vendorId as string;
+        const clientId = req.user?.clientId as string;
         const { jobId } = req.params;
 
-        const job = await vendorService.getJobByClient(vendorId, jobId);
+        const job = await clientService.getJobByClient(clientId, jobId);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.JOB_FETCH_SUCCESS_MESSAGE,
+            message: CLIENT_SUCCESS_MESSAGES.JOB_FETCH_SUCCESS_MESSAGE,
             data: job
         });
     } catch (error: any) {
@@ -338,16 +338,16 @@ const getJobByClient = async (req: Request, res: Response): Promise<Response> =>
         if (error.message === 'JOB_NOT_FOUND_OR_UNAUTHORIZED') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: VENDOR_ERROR_MESSAGES.JOB_NOT_FOUND_OR_UNAUTHORIZED
+                message: CLIENT_ERROR_MESSAGES.JOB_NOT_FOUND_OR_UNAUTHORIZED
             });
         }
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: VENDOR_ERROR_MESSAGES.JOBS_FETCH_FAILED
+            message: CLIENT_ERROR_MESSAGES.JOBS_FETCH_FAILED
         });
     }
 };
 
 
-export default { vendorRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByClient };
+export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJobByClient, getAllJobsByClient, updateClientProfile, getJobByClient };

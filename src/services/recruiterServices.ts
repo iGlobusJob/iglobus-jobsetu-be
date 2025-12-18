@@ -2,10 +2,10 @@ import recruiterModel from '../model/recruiterModel';
 import bcrypt from 'bcrypt';
 import jwtUtil from '../util/jwtUtil';
 import jobsModel from '../model/jobsModel';
-import vendorModel from '../model/vendorModel';
+import clientModel from '../model/clientModel';
 import candidateModel from '../model/candidateModel';
 import IRecruiter from '../interfaces/recruiter';
-import IVendor from '../interfaces/vendor';
+import IClient from '../interfaces/client';
 import ICandidate from '../interfaces/candidate';
 
 
@@ -43,19 +43,19 @@ const recruiterLogin = async (
 const getAllJobsService = async () => {
   try {
     const jobs = await jobsModel.find().populate({
-      path: 'vendorId',
+      path: 'clientId',
       select: 'organizationName primaryContact logo'
     });
 
     const alljobs = jobs.map(job => {
-      const vendor = job.vendorId as any;
+      const client = job.clientId as any;
       return {
         id: job.id,
-        vendorId: vendor?._id || job.vendorId,
-        organizationName: vendor?.organizationName || '',
-        primaryContactFirstName: vendor?.primaryContact?.firstName || '',
-        primaryContactLastName: vendor?.primaryContact?.lastName || '',
-        logo: vendor?.logo || '',
+        clientId: client?._id || job.clientId,
+        organizationName: client?.organizationName || '',
+        primaryContactFirstName: client?.primaryContact?.firstName || '',
+        primaryContactLastName: client?.primaryContact?.lastName || '',
+        logo: client?.logo || '',
         jobTitle: job.jobTitle,
         jobDescription: job.jobDescription,
         postStart: job.postStart,
@@ -89,7 +89,7 @@ const getJobByIdService = async (jobId: string) => {
 
 const getAllClientsService = async () => {
   try {
-    const clients = await vendorModel.find();
+    const clients = await clientModel.find();
 
     const formattedClients = clients.map(client => ({
       id: client.id,
@@ -120,8 +120,8 @@ const getAllClientsService = async () => {
 
 const getClientByIdService = async (
   clientId: string
-): Promise<IVendor | null> => {
-  return vendorModel.findById(clientId);
+): Promise<IClient | null> => {
+  return clientModel.findById(clientId);
 };
 
 const getAllCandidatesService = async () => {

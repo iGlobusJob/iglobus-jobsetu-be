@@ -1,13 +1,13 @@
 import express, { Router } from 'express';
-import vendorController from '../controllers/vendorController';
+import clientController from '../controllers/clientController';
 import validateRequest from '../middlewares/validateRequest';
-import vendorSchema from '../middlewares/schemas/vendorSchema';
-import vendorLoginSchema from '../middlewares/schemas/vendorLoginSchema';
+import clientSchema from '../middlewares/schemas/clientSchema';
+import clientLoginSchema from '../middlewares/schemas/clientLoginSchema';
 import createJobSchema from '../middlewares/schemas/createJobSchema';
 import updateJobSchema from '../middlewares/schemas/updateJobSchema';
-import updateVendorProfileSchema from '../middlewares/schemas/updateVendorProfileSchema';
+import updateClientProfileSchema from '../middlewares/schemas/updateClientProfileSchema';
 import validateJWT from '../middlewares/validateJWT';
-import vendorPermission from '../middlewares/vendorPermission';
+import clientPermission from '../middlewares/clientPermission';
 import uploadLogo from '../middlewares/uploadLogoMiddleware';
 import parseFormData from '../middlewares/parseFormData';
 
@@ -47,16 +47,16 @@ const ClientRouter: Router = express.Router();
  *                 example: '{"firstName":"John","lastName":"Doe"}'
  *               organizationName:
  *                 type: string
- *                 description: Name of the vendor organization (2-100 characters, required)
+ *                 description: Name of the client organization (2-100 characters, required)
  *                 example: XYZ Technologies Pvt Ltd
  *               password:
  *                 type: string
- *                 description: Password for vendor account (min 8 chars, must contain uppercase, lowercase, number and special character, required)
+ *                 description: Password for client account (min 8 chars, must contain uppercase, lowercase, number and special character, required)
  *                 example: SecurePass@123
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Email address of the vendor (must be unique, will be converted to lowercase, required)
+ *                 description: Email address of the client (must be unique, will be converted to lowercase, required)
  *                 example: john.doe@xyztechnologies.com
  *               secondaryContact:
  *                 type: string
@@ -65,7 +65,7 @@ const ClientRouter: Router = express.Router();
  *               status:
  *                 type: string
  *                 enum: [registered, active, inactive]
- *                 description: Registration status of the vendor (optional)
+ *                 description: Registration status of the client (optional)
  *                 example: registered
  *               emailStatus:
  *                 type: string
@@ -74,7 +74,7 @@ const ClientRouter: Router = express.Router();
  *                 example: notverified
  *               mobile:
  *                 type: string
- *                 description: Mobile number of the vendor (must be 10 digits, optional)
+ *                 description: Mobile number of the client (must be 10 digits, optional)
  *                 example: "9876543210"
  *               mobileStatus:
  *                 type: string
@@ -83,7 +83,7 @@ const ClientRouter: Router = express.Router();
  *                 example: notverified
  *               location:
  *                 type: string
- *                 description: Location of the vendor (optional)
+ *                 description: Location of the client (optional)
  *                 example: Hyderabad
  *               gstin:
  *                 type: string
@@ -96,7 +96,7 @@ const ClientRouter: Router = express.Router();
  *               category:
  *                 type: string
  *                 enum: [IT, Non-IT]
- *                 description: Vendor category (required)
+ *                 description: Client category (required)
  *                 example: IT
  *               logo:
  *                 type: string
@@ -104,7 +104,7 @@ const ClientRouter: Router = express.Router();
  *                 description: Company logo image (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF, max 5MB, optional)
  *     responses:
  *       201:
- *         description: Vendor registered successfully
+ *         description: Client registered successfully
  *         content:
  *           application/json:
  *             schema:
@@ -115,7 +115,7 @@ const ClientRouter: Router = express.Router();
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Vendor registered successfully !
+ *                   example: Client registered successfully !
  *                 data:
  *                   type: object
  *                   properties:
@@ -195,7 +195,7 @@ const ClientRouter: Router = express.Router();
  *                   type: string
  *                   example: Email already exists!
  */
-ClientRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, validateRequest(vendorSchema), vendorController.vendorRegistration);
+ClientRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, validateRequest(clientSchema), clientController.clientRegistration);
 
 /**
  * @swagger
@@ -218,7 +218,7 @@ ClientRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, v
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Email address of the vendor
+ *                 description: Email address of the client
  *                 example: john.doe@xyztechnologies.com
  *               password:
  *                 type: string
@@ -245,7 +245,7 @@ ClientRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, v
  *                       type: string
  *                       description: JWT authentication token
  *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *                     vendor:
+ *                     client:
  *                       type: object
  *                       properties:
  *                         id:
@@ -324,14 +324,14 @@ ClientRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, v
  *                   type: string
  *                   example: An error occurred during login. Please try again later.
  */
-ClientRouter.post('/loginclient', validateRequest(vendorLoginSchema), vendorController.clientLogin);
+ClientRouter.post('/loginclient', validateRequest(clientLoginSchema), clientController.clientLogin);
 
 /**
  * @swagger
  * /getclientprofile:
  *   get:
- *     summary: Get authenticated vendor's profile details
- *     description: Retrieves complete profile information of the currently authenticated client. The vendor ID is automatically extracted from the JWT token, so clients can only view their own profile. Requires JWT authentication.
+ *     summary: Get authenticated client's profile details
+ *     description: Retrieves complete profile information of the currently authenticated client. The client ID is automatically extracted from the JWT token, so clients can only view their own profile. Requires JWT authentication.
  *     tags:
  *       - Client
  *     security:
@@ -421,7 +421,7 @@ ClientRouter.post('/loginclient', validateRequest(vendorLoginSchema), vendorCont
  *                       format: date-time
  *                       example: 2025-11-13T10:30:00.000Z
  *       401:
- *         description: Unauthorized - Invalid or missing JWT token, or vendor ID not found in token.
+ *         description: Unauthorized - Invalid or missing JWT token, or client ID not found in token.
  *         content:
  *           application/json:
  *             schema:
@@ -460,7 +460,7 @@ ClientRouter.post('/loginclient', validateRequest(vendorLoginSchema), vendorCont
  *                   type: string
  *                   example: "An error occurred while fetching client details. Please try again later !"
  */
-ClientRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorController.getClientById);
+ClientRouter.get('/getclientprofile', validateJWT, clientPermission, clientController.getClientById);
 
 /**
  * @swagger
@@ -543,7 +543,7 @@ ClientRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                 data:
  *                   type: object
  *                   properties:
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: "507f1f77bcf86cd799439011"
  *                     email:
@@ -656,7 +656,7 @@ ClientRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "An error occurred while uploading logo. Please try again later !"
  */
-ClientRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateVendorProfileSchema), vendorController.updateClientProfile);
+ClientRouter.put('/updateclientprofile', validateJWT, clientPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateClientProfileSchema), clientController.updateClientProfile);
 
 /**
  * @swagger
@@ -760,7 +760,7 @@ ClientRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLo
  *                     jobDescription:
  *                       type: string
  *                       example: "We are looking for an experienced Full Stack Developer..."
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: "64fbc9876543210abcdef456"
  *                     organizationName:
@@ -824,14 +824,14 @@ ClientRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLo
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-ClientRouter.post('/createjobbyclient', validateJWT, vendorPermission, validateRequest(createJobSchema), vendorController.createJobByClient);
+ClientRouter.post('/createjobbyclient', validateJWT, clientPermission, validateRequest(createJobSchema), clientController.createJobByClient);
 
 /**
  * @swagger
  * /getalljobsbyclient:
  *   get:
- *     summary: Get all jobs created by vendor
- *     description: Retrieves all job postings created by the authenticated vendor. The vendor ID is automatically extracted from the JWT token. Jobs are sorted by creation date (newest first).
+ *     summary: Get all jobs created by client
+ *     description: Retrieves all job postings created by the authenticated client. The client ID is automatically extracted from the JWT token. Jobs are sorted by creation date (newest first).
  *     tags:
  *       - Client
  *     security:
@@ -855,7 +855,7 @@ ClientRouter.post('/createjobbyclient', validateJWT, vendorPermission, validateR
  *                   items:
  *                     type: object
  *                     properties:
- *                       vendorId:
+ *                       clientId:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439012
  *                       jobTitle:
@@ -936,7 +936,7 @@ ClientRouter.post('/createjobbyclient', validateJWT, vendorPermission, validateR
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-ClientRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorController.getAllJobsByVendor);
+ClientRouter.get('/getalljobsbyclient', validateJWT, clientPermission, clientController.getAllJobsByClient);
 
 /**
  * @swagger
@@ -976,7 +976,7 @@ ClientRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                     _id:
  *                       type: string
  *                       example: 507f1f77bcf86cd799439011
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: 507f191e810c19729de860ea
  *                     jobTitle:
@@ -1067,7 +1067,7 @@ ClientRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-ClientRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendorController.getJobByClient);
+ClientRouter.get('/getjobbyclient/:jobId', validateJWT, clientPermission, clientController.getJobByClient);
 
 /**
  * @swagger
@@ -1170,7 +1170,7 @@ ClientRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendor
  *                     jobId:
  *                       type: string
  *                       example: 507f1f77bcf86cd799439011
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: 507f1f77bcf86cd799439012
  *                     jobTitle:
@@ -1272,7 +1272,7 @@ ClientRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendor
  *                   type: string
  *                   example: "An error occurred while updating the job. Please try again later !"
  */
-ClientRouter.put('/updatejobbyclient', validateJWT, vendorPermission, validateRequest(updateJobSchema), vendorController.updateJobByClient);
+ClientRouter.put('/updatejobbyclient', validateJWT, clientPermission, validateRequest(updateJobSchema), clientController.updateJobByClient);
 
 /**
  * @swagger
@@ -1283,7 +1283,7 @@ ClientRouter.put('/updatejobbyclient', validateJWT, vendorPermission, validateRe
  *       - Client 
  *     security:
  *       - BearerAuth: []
- *     description: Delete job created by a vendor.
+ *     description: Delete job created by a client.
  *     parameters:
  *       - in: path
  *         name: id
@@ -1314,6 +1314,6 @@ ClientRouter.put('/updatejobbyclient', validateJWT, vendorPermission, validateRe
  *       500:
  *         description: Internal server error
  */
-ClientRouter.delete('/deletejob/:jobId', validateJWT, vendorPermission, vendorController.deleteJobByVendor)
+ClientRouter.delete('/deletejob/:jobId', validateJWT, clientPermission, clientController.deleteJobByClient)
 
 export default ClientRouter;

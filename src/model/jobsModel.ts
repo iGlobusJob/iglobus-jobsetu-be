@@ -4,7 +4,7 @@ import IJobs from '../interfaces/jobs';
 
 const JobsSchema = new mongoose.Schema(
     {
-        vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
+        clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
         organizationName: { type: String, required: true, trim: true },
         logo: { type: String, trim: true },
         jobTitle: { type: String, required: true, trim: true },

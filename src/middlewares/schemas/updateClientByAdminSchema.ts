@@ -1,12 +1,12 @@
 import Joi from 'joi';
 
 const updateClientByAdminSchema = Joi.object({
-    vendorId: Joi.string()
+    clientId: Joi.string()
         .pattern(/^[0-9a-fA-F]{24}$/)
         .required()
         .messages({
-            'string.pattern.base': 'Invalid vendor ID format. Must be a valid MongoDB ObjectId',
-            'any.required': 'Vendor ID is required'
+            'string.pattern.base': 'Invalid client ID format. Must be a valid MongoDB ObjectId',
+            'any.required': 'Client ID is required'
         }),
     primaryContact: Joi.object({
         firstName: Joi.string().pattern(/^[A-Za-z]+$/).min(2).trim().messages({
@@ -70,7 +70,7 @@ const updateClientByAdminSchema = Joi.object({
         'string.base': 'Logo must be a valid string URL'
     })
 }).min(2).messages({
-    'object.min': 'At least one field must be provided for update along with vendorId'
+    'object.min': 'At least one field must be provided for update along with clientId'
 });
 
 export default updateClientByAdminSchema;

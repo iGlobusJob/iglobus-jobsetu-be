@@ -2,8 +2,8 @@ import adminModel from '../model/adminModel';
 import bcrypt from 'bcrypt';
 import jwtUtil from '../util/jwtUtil';
 import IAdmin, { FetchAllJobsResponse, FetchAllClientsResponse, FetchAllRecruitersResponse } from '../interfaces/admin';
-import vendorModel from '../model/vendorModel';
-import IVendor from '../interfaces/vendor';
+import clientModel from '../model/clientModel';
+import IClient from '../interfaces/client';
 import hashPasswordUtility from '../util/hashPassword';
 import jobsModel from "../model/jobsModel";
 import candidateModel from '../model/candidateModel';
@@ -33,21 +33,21 @@ const adminLogin = async (username: string, password: string): Promise<{ admin: 
     return { admin, token };
 };
 
-const updateClientByAdmin = async (clientId: string, updateData: Partial<IVendor>): Promise<IVendor> => {
+const updateClientByAdmin = async (clientId: string, updateData: Partial<IClient>): Promise<IClient> => {
     const { email, ...allowedUpdateData } = updateData as any;
 
     if (allowedUpdateData.password) {
         allowedUpdateData.password = await hashPasswordUtility.hashPassword(allowedUpdateData.password);
     }
 
-    const updatedClient = await vendorModel.findByIdAndUpdate(
+    const updatedClient = await clientModel.findByIdAndUpdate(
         clientId,
         { $set: allowedUpdateData },
         { new: true, runValidators: true }
     );
 
     if (!updatedClient) {
-        throw new Error('VENDOR_NOT_FOUND');
+        throw new Error('CLIENT_NOT_FOUND');
     }
 
     return updatedClient;
@@ -56,19 +56,19 @@ const updateClientByAdmin = async (clientId: string, updateData: Partial<IVendor
 const getAllJobsService = async (): Promise<FetchAllJobsResponse> => {
     try {
         const jobs = await jobsModel.find().populate({
-            path: 'vendorId',
+            path: 'clientId',
             select: 'organizationName primaryContact logo'
         });
 
         const alljobs = jobs.map(job => {
-            const vendor = job.vendorId as any;
+            const client = job.clientId as any;
             return {
                 id: job.id,
-                vendorId: vendor?._id || job.vendorId,
-                organizationName: vendor?.organizationName || '',
-                primaryContactFirstName: vendor?.primaryContact?.firstName || '',
-                primaryContactLastName: vendor?.primaryContact?.lastName || '',
-                logo: vendor?.logo || '',
+                clientId: client?._id || job.clientId,
+                organizationName: client?.organizationName || '',
+                primaryContactFirstName: client?.primaryContact?.firstName || '',
+                primaryContactLastName: client?.primaryContact?.lastName || '',
+                logo: client?.logo || '',
                 jobTitle: job.jobTitle,
                 jobDescription: job.jobDescription,
                 postStart: job.postStart,
@@ -96,8 +96,8 @@ const getAllJobsService = async (): Promise<FetchAllJobsResponse> => {
 
 };
 
-const getClientById = async (clientId: string): Promise<IVendor | null> => {
-    const client = await vendorModel.findById(clientId);
+const getClientById = async (clientId: string): Promise<IClient | null> => {
+    const client = await clientModel.findById(clientId);
     return client;
 };
 
@@ -126,7 +126,7 @@ const createAdminService = async (username: string, password: string, role: stri
 
 const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
     try {
-        const clients = await vendorModel.find();
+        const clients = await clientModel.find();
 
         const formattedClients = clients.map(client => ({
             primaryContact: {

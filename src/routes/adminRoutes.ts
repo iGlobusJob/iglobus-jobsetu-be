@@ -155,7 +155,7 @@ AdminRouter.post('/createadmin', validateJWT, adminController.createAdmin);
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 vendors:
+ *                 clients:
  *                   type: array
  *                   items:
  *                     type: object
@@ -177,7 +177,7 @@ AdminRouter.post('/createadmin', validateJWT, adminController.createAdmin);
  *                         example: "Tech Solutions Pvt Ltd"
  *                       email:
  *                         type: string
- *                         example: "vendor@example.com"
+ *                         example: "client@example.com"
  *                       secondaryContact:
  *                         type: object
  *                         properties:
@@ -510,7 +510,7 @@ AdminRouter.get('/getallrecruiters', validateJWT, adminPermission, adminControll
  *         example: 507f1f77bcf86cd799439011
  *     responses:
  *       200:
- *         description: Vendor details retrieved successfully
+ *         description: Client details retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -521,7 +521,7 @@ AdminRouter.get('/getallrecruiters', validateJWT, adminPermission, adminControll
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Vendor details fetched successfully !"
+ *                   example: "Client details fetched successfully !"
  *                 data:
  *                   type: object
  *                   properties:
@@ -626,7 +626,7 @@ AdminRouter.get('/getallrecruiters', validateJWT, adminPermission, adminControll
  *                         type: string
  *                         example: "Invalid client ID format. Must be a valid MongoDB ObjectId"
  *       404:
- *         description: Vendor not found
+ *         description: Client not found
  *         content:
  *           application/json:
  *             schema:
@@ -637,9 +637,9 @@ AdminRouter.get('/getallrecruiters', validateJWT, adminPermission, adminControll
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Vendor not found !"
+ *                   example: "Client not found !"
  *       500:
- *         description: Internal server error occurred while fetching vendor details
+ *         description: Internal server error occurred while fetching client details
  *         content:
  *           application/json:
  *             schema:
@@ -650,7 +650,7 @@ AdminRouter.get('/getallrecruiters', validateJWT, adminPermission, adminControll
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "An error occurred while fetching vendor details. Please try again later !"
+ *                   example: "An error occurred while fetching client details. Please try again later !"
  */
 AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateRequest(clientIdSchema, 'params'), adminController.getClientDetailsByAdmin);
 
@@ -671,9 +671,9 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *           schema:
  *             type: object
  *             required:
- *               - vendorId
+ *               - clientId
  *             properties:
- *               vendorId:
+ *               clientId:
  *                 type: string
  *                 pattern: '^[0-9a-fA-F]{24}$'
  *                 description: MongoDB ObjectId of the client (24 character hexadecimal string)
@@ -838,7 +838,7 @@ AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateReque
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: Vendor not found !
+ *                   example: Client not found !
  *       500:
  *         description: Internal server error
  *         content:
@@ -992,9 +992,9 @@ AdminRouter.get('/getcandidatedetailsbyadmin/:candidateid', validateJWT, adminCo
  *                       id:
  *                         type: string
  *                         example: "64f1b5e4a1234567890abcd1"
- *                       vendorId:
+ *                       clientId:
  *                         type: string
- *                         example: "vendor123"
+ *                         example: "client123"
  *                       jobTitle:
  *                         type: string
  *                         example: "Software Engineer"

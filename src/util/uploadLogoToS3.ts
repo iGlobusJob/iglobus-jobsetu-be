@@ -4,13 +4,13 @@ import { bucketName } from '../config/awsS3Config';
 const clientsFolder = 'clients';
 
 const uploadLogoToS3 = async (
-    vendorId: string,
+    clientId: string,
     fileName: string,
     buffer: Buffer,
     mimetype: string
 ): Promise<{ success: boolean; fileUrl: string }> => {
     return new Promise((resolve, reject) => {
-        const s3Key = `${clientsFolder}/${vendorId}/logos/${fileName}`;
+        const s3Key = `${clientsFolder}/${clientId}/logos/${fileName}`;
 
         const params = {
             Bucket: bucketName,

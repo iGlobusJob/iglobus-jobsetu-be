@@ -9,7 +9,7 @@ import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
 import uploadResumeUtil from "../util/uploadResumeToS3";
 import uploadProfilePictureUtil from "../util/uploadProfilePictureToS3";
 import presignedUrlUtil from "../util/generatePresignedUrl";
-import candidateJobApplied  from "../util/sendJobAppliedMail ";
+import candidateJobApplied from "../util/sendJobAppliedMail ";
 
 const generateOTP = (): string => {
     const otp = Math.floor(10000 + Math.random() * 90000).toString();
@@ -143,15 +143,15 @@ const getAllCandidateService = async (): Promise<FetchAllCandidateResponse> => {
 const getAllJobsByCandidate = async (): Promise<FetchAllJobsResponse> => {
     try {
         const jobs = await jobsModel.find({ status: 'active' }).sort({ createdAt: -1 }).populate({
-            path: 'vendorId',
+            path: 'clientId',
             select: 'organizationName primaryContact logo'
         });
 
         const alljobs = jobs.map(job => {
-            const client = job.vendorId as any;
+            const client = job.clientId as any;
             return {
                 id: job.id,
-                vendorId: client?._id || job.vendorId,
+                clientId: client?._id || job.clientId,
                 organizationName: client?.organizationName || '',
                 primaryContactFirstName: client?.primaryContact?.firstName || '',
                 primaryContactLastName: client?.primaryContact?.lastName || '',
@@ -277,8 +277,8 @@ const applyToJob = async (candidateId: string, jobId: string): Promise<ICandidat
         });
     }
 
-        // send email after applying the job
-    candidateJobApplied (candidate.email, job.jobTitle).catch((error:any) => {
+    // send email after applying the job
+    candidateJobApplied(candidate.email, job.jobTitle).catch((error: any) => {
         console.error('Failed to send job applied email:', error);
     });
     return candidateJob;
@@ -332,7 +332,7 @@ const getMyJobs = async (candidateId: string): Promise<ICandidateJob[]> => {
         .populate({
             path: 'jobId',
             populate: {
-                path: 'vendorId',
+                path: 'clientId',
                 select: 'organizationName logo'
             }
         })

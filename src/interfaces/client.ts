@@ -26,4 +26,10 @@ interface IClient extends Document {
     updatedAt?: Date;
 }
 
+export interface ClientTokenPayload {
+    clientId: string;
+    email: string;
+    organizationName: string;
+}
+
 export default IClient;

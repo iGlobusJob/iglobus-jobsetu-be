@@ -8,7 +8,7 @@ const CommonRouter: Router = express.Router();
  * @swagger
  * /getallcandidates:
  *   get:
- *     summary: Get all candidates - [Admin/Vendor]
+ *     summary: Get all candidates - [Admin/Client]
  *     description: Fetches a list of all candidates from the database.
  *     tags:
  *       - Common
@@ -86,7 +86,7 @@ CommonRouter.get('/getallcandidates', validateJWT, commonController.getAllCandid
  * @swagger
  * /getcandidatedetailsbyid/{candidateID}:
  *   get:
- *     summary: Get candidate details by ID - [Admin/Vendor]
+ *     summary: Get candidate details by ID - [Admin/Client]
  *     description: Retrieves complete details of a specific candidate by their ID. Requires JWT authentication.
  *     tags:
  *       - Common
@@ -231,7 +231,7 @@ CommonRouter.get('/getcandidatedetailsbyid/:candidateID', validateJWT, commonCon
  *                     _id:
  *                       type: string
  *                       example: 507f1f77bcf86cd799439011
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: 507f191e810c19729de860ea
  *                     organizationName:
@@ -368,7 +368,7 @@ CommonRouter.get('/getjobdetailsbyid/:jobId', commonController.getJobById);
  *                       _id:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439011
- *                       vendorId:
+ *                       clientId:
  *                         type: string
  *                         example: 507f191e810c19729de860ea
  *                       jobTitle:

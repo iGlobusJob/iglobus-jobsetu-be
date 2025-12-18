@@ -1,28 +1,28 @@
-import vendorModel from "../model/vendorModel";
-import IVendor from "../interfaces/vendor";
+import clientModel from "../model/clientModel";
+import IClient from "../interfaces/client";
 import hashPasswordUtility from "../util/hashPassword";
 import bcrypt from 'bcrypt';
 import jwtUtil from "../util/jwtUtil";
-import sendVendorRegistrationEmailUtil from "../util/sendVendorRegistrationEmail";
-import sendAdminNotificationUtil from "../util/sendAdminVendorRegistrationNotification";
+import sendClientRegistrationEmailUtil from "../util/sendClientRegistrationEmail";
+import sendAdminNotificationUtil from "../util/sendAdminClientRegistrationNotification";
 import jobsModel from "../model/jobsModel";
 import IJobs from "../interfaces/jobs";
 import uploadLogoUtil from "../util/uploadLogoToS3";
 
-const vendorRegistration = async (vendorData: Partial<IVendor>, file?: Express.Multer.File): Promise<IVendor> => {
-    if (!vendorData.password) {
+const clientRegistration = async (clientData: Partial<IClient>, file?: Express.Multer.File): Promise<IClient> => {
+    if (!clientData.password) {
         throw new Error('Password is required');
     }
 
-    const hashedPassword = await hashPasswordUtility.hashPassword(vendorData.password);
+    const hashedPassword = await hashPasswordUtility.hashPassword(clientData.password);
 
-    const vendorToSave = {
-        ...vendorData,
+    const clientToSave = {
+        ...clientData,
         password: hashedPassword
     };
 
-    const newVendor = new vendorModel(vendorToSave);
-    const savedVendor = await newVendor.save();
+    const newClient = new clientModel(clientToSave);
+    const savedClient = await newClient.save();
 
     if (file) {
         const timestamp = Date.now();
@@ -30,81 +30,81 @@ const vendorRegistration = async (vendorData: Partial<IVendor>, file?: Express.M
 
         try {
             const uploadResult = await uploadLogoUtil.uploadLogoToS3(
-                savedVendor.id,
+                savedClient.id,
                 fileName,
                 file.buffer,
                 file.mimetype
             );
 
-            savedVendor.logo = uploadResult.fileUrl;
-            await savedVendor.save();
+            savedClient.logo = uploadResult.fileUrl;
+            await savedClient.save();
         } catch (error) {
             console.error('Error uploading logo during registration:', error);
         }
     }
 
     // Send registration email asynchronously (non-blocking)
-    sendVendorRegistrationEmailUtil.sendVendorRegistrationEmail(
-        savedVendor.email,
-        savedVendor.organizationName
+    sendClientRegistrationEmailUtil.sendClientRegistrationEmail(
+        savedClient.email,
+        savedClient.organizationName
     ).catch(error => {
-        console.log('Failed to send vendor registration email:', error);
+        console.log('Failed to send client registration email:', error);
     });
 
     // Send admin notification email asynchronously (non-blocking)
     sendAdminNotificationUtil.sendAdminNotificationEmail(
-        savedVendor.organizationName,
-        savedVendor.email,
-        savedVendor.id
+        savedClient.organizationName,
+        savedClient.email,
+        savedClient.id
     ).catch(error => {
         console.log('Failed to send admin notification email:', error);
     });
 
-    return savedVendor;
+    return savedClient;
 }
 
-const clientLogin = async (email: string, password: string): Promise<{ vendor: IVendor; token: string }> => {
-    const vendor = await vendorModel.findOne({ email }).select('+password');
+const clientLogin = async (email: string, password: string): Promise<{ client: IClient; token: string }> => {
+    const client = await clientModel.findOne({ email }).select('+password');
 
-    if (!vendor) {
-        throw new Error('VENDOR_NOT_FOUND');
+    if (!client) {
+        throw new Error('CLIENT_NOT_FOUND');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, vendor.password);
+    const isPasswordValid = await bcrypt.compare(password, client.password);
 
     if (!isPasswordValid) {
         throw new Error('BAD_CREDENTIALS');
     }
 
-    if (vendor.status === 'registered') {
+    if (client.status === 'registered') {
         throw new Error('ACCOUNT_NOT_ACTIVE');
     }
 
-    if (vendor.status !== 'active') {
+    if (client.status !== 'active') {
         throw new Error('ACCOUNT_DEACTIVATED');
     }
 
     // Generate JWT token
     const token = jwtUtil.generateToken({
-        vendorId: vendor.id,
-        email: vendor.email,
-        organizationName: vendor.organizationName
+        clientId: client.id,
+        email: client.email,
+        organizationName: client.organizationName
     });
 
-    return { vendor, token };
+    return { client, token };
 }
 
-const getClientById = async (clientId: string): Promise<IVendor | null> => {
-    const client = await vendorModel.findById(clientId);
+const getClientById = async (clientId: string): Promise<IClient | null> => {
+    const client = await clientModel.findById(clientId);
     return client;
 }
 
-const createJobByClient = async (vendorId: string, jobData: Partial<IJobs>): Promise<IJobs> => {
-    const client = await vendorModel.findById(vendorId);
+const createJobByClient = async (clientId: string, jobData: Partial<IJobs>): Promise<IJobs> => {
+    const client = await clientModel.findById(clientId);
     if (!client) throw new Error("Client not found");
     const jobToSave = {
         ...jobData,
-        vendorId,
+        clientId,
         organizationName: client.organizationName,
     };
 
@@ -114,8 +114,8 @@ const createJobByClient = async (vendorId: string, jobData: Partial<IJobs>): Pro
     return savedJob;
 };
 
-const updateJobByClient = async (vendorId: string, jobId: string, jobData: Partial<IJobs>): Promise<IJobs | null> => {
-    const job = await jobsModel.findOne({ _id: jobId, vendorId });
+const updateJobByClient = async (clientId: string, jobId: string, jobData: Partial<IJobs>): Promise<IJobs | null> => {
+    const job = await jobsModel.findOne({ _id: jobId, clientId });
 
     if (!job) {
         throw new Error('JOB_NOT_FOUND_OR_UNAUTHORIZED');
@@ -130,9 +130,9 @@ const updateJobByClient = async (vendorId: string, jobId: string, jobData: Parti
     return updatedJob;
 };
 
-const deleteJob = async (jobId: string, vendorId: string): Promise<{ success: boolean }> => {
+const deleteJob = async (jobId: string, clientId: string): Promise<{ success: boolean }> => {
     try {
-        const result = await jobsModel.findOneAndDelete({ _id: jobId, vendorId: vendorId });
+        const result = await jobsModel.findOneAndDelete({ _id: jobId, clientId: clientId });
 
         if (!result) {
             return { success: false };
@@ -151,16 +151,16 @@ const deleteJob = async (jobId: string, vendorId: string): Promise<{ success: bo
     }
 };
 
-const getAllJobsByVendor = async (vendorId: string): Promise<IJobs[]> => {
-    const jobs = await jobsModel.find({ vendorId }).sort({ createdAt: -1 });
+const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
+    const jobs = await jobsModel.find({ clientId }).sort({ createdAt: -1 });
     return jobs;
 };
 
 const updateClientProfile = async (
     clientId: string,
-    updateData: Partial<IVendor>,
+    updateData: Partial<IClient>,
     file?: Express.Multer.File
-): Promise<IVendor | null> => {
+): Promise<IClient | null> => {
     if (file) {
         const timestamp = Date.now();
         const fileName = `logo_${timestamp}_${file.originalname}`;
@@ -185,7 +185,7 @@ const updateClientProfile = async (
         updateData.password = await hashPasswordUtility.hashPassword(updateData.password);
     }
 
-    const updatedClient = await vendorModel.findByIdAndUpdate(
+    const updatedClient = await clientModel.findByIdAndUpdate(
         clientId,
         { $set: updateData },
         { new: true, runValidators: true }
@@ -198,8 +198,8 @@ const updateClientProfile = async (
     return updatedClient;
 };
 
-const getJobByClient = async (vendorId: string, jobId: string): Promise<IJobs> => {
-    const job = await jobsModel.findOne({ _id: jobId, vendorId });
+const getJobByClient = async (clientId: string, jobId: string): Promise<IJobs> => {
+    const job = await jobsModel.findOne({ _id: jobId, clientId });
 
     if (!job) {
         throw new Error('JOB_NOT_FOUND_OR_UNAUTHORIZED');
@@ -208,4 +208,4 @@ const getJobByClient = async (vendorId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { vendorRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByClient };
+export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJob, getAllJobsByClient, updateClientProfile, getJobByClient };
