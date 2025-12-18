@@ -4,7 +4,7 @@ import ICandidateJob from '../interfaces/candidateJob';
 
 const CandidateJobsSchema = new mongoose.Schema(
     {
-        jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'JobsSchema', required: true },
+        jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Jobs', required: true },
         candidateId: { type: mongoose.Schema.Types.ObjectId, ref: 'candidateSchema', required: true },
         isJobSaved: { type: Boolean, default: false },
         isJobApplied: { type: Boolean, default: false },
