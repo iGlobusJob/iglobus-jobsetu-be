@@ -184,35 +184,6 @@ const updateJobByClient = async (req: Request, res: Response): Promise<Response>
     }
 };
 
-const deleteJobByClient = async (req: Request, res: Response) => {
-    try {
-        const jobId = req.params.jobId;
-        const clientId = req.user?.clientId as string;
-
-        const deleteCandidateJobResponse = await clientService.deleteJob(jobId, clientId);
-
-        if (!deleteCandidateJobResponse.success) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({
-                success: false,
-                message: CLIENT_ERROR_MESSAGES.JOB_NOT_FOUND
-            });
-        }
-
-        return res.status(HTTP_STATUS.OK).json({
-            success: true,
-            message: CLIENT_SUCCESS_MESSAGES.JOB_DELETED_SUCCESS_MESSAGE
-        });
-
-    } catch (error: any) {
-        console.error(`Error in deleting job: `, error);
-
-        return res.status(500).json({
-            success: false,
-            message: CLIENT_ERROR_MESSAGES.JOB_DELETE_ERROR_MESSAGE
-        });
-    }
-};
-
 const getAllJobsByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
         const clientId = req.user?.clientId as string;
