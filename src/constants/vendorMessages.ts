@@ -1,6 +1,6 @@
 export const VENDOR_SUCCESS_MESSAGES = {
-    VENDOR_ADD_SUCCESS_MESSAGE: 'Vendor registered successfully !',
-    VENDOR_LOGIN_SUCCESS_MESSAGE: ' Vendor login successfully !',
+    VENDOR_ADD_SUCCESS_MESSAGE: 'Client registered successfully !',
+    CLIENT_LOGIN_SUCCESS_MESSAGE: ' Client login successfully !',
     CLIENT_FETCH_SUCCESS_MESSAGE: 'Client details fetched successfully !',
     CLIENT_PROFILE_UPDATED_SUCCESS_MESSAGE: 'Client profile updated successfully !',
     JOB_CREATED_SUCCESS_MESSAGE: 'Job created successfully !',
@@ -44,7 +44,7 @@ export const HTTP_STATUS = {
     INTERNAL_SERVER_ERROR: 500,
 } as const;
 
-export const VENDOR_LOGIN_ERROR_MAPPING: Record<string, { status: number; message: string }> = {
+export const CLIENT_LOGIN_ERROR_MAPPING: Record<string, { status: number; message: string }> = {
     BAD_CREDENTIALS: {
         status: HTTP_STATUS.UNAUTHORIZED,
         message: VENDOR_ERROR_MESSAGES.BAD_CREDENTIALS

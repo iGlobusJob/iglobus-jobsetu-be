@@ -63,7 +63,7 @@ const vendorRegistration = async (vendorData: Partial<IVendor>, file?: Express.M
     return savedVendor;
 }
 
-const vendorLogin = async (email: string, password: string): Promise<{ vendor: IVendor; token: string }> => {
+const clientLogin = async (email: string, password: string): Promise<{ vendor: IVendor; token: string }> => {
     const vendor = await vendorModel.findOne({ email }).select('+password');
 
     if (!vendor) {
@@ -208,4 +208,4 @@ const getJobByClient = async (vendorId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByClient, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByClient };
+export default { vendorRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJob, getAllJobsByVendor, updateClientProfile, getJobByClient };
