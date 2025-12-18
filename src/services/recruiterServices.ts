@@ -7,6 +7,7 @@ import candidateModel from '../model/candidateModel';
 import IRecruiter from '../interfaces/recruiter';
 import IClient from '../interfaces/client';
 import ICandidate from '../interfaces/candidate';
+import presignedUrlUtil from '../util/generatePresignedUrl';
 
 
 const recruiterLogin = async (
@@ -128,17 +129,25 @@ const getAllCandidatesService = async () => {
   try {
     const candidates = await candidateModel.find();
 
-    const formattedCandidates = candidates.map(candidate => ({
-      id: candidate.id,
-      email: candidate.email,
-      firstName: candidate.firstName || '',
-      lastName: candidate.lastName || '',
-      mobileNumber: candidate.mobileNumber || '',
-      gender: candidate.gender || '',
-      dateOfBirth: candidate.dateOfBirth || '',
-      address: candidate.address || '',
-      createdAt: candidate.createdAt,
-      updatedAt: candidate.updatedAt,
+    const formattedCandidates = await Promise.all(candidates.map(async candidate => {
+      let profilePictureUrl: string | null = null;
+      if (candidate.profilePicture) {
+        profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
+      }
+
+      return {
+        id: candidate.id,
+        email: candidate.email,
+        firstName: candidate.firstName || '',
+        lastName: candidate.lastName || '',
+        mobileNumber: candidate.mobileNumber || '',
+        gender: candidate.gender || '',
+        dateOfBirth: candidate.dateOfBirth || '',
+        address: candidate.address || '',
+        profilePicture: profilePictureUrl || '',
+        createdAt: candidate.createdAt,
+        updatedAt: candidate.updatedAt,
+      };
     }));
 
     return {

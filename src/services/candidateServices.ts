@@ -116,18 +116,25 @@ const getAllCandidateService = async (): Promise<FetchAllCandidateResponse> => {
     try {
         const candidates = await candidateModel.find();
 
-        const formattedCandidates = candidates.map(candidate => ({
+        const formattedCandidates = await Promise.all(candidates.map(async candidate => {
+            let profilePictureUrl: string | null = null;
+            if (candidate.profilePicture) {
+                profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
+            }
 
-            id: candidate.id,
-            email: candidate.email || '',
-            firstName: candidate.firstName || '',
-            lastName: candidate.lastName || '',
-            mobileNumber: candidate.mobileNumber || '',
-            address: candidate.address || '',
-            dateOfBirth: candidate.dateOfBirth || '',
-            gender: candidate.gender || '',
-            createdAt: candidate.createdAt,
-            updatedAt: candidate.updatedAt
+            return {
+                id: candidate.id,
+                email: candidate.email || '',
+                firstName: candidate.firstName || '',
+                lastName: candidate.lastName || '',
+                mobileNumber: candidate.mobileNumber || '',
+                address: candidate.address || '',
+                dateOfBirth: candidate.dateOfBirth || '',
+                gender: candidate.gender || '',
+                profilePicture: profilePictureUrl || '',
+                createdAt: candidate.createdAt,
+                updatedAt: candidate.updatedAt
+            };
         }));
 
         return {

@@ -1,26 +1,34 @@
 import candidateModel from '../model/candidateModel';
 import jobsModel from '../model/jobsModel';
 import { FetchAllCandidateResponse, FetchCandidateByIdResponse } from '../interfaces/common';
-import IJobs, { FetchAllJobsResponse } from '../interfaces/jobs';
+import { FetchAllJobsResponse } from '../interfaces/jobs';
+import presignedUrlUtil from '../util/generatePresignedUrl';
 
 const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
     try {
         const candidates = await candidateModel.find();
 
-        const formattedCandidates = candidates.map(candidate => ({
-            id: candidate.id,
-            email: candidate.email || '',
-            firstName: candidate.firstName || '',
-            lastName: candidate.lastName || '',
-            mobileNumber: candidate.mobileNumber || '',
-            address: candidate.address || '',
-            dateOfBirth: candidate.dateOfBirth || '',
-            gender: candidate.gender || '',
-            category: candidate.category || '',
-            profile: candidate.profile || '',
-            profilePicture: candidate.profilePicture || '',
-            createdAt: candidate.createdAt,
-            updatedAt: candidate.updatedAt
+        const formattedCandidates = await Promise.all(candidates.map(async candidate => {
+            let profilePictureUrl: string | null = null;
+            if (candidate.profilePicture) {
+                profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
+            }
+
+            return {
+                id: candidate.id,
+                email: candidate.email || '',
+                firstName: candidate.firstName || '',
+                lastName: candidate.lastName || '',
+                mobileNumber: candidate.mobileNumber || '',
+                address: candidate.address || '',
+                dateOfBirth: candidate.dateOfBirth || '',
+                gender: candidate.gender || '',
+                category: candidate.category || '',
+                profile: candidate.profile || '',
+                profilePicture: profilePictureUrl || '',
+                createdAt: candidate.createdAt,
+                updatedAt: candidate.updatedAt
+            };
         }));
 
         return {
@@ -39,6 +47,11 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
         throw new Error('CANDIDATE_NOT_FOUND');
     }
 
+    let profilePictureUrl: string | null = null;
+    if (candidate.profilePicture) {
+        profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
+    }
+
     return {
         success: true,
         data: {
@@ -51,7 +64,7 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             dateOfBirth: candidate.dateOfBirth || '',
             gender: candidate.gender || '',
             profile: candidate.profile || '',
-            profilePicture: candidate.profilePicture || '',
+            profilePicture: profilePictureUrl || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
