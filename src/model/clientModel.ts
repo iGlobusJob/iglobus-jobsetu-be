@@ -26,7 +26,7 @@ const clientSchema = new mongoose.Schema(
         logo: { type: String, trim: true },
     },
     {
-        collection: 'clients',
+        collection: 'client',
         timestamps: true,
         toObject: { virtuals: true },
         toJSON: {

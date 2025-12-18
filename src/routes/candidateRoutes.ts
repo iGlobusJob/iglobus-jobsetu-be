@@ -547,7 +547,7 @@ CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission,
  *                       id:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439011
- *                       vendorId:
+ *                       clientId:
  *                         type: string
  *                         example: 507f191e810c19729de860ea
  *                       organizationName:

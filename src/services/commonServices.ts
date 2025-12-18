@@ -16,9 +16,9 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
             address: candidate.address || '',
             dateOfBirth: candidate.dateOfBirth || '',
             gender: candidate.gender || '',
-            category: candidate.category  || '',
+            category: candidate.category || '',
             profile: candidate.profile || '',
-            profilePicture:candidate.profilePicture || '',
+            profilePicture: candidate.profilePicture || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }));
@@ -51,7 +51,7 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             dateOfBirth: candidate.dateOfBirth || '',
             gender: candidate.gender || '',
             profile: candidate.profile || '',
-            profilePicture: candidate.profilePicture || '' ,
+            profilePicture: candidate.profilePicture || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
@@ -60,7 +60,7 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
 
 const getJobById = async (id: string): Promise<any> => {
     const job = await jobsModel.findById(id).populate({
-        path: 'vendorId',
+        path: 'clientId',
         select: 'organizationName primaryContact logo'
     });
 
@@ -68,14 +68,14 @@ const getJobById = async (id: string): Promise<any> => {
         throw new Error('JOB_NOT_FOUND');
     }
 
-    const vendor = job.vendorId as any;
+    const client = job.clientId as any;
     return {
         id: job.id,
-        vendorId: vendor?._id || job.vendorId,
-        organizationName: vendor?.organizationName || '',
-        primaryContactFirstName: vendor?.primaryContact?.firstName || '',
-        primaryContactLastName: vendor?.primaryContact?.lastName || '',
-        logo: vendor?.logo || '',
+        clientId: client?._id || job.clientId,
+        organizationName: client?.organizationName || '',
+        primaryContactFirstName: client?.primaryContact?.firstName || '',
+        primaryContactLastName: client?.primaryContact?.lastName || '',
+        logo: client?.logo || '',
         jobTitle: job.jobTitle,
         jobDescription: job.jobDescription,
         postStart: job.postStart,
@@ -96,19 +96,19 @@ const getJobById = async (id: string): Promise<any> => {
 const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
     try {
         const jobs = await jobsModel.find().populate({
-            path: 'vendorId',
+            path: 'clientId',
             select: 'organizationName primaryContact logo'
         });
 
         const alljobs = jobs.map(job => {
-            const vendor = job.vendorId as any;
+            const client = job.clientId as any;
             return {
                 id: job.id,
-                vendorId: vendor?._id || job.vendorId,
-                organizationName: vendor?.organizationName || '',
-                primaryContactFirstName: vendor?.primaryContact?.firstName || '',
-                primaryContactLastName: vendor?.primaryContact?.lastName || '',
-                logo: vendor?.logo || '',
+                clientId: client?._id || job.clientId,
+                organizationName: client?.organizationName || '',
+                primaryContactFirstName: client?.primaryContact?.firstName || '',
+                primaryContactLastName: client?.primaryContact?.lastName || '',
+                logo: client?.logo || '',
                 jobTitle: job.jobTitle,
                 jobDescription: job.jobDescription,
                 postStart: job.postStart,
@@ -131,7 +131,7 @@ const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
             jobs: alljobs
         };
     } catch (error) {
-        throw new Error("Failed to fetch all jobs ");
+        throw new Error(`Failed to fetch all jobs: ${error}`);
     };
 
 };
