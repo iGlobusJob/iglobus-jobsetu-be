@@ -53,49 +53,6 @@ const updateClientByAdmin = async (clientId: string, updateData: Partial<IClient
     return updatedClient;
 };
 
-const getAllJobsService = async (): Promise<FetchAllJobsResponse> => {
-    try {
-        const jobs = await jobsModel.find().populate({
-            path: 'clientId',
-            select: 'organizationName primaryContact logo'
-        });
-
-        const alljobs = jobs.map(job => {
-            const client = job.clientId as any;
-            return {
-                id: job.id,
-                clientId: client?._id || job.clientId,
-                organizationName: client?.organizationName || '',
-                primaryContactFirstName: client?.primaryContact?.firstName || '',
-                primaryContactLastName: client?.primaryContact?.lastName || '',
-                logo: client?.logo || '',
-                jobTitle: job.jobTitle,
-                jobDescription: job.jobDescription,
-                postStart: job.postStart,
-                postEnd: job.postEnd,
-                noOfPositions: job.noOfPositions,
-                minimumSalary: job.minimumSalary,
-                maximumSalary: job.maximumSalary,
-                jobType: job.jobType,
-                jobLocation: job.jobLocation,
-                minimumExperience: job.minimumExperience,
-                maximumExperience: job.maximumExperience,
-                status: job.status,
-                createdAt: job.createdAt,
-                updatedAt: job.updatedAt
-            };
-        });
-
-        return {
-            success: true,
-            jobs: alljobs
-        };
-    } catch (error) {
-        throw new Error("Failed to fetch all jobs ");
-    };
-
-};
-
 const getClientById = async (clientId: string): Promise<IClient | null> => {
     const client = await clientModel.findById(clientId);
     return client;
@@ -201,4 +158,4 @@ const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> =>
     }
 };
 
-export default { adminLogin, createAdminService, updateClientByAdmin, getAllJobsService, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService };
+export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService };

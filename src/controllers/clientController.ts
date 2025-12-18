@@ -350,4 +350,4 @@ const getJobByClient = async (req: Request, res: Response): Promise<Response> =>
 };
 
 
-export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJobByClient, getAllJobsByClient, updateClientProfile, getJobByClient };
+export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, getAllJobsByClient, updateClientProfile, getJobByClient };

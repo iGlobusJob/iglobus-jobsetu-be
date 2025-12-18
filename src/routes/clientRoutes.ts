@@ -1274,46 +1274,4 @@ ClientRouter.get('/getjobbyclient/:jobId', validateJWT, clientPermission, client
  */
 ClientRouter.put('/updatejobbyclient', validateJWT, clientPermission, validateRequest(updateJobSchema), clientController.updateJobByClient);
 
-/**
- * @swagger
- * /deletejob/{jobId}:
- *   delete:
- *     summary: Delete a job by ID
- *     tags:
- *       - Client 
- *     security:
- *       - BearerAuth: []
- *     description: Delete job created by a client.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Job ID to delete
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Job deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Job deleted successfully !"
- *       400:
- *         description: Invalid job ID
- *       401:
- *         description: Unauthorized - Missing or invalid JWT token
- *       404:
- *         description: Job not found
- *       500:
- *         description: Internal server error
- */
-ClientRouter.delete('/deletejob/:jobId', validateJWT, clientPermission, clientController.deleteJobByClient)
-
 export default ClientRouter;

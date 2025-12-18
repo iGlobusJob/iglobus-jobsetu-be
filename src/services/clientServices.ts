@@ -130,27 +130,6 @@ const updateJobByClient = async (clientId: string, jobId: string, jobData: Parti
     return updatedJob;
 };
 
-const deleteJob = async (jobId: string, clientId: string): Promise<{ success: boolean }> => {
-    try {
-        const result = await jobsModel.findOneAndDelete({ _id: jobId, clientId: clientId });
-
-        if (!result) {
-            return { success: false };
-        }
-
-        return {
-            success: true
-        };
-
-    } catch (error: any) {
-        console.error("Error deleting the job:", error);
-
-        return {
-            success: false
-        };
-    }
-};
-
 const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
     const jobs = await jobsModel.find({ clientId }).sort({ createdAt: -1 });
     return jobs;
@@ -208,4 +187,4 @@ const getJobByClient = async (clientId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJob, getAllJobsByClient, updateClientProfile, getJobByClient };
+export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, getAllJobsByClient, updateClientProfile, getJobByClient };
