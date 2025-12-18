@@ -31,8 +31,12 @@ const updateClientByAdminSchema = Joi.object({
             'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
         }),
     secondaryContact: Joi.object({
-        firstName: Joi.string().trim().optional().allow(''),
-        lastName: Joi.string().trim().optional().allow('')
+        firstName: Joi.string().trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
+            'string.pattern.base': 'Firstname must contain only letters'
+        }),
+        lastName: Joi.string().trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
+            'string.pattern.base': 'Firstname must contain only letters'
+        })
     }).optional(),
     status: Joi.string().valid('registered', 'active', 'inactive').required().messages({
         'any.only': 'Status must be either "registered", "active", or "inactive"'

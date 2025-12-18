@@ -11,7 +11,7 @@ import vendorPermission from '../middlewares/vendorPermission';
 import uploadLogo from '../middlewares/uploadLogoMiddleware';
 import parseFormData from '../middlewares/parseFormData';
 
-const VendorRouter: Router = express.Router();
+const ClientRouter: Router = express.Router();
 
 /**
  * @swagger
@@ -195,7 +195,7 @@ const VendorRouter: Router = express.Router();
  *                   type: string
  *                   example: Email already exists!
  */
-VendorRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, validateRequest(vendorSchema), vendorController.vendorRegistration);
+ClientRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, validateRequest(vendorSchema), vendorController.vendorRegistration);
 
 /**
  * @swagger
@@ -324,7 +324,7 @@ VendorRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, v
  *                   type: string
  *                   example: An error occurred during login. Please try again later.
  */
-VendorRouter.post('/loginclient', validateRequest(vendorLoginSchema), vendorController.clientLogin);
+ClientRouter.post('/loginclient', validateRequest(vendorLoginSchema), vendorController.clientLogin);
 
 /**
  * @swagger
@@ -460,7 +460,7 @@ VendorRouter.post('/loginclient', validateRequest(vendorLoginSchema), vendorCont
  *                   type: string
  *                   example: "An error occurred while fetching client details. Please try again later !"
  */
-VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorController.getClientById);
+ClientRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorController.getClientById);
 
 /**
  * @swagger
@@ -656,7 +656,7 @@ VendorRouter.get('/getclientprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "An error occurred while uploading logo. Please try again later !"
  */
-VendorRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateVendorProfileSchema), vendorController.updateClientProfile);
+ClientRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateVendorProfileSchema), vendorController.updateClientProfile);
 
 /**
  * @swagger
@@ -824,7 +824,7 @@ VendorRouter.put('/updateclientprofile', validateJWT, vendorPermission, uploadLo
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-VendorRouter.post('/createjobbyclient', validateJWT, vendorPermission, validateRequest(createJobSchema), vendorController.createJobByClient);
+ClientRouter.post('/createjobbyclient', validateJWT, vendorPermission, validateRequest(createJobSchema), vendorController.createJobByClient);
 
 /**
  * @swagger
@@ -936,7 +936,7 @@ VendorRouter.post('/createjobbyclient', validateJWT, vendorPermission, validateR
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorController.getAllJobsByVendor);
+ClientRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorController.getAllJobsByVendor);
 
 /**
  * @swagger
@@ -1067,7 +1067,7 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-VendorRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendorController.getJobByClient);
+ClientRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendorController.getJobByClient);
 
 /**
  * @swagger
@@ -1272,7 +1272,7 @@ VendorRouter.get('/getjobbyclient/:jobId', validateJWT, vendorPermission, vendor
  *                   type: string
  *                   example: "An error occurred while updating the job. Please try again later !"
  */
-VendorRouter.put('/updatejobbyclient', validateJWT, vendorPermission, validateRequest(updateJobSchema), vendorController.updateJobByClient);
+ClientRouter.put('/updatejobbyclient', validateJWT, vendorPermission, validateRequest(updateJobSchema), vendorController.updateJobByClient);
 
 /**
  * @swagger
@@ -1314,6 +1314,6 @@ VendorRouter.put('/updatejobbyclient', validateJWT, vendorPermission, validateRe
  *       500:
  *         description: Internal server error
  */
-VendorRouter.delete('/deletejob/:jobId', validateJWT, vendorPermission, vendorController.deleteJobByVendor)
+ClientRouter.delete('/deletejob/:jobId', validateJWT, vendorPermission, vendorController.deleteJobByVendor)
 
-export default VendorRouter;
+export default ClientRouter;

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import vendorService from '../services/vendorServices';
-import { VENDOR_SUCCESS_MESSAGES, VENDOR_ERROR_MESSAGES, HTTP_STATUS, VENDOR_LOGIN_ERROR_MAPPING } from '../constants/vendorMessages';
+import { VENDOR_SUCCESS_MESSAGES, VENDOR_ERROR_MESSAGES, HTTP_STATUS, CLIENT_LOGIN_ERROR_MAPPING } from '../constants/vendorMessages';
 
 const DUPLICATE_KEY_ERROR_CODE = 11000;
 
@@ -38,14 +38,14 @@ const vendorRegistration = async (req: Request, res: Response): Promise<Response
     }
 };
 
-const vendorLogin = async (req: Request, res: Response): Promise<Response> => {
+const clientLogin = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { email, password } = req.body;
-        const { vendor, token } = await vendorService.vendorLogin(email, password);
+        const { vendor, token } = await vendorService.clientLogin(email, password);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: VENDOR_SUCCESS_MESSAGES.VENDOR_LOGIN_SUCCESS_MESSAGE,
+            message: VENDOR_SUCCESS_MESSAGES.CLIENT_LOGIN_SUCCESS_MESSAGE,
             data: {
                 token,
                 vendor: {
@@ -61,7 +61,7 @@ const vendorLogin = async (req: Request, res: Response): Promise<Response> => {
         });
     } catch (error: any) {
         // Handle specific error cases using error mapping
-        const errorMapping = VENDOR_LOGIN_ERROR_MAPPING[error.message];
+        const errorMapping = CLIENT_LOGIN_ERROR_MAPPING[error.message];
 
         if (errorMapping) {
             return res.status(errorMapping.status).json({
@@ -350,4 +350,4 @@ const getJobByClient = async (req: Request, res: Response): Promise<Response> =>
 };
 
 
-export default { vendorRegistration, vendorLogin, getClientById, createJobByClient, updateJobByClient, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByClient };
+export default { vendorRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, deleteJobByVendor, getAllJobsByVendor, updateClientProfile, getJobByClient };
