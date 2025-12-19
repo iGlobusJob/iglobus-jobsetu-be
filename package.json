@@ -4,7 +4,7 @@
   "description": "This application is for maintaining the JOB-SETHU Application for Resources Management",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "start": "nodemon dist/index.js",
     "dev": "nodemon src/index.ts",
     "test": "jest",
