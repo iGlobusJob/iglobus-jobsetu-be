@@ -2,7 +2,6 @@ export const ADMIN_SUCCESS_MESSAGE = {
     ADMIN_LOGIN_SUCCESS_MESSAGE: 'Logged in Successfully !',
     CLIENT_UPDATED_SUCCESS_MESSAGE: 'Client updated successfully !',
     CLIENT_DETAILS_FETCHED_SUCCESS_MESSAGE: 'Client details fetched successfully !',
-    CLIENT_UPDATED_SUCCESS_MESSAGE: 'Client updated successfully !',
     ADMIN_FETCHED_JOBS_SUCCESS_MESSAGE: 'Jobs fetched successfully !',
     CANDIDATE_DETAILS_FETCHED_SUCCESS_MESSAGE: 'Candidate details fetched successfully !',
     ADMIN_CREATED_SUCCESS_MESSAGE: 'Admin created successfully !',
