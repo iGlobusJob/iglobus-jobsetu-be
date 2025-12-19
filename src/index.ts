@@ -7,10 +7,11 @@ import morgan from 'morgan';
 import cors from 'cors';
 import session from 'express-session';
 import connectToDb from './config/databaseConfig';
-import VendorRouter from './routes/vendorRoutes';
 import CandidateRouter from './routes/candidateRoutes';
 import AdminRouter from './routes/adminRoutes';
 import CommonRouter from './routes/commonRoutes';
+import RecruiterRouter from './routes/recruiterRoutes';
+import ClientRouter from './routes/clientRoutes';
 
 dotenv.config();
 
@@ -36,10 +37,11 @@ app.use(cors({
 }));
 
 connectToDb();
-app.use('/', VendorRouter);
+app.use('/', ClientRouter)
 app.use('/', CandidateRouter);
 app.use('/', AdminRouter);
 app.use('/', CommonRouter);
+app.use('/', RecruiterRouter)
 
 app.listen(port, () => {
     console.log(`Server is running at  http://localhost:${port}`);

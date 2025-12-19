@@ -14,67 +14,80 @@ const emailConfiguration: any = {
     }
 }
 
-const sendVendorRegistrationEmail = async (email: string, organizationName: string) => {
+const candidateJobApplied = async (email: string, jobTitle: string) => {
     try {
         const transporter = nodemailer.createTransport(emailConfiguration);
         const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
-    <div style="max-width: 750px; height:auto; margin: 0 auto; border: 1px solid #f7f1f4 ; border-radius: 5px;">
+    <div style="max-width: 750px; height:auto; margin: 0 auto; border: 1px solid #f7f1f4; border-radius: 5px;">
+      
       <!-- Header Section -->
       <div style="background-color:rgb(121, 181, 245); color: #fff; text-align: center; padding: 10px; border-top-left-radius: 5px; border-top-right-radius: 5px;">
-        <h2 style="margin: 0; font-size: 18px;">Welcome to Job Setu</h2>
+        <h2 style="margin: 0; font-size: 18px;">Job applied successfully</h2>
       </div>
 
       <!-- Body Section -->
-      <div style="background-color:rgb(220, 235, 248); padding: 20px; color:#4f4a4c "><br><br>
+      <div style="background-color:rgb(220, 235, 248); padding: 20px; color:#4f4a4c;">
+        <br><br>
+
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Dear <b>${organizationName}</b>,
+          We are pleased to inform you that you have successfully applied for the following position:
+        </p>
+
+        <p style="margin: 0 0 15px; font-size: 16px; color: #333;">
+          <b>Position:</b> 
+          <span style="font-size: 16px; font-weight: bold; color: #007bff;">
+            ${jobTitle}
+          </span>
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Thank you for registering with <b>Job Setu</b>! Your account has been successfully created.
+          Our recruitment team will review your application and contact you if your profile matches the job requirements.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Your registration is currently under review by our admin team. You will be notified once your account is approved and activated.
+          You can track the status of your application by logging into your Job Setu account.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Please reach out to 
+          If you have any questions or face issues, please reach out to
           <a href="mailto:iglobusjobsetu@gmail.com" style="color: #007bff; text-decoration: none;">
             iglobusjobsetu@gmail.com
-          </a>, if you have any questions or need assistance.
-        </p><br>
+          </a>.
+        </p>
+
+        <br>
 
         <p style="margin: 20px 0 5px; font-size: 14px; color: #333;">Regards,</p>
         <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGLOBUS</p>
       </div>
     </div>
   </body>
-</html>`;
+</html>
+`;
 
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to: email,
-            subject: 'Welcome to Job Setu - Account Under Review',
+            subject: 'Job Application Submitted Successfully',
             html: mailBody,
         };
 
         const result = await transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log('Error sending vendor registration email:', error);
+                console.log('Error sending send job applied email:', error);
                 return error;
             }
 
-            console.log('Vendor registration email sent successfully:', info.response);
+            console.log('send job applied email sent successfully:', info.response);
             return info.response;
         });
         return result;
     } catch (error) {
-        console.log('Error in sending vendor registration email:', error);
+        console.log('Failed to send job applied email:', error);
         return error;
     }
-}
+};
 
-export default { sendVendorRegistrationEmail };
+export default candidateJobApplied;

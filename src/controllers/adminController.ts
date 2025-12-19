@@ -60,100 +60,88 @@ const createAdmin = async (req: Request, res: Response): Promise<Response> => {
     }
 };
 
-const updateVendorByAdmin = async (req: Request, res: Response): Promise<Response> => {
+const updateClientByAdmin = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { vendorId, ...updateData } = req.body;
+        const { clientId, ...updateData } = req.body;
 
-        const updatedVendor = await adminService.updateVendorByAdmin(vendorId, updateData);
+        const updatedClient = await adminService.updateClientByAdmin(clientId, updateData);
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: ADMIN_SUCCESS_MESSAGE.VENDOR_UPDATED_SUCCESS_MESSAGE,
+            message: ADMIN_SUCCESS_MESSAGE.CLIENT_UPDATED_SUCCESS_MESSAGE,
             data: {
-                id: updatedVendor.id,
-                email: updatedVendor.email,
-                organizationName: updatedVendor.organizationName,
-                status: updatedVendor.status,
-                emailStatus: updatedVendor.emailStatus,
-                mobile: updatedVendor.mobile,
-                mobileStatus: updatedVendor.mobileStatus,
-                location: updatedVendor.location,
-                logo: updatedVendor.logo,
-                gstin: updatedVendor.gstin,
-                panCard: updatedVendor.panCard,
-                category: updatedVendor.category,
-                primaryContact: updatedVendor.primaryContact,
-                secondaryContact: updatedVendor.secondaryContact,
-                createdAt: updatedVendor.createdAt,
-                updatedAt: updatedVendor.updatedAt
+                id: updatedClient.id,
+                email: updatedClient.email,
+                organizationName: updatedClient.organizationName,
+                status: updatedClient.status,
+                emailStatus: updatedClient.emailStatus,
+                mobile: updatedClient.mobile,
+                mobileStatus: updatedClient.mobileStatus,
+                location: updatedClient.location,
+                logo: updatedClient.logo,
+                gstin: updatedClient.gstin,
+                panCard: updatedClient.panCard,
+                category: updatedClient.category,
+                primaryContact: updatedClient.primaryContact,
+                secondaryContact: updatedClient.secondaryContact,
+                createdAt: updatedClient.createdAt,
+                updatedAt: updatedClient.updatedAt
             }
         });
     } catch (error: any) {
-        if (error.message === 'VENDOR_NOT_FOUND') {
+        if (error.message === 'CLIENT_NOT_FOUND') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: ADMIN_ERROR_MESSAGES.VENDOR_NOT_FOUND
+                message: ADMIN_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: ADMIN_ERROR_MESSAGES.UPDATE_FAILED
+            message: ADMIN_ERROR_MESSAGES.CLIENT_UPDATE_FAILED
         });
     }
 };
 
-const getAllJobsByAdmin = async (req: Request, res: Response) => {
+const getClientDetailsByAdmin = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const allJobsResponse = await adminService.getAllJobsService();
-        return res.status(HTTP_STATUS.OK).json(allJobsResponse);
+        const { clientId } = req.params;
+        const client = await adminService.getClientById(clientId);
 
-    } catch (error) {
-        console.error(`Error in fetching all jobs details by Admin: ${error}`);
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: ADMIN_ERROR_MESSAGES.ADMIN_FETCH_JOBS_FAILED });
-    };
-};
-
-const getVendorDetailsByAdmin = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const { vendorid } = req.params;
-
-        const vendor = await adminService.getVendorById(vendorid);
-
-        if (!vendor) {
+        if (!client) {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
-                message: ADMIN_ERROR_MESSAGES.VENDOR_NOT_FOUND
+                message: ADMIN_ERROR_MESSAGES.CLIENT_NOT_FOUND
             });
         }
 
         return res.status(HTTP_STATUS.OK).json({
             success: true,
-            message: ADMIN_SUCCESS_MESSAGE.VENDOR_DETAILS_FETCHED_SUCCESS_MESSAGE,
+            message: ADMIN_SUCCESS_MESSAGE.CLIENT_DETAILS_FETCHED_SUCCESS_MESSAGE,
             data: {
-                id: vendor.id,
-                email: vendor.email,
-                organizationName: vendor.organizationName,
-                logo: vendor.logo,
-                status: vendor.status,
-                emailStatus: vendor.emailStatus,
-                mobile: vendor.mobile,
-                mobileStatus: vendor.mobileStatus,
-                location: vendor.location,
-                gstin: vendor.gstin,
-                panCard: vendor.panCard,
-                primaryContact: vendor.primaryContact,
-                secondaryContact: vendor.secondaryContact,
-                category: vendor.category,
-                createdAt: vendor.createdAt,
-                updatedAt: vendor.updatedAt
+                id: client.id,
+                email: client.email,
+                organizationName: client.organizationName,
+                logo: client.logo,
+                status: client.status,
+                emailStatus: client.emailStatus,
+                mobile: client.mobile,
+                mobileStatus: client.mobileStatus,
+                location: client.location,
+                gstin: client.gstin,
+                panCard: client.panCard,
+                primaryContact: client.primaryContact,
+                secondaryContact: client.secondaryContact,
+                category: client.category,
+                createdAt: client.createdAt,
+                updatedAt: client.updatedAt
             }
         });
     } catch (error: any) {
-        console.error(`Error in fetching vendor details by Admin: `, error);
+        console.error(`Error in fetching client details by Admin: `, error);
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: ADMIN_ERROR_MESSAGES.VENDOR_FETCH_FAILED
+            message: ADMIN_ERROR_MESSAGES.CLIENT_FETCH_FAILED
         });
     }
 };
@@ -182,6 +170,8 @@ const getCandidateDetailsByAdmin = async (req: Request, res: Response): Promise<
                 address: candidate.address || '',
                 dateOfBirth: candidate.dateOfBirth || '',
                 gender: candidate.gender || '',
+                profile: candidate.profile,
+                profilePicture: candidate.profilePicture,
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt
 
@@ -208,4 +198,52 @@ const getAllClients = async (req: Request, res: Response) => {
     };
 };
 
-export default { adminLogin, updateVendorByAdmin, getAllJobsByAdmin, getVendorDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients };
+const createRecruiter = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { firstName, lastName, email, password } = req.body;
+
+        const recruiter = await adminService.createRecruiterService(firstName, lastName, email, password);
+
+        return res.status(HTTP_STATUS.CREATED).json({
+            success: true,
+            message: ADMIN_SUCCESS_MESSAGE.RECRUITER_CREATED_SUCCESS_MESSAGE,
+            data: {
+                id: recruiter.id,
+                firstName: recruiter.firstName,
+                lastName: recruiter.lastName,
+                email: recruiter.email,
+                createdAt: recruiter.createdAt,
+                updatedAt: recruiter.updatedAt
+            }
+        });
+    } catch (error: any) {
+        const errorConfig = ERROR_MAPPING[error.message];
+
+        if (errorConfig) {
+            return res.status(errorConfig.status).json({
+                success: false,
+                message: errorConfig.message
+            });
+        }
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: ADMIN_ERROR_MESSAGES.RECRUITER_CREATION_FAILED
+        });
+    }
+};
+
+const getAllRecruiters = async (req: Request, res: Response) => {
+    try {
+        const recruitersResponse = await adminService.getAllRecruitersService();
+        return res.status(HTTP_STATUS.OK).json(recruitersResponse);
+    } catch (error) {
+        console.error(`Error in fetching recruiters: ${error}`);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: ADMIN_ERROR_MESSAGES.RECRUITERS_FETCH_ERROR_MESSAGE
+        });
+    }
+};
+
+export default { adminLogin, updateClientByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters };

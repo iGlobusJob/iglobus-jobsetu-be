@@ -1,31 +1,31 @@
 import express, { Router } from 'express';
-import vendorController from '../controllers/vendorController';
+import clientController from '../controllers/clientController';
 import validateRequest from '../middlewares/validateRequest';
-import vendorSchema from '../middlewares/schemas/vendorSchema';
-import vendorLoginSchema from '../middlewares/schemas/vendorLoginSchema';
+import clientSchema from '../middlewares/schemas/clientSchema';
+import clientLoginSchema from '../middlewares/schemas/clientLoginSchema';
 import createJobSchema from '../middlewares/schemas/createJobSchema';
 import updateJobSchema from '../middlewares/schemas/updateJobSchema';
-import updateVendorProfileSchema from '../middlewares/schemas/updateVendorProfileSchema';
+import updateClientProfileSchema from '../middlewares/schemas/updateClientProfileSchema';
 import validateJWT from '../middlewares/validateJWT';
-import vendorPermission from '../middlewares/vendorPermission';
+import clientPermission from '../middlewares/clientPermission';
 import uploadLogo from '../middlewares/uploadLogoMiddleware';
 import parseFormData from '../middlewares/parseFormData';
 
-const VendorRouter: Router = express.Router();
+const ClientRouter: Router = express.Router();
 
 /**
  * @swagger
- * /registervendor:
+ * /registerclient:
  *   post:
- *     summary: Register a new vendor with optional logo upload
+ *     summary: Register a new client with optional logo upload
  *     description: |
- *       Allows a new vendor to register with their organization details and contact information. Password will be securely hashed before storage. Logo upload is optional.
+ *       Allows a new client to register with their organization details and contact information. Password will be securely hashed before storage. Logo upload is optional.
  *       
  *       **Important**: For nested objects (primaryContact, secondaryContact), send them as JSON strings in multipart form data.
  *       
  *       Example for primaryContact: `{"firstName":"John","lastName":"Doe"}`
  *     tags:
- *       - Vendor
+ *       - Client
  *     requestBody:
  *       required: true
  *       content:
@@ -47,16 +47,16 @@ const VendorRouter: Router = express.Router();
  *                 example: '{"firstName":"John","lastName":"Doe"}'
  *               organizationName:
  *                 type: string
- *                 description: Name of the vendor organization (2-100 characters, required)
+ *                 description: Name of the client organization (2-100 characters, required)
  *                 example: XYZ Technologies Pvt Ltd
  *               password:
  *                 type: string
- *                 description: Password for vendor account (min 8 chars, must contain uppercase, lowercase, number and special character, required)
+ *                 description: Password for client account (min 8 chars, must contain uppercase, lowercase, number and special character, required)
  *                 example: SecurePass@123
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Email address of the vendor (must be unique, will be converted to lowercase, required)
+ *                 description: Email address of the client (must be unique, will be converted to lowercase, required)
  *                 example: john.doe@xyztechnologies.com
  *               secondaryContact:
  *                 type: string
@@ -65,7 +65,7 @@ const VendorRouter: Router = express.Router();
  *               status:
  *                 type: string
  *                 enum: [registered, active, inactive]
- *                 description: Registration status of the vendor (optional)
+ *                 description: Registration status of the client (optional)
  *                 example: registered
  *               emailStatus:
  *                 type: string
@@ -74,7 +74,7 @@ const VendorRouter: Router = express.Router();
  *                 example: notverified
  *               mobile:
  *                 type: string
- *                 description: Mobile number of the vendor (must be 10 digits, optional)
+ *                 description: Mobile number of the client (must be 10 digits, optional)
  *                 example: "9876543210"
  *               mobileStatus:
  *                 type: string
@@ -83,7 +83,7 @@ const VendorRouter: Router = express.Router();
  *                 example: notverified
  *               location:
  *                 type: string
- *                 description: Location of the vendor (optional)
+ *                 description: Location of the client (optional)
  *                 example: Hyderabad
  *               gstin:
  *                 type: string
@@ -96,7 +96,7 @@ const VendorRouter: Router = express.Router();
  *               category:
  *                 type: string
  *                 enum: [IT, Non-IT]
- *                 description: Vendor category (required)
+ *                 description: Client category (required)
  *                 example: IT
  *               logo:
  *                 type: string
@@ -104,7 +104,7 @@ const VendorRouter: Router = express.Router();
  *                 description: Company logo image (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF, max 5MB, optional)
  *     responses:
  *       201:
- *         description: Vendor registered successfully
+ *         description: Client registered successfully
  *         content:
  *           application/json:
  *             schema:
@@ -115,7 +115,7 @@ const VendorRouter: Router = express.Router();
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Vendor registered successfully !
+ *                   example: Client registered successfully !
  *                 data:
  *                   type: object
  *                   properties:
@@ -195,16 +195,16 @@ const VendorRouter: Router = express.Router();
  *                   type: string
  *                   example: Email already exists!
  */
-VendorRouter.post('/registervendor', uploadLogo.single('logo'), parseFormData, validateRequest(vendorSchema), vendorController.vendorRegistration);
+ClientRouter.post('/registerclient', uploadLogo.single('logo'), parseFormData, validateRequest(clientSchema), clientController.clientRegistration);
 
 /**
  * @swagger
- * /loginvendor:
+ * /loginclient:
  *   post:
- *     summary: Vendor login
- *     description: Authenticates a vendor with email and password. Returns JWT token on successful login. Account must be active to login.
+ *     summary: Client login
+ *     description: Authenticates a client with email and password. Returns JWT token on successful login. Account must be active to login.
  *     tags:
- *       - Vendor
+ *       - Client
  *     requestBody:
  *       required: true
  *       content:
@@ -218,11 +218,11 @@ VendorRouter.post('/registervendor', uploadLogo.single('logo'), parseFormData, v
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Email address of the vendor
+ *                 description: Email address of the client
  *                 example: john.doe@xyztechnologies.com
  *               password:
  *                 type: string
- *                 description: Password for the vendor account
+ *                 description: Password for the client account
  *                 example: SecurePass@123
  *     responses:
  *       200:
@@ -237,7 +237,7 @@ VendorRouter.post('/registervendor', uploadLogo.single('logo'), parseFormData, v
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Login Successfully!
+ *                   example: Login Successfully !
  *                 data:
  *                   type: object
  *                   properties:
@@ -245,7 +245,7 @@ VendorRouter.post('/registervendor', uploadLogo.single('logo'), parseFormData, v
  *                       type: string
  *                       description: JWT authentication token
  *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *                     vendor:
+ *                     client:
  *                       type: object
  *                       properties:
  *                         id:
@@ -324,21 +324,21 @@ VendorRouter.post('/registervendor', uploadLogo.single('logo'), parseFormData, v
  *                   type: string
  *                   example: An error occurred during login. Please try again later.
  */
-VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorController.vendorLogin);
+ClientRouter.post('/loginclient', validateRequest(clientLoginSchema), clientController.clientLogin);
 
 /**
  * @swagger
- * /getvendorprofile:
+ * /getclientprofile:
  *   get:
- *     summary: Get authenticated vendor's profile details
- *     description: Retrieves complete profile information of the currently authenticated vendor. The vendor ID is automatically extracted from the JWT token, so vendors can only view their own profile. Requires JWT authentication.
+ *     summary: Get authenticated client's profile details
+ *     description: Retrieves complete profile information of the currently authenticated client. The client ID is automatically extracted from the JWT token, so clients can only view their own profile. Requires JWT authentication.
  *     tags:
- *       - Vendor
+ *       - Client
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Vendor details retrieved successfully
+ *         description: Client details retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -349,7 +349,7 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Vendor details fetched successfully!
+ *                   example: Client details fetched successfully!
  *                 data:
  *                   type: object
  *                   properties:
@@ -421,7 +421,7 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
  *                       format: date-time
  *                       example: 2025-11-13T10:30:00.000Z
  *       401:
- *         description: Unauthorized - Invalid or missing JWT token, or vendor ID not found in token.
+ *         description: Unauthorized - Invalid or missing JWT token, or client ID not found in token.
  *         content:
  *           application/json:
  *             schema:
@@ -434,7 +434,7 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Vendor not found
+ *         description: Client not found
  *         content:
  *           application/json:
  *             schema:
@@ -458,23 +458,23 @@ VendorRouter.post('/loginvendor', validateRequest(vendorLoginSchema), vendorCont
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "An error occurred while fetching vendor details. Please try again later !"
+ *                   example: "An error occurred while fetching client details. Please try again later !"
  */
-VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorController.getVendorById);
+ClientRouter.get('/getclientprofile', validateJWT, clientPermission, clientController.getClientById);
 
 /**
  * @swagger
- * /updatevendorprofile:
+ * /updateclientprofile:
  *   put:
- *     summary: Update vendor profile with optional logo upload
+ *     summary: Update client profile with optional logo upload
  *     description: |
- *       Allows an authenticated vendor to update their own profile. Vendor ID is extracted from the JWT token, so vendors can only update their own profile. Logo images are stored in AWS S3 under clients/{vendorId}/logos/ folder and made publicly accessible.
+ *       Allows an authenticated client to update their own profile. Client ID is extracted from the JWT token, so client can only update their own profile. Logo images are stored in AWS S3 under clients/{clientId}/logos/ folder and made publicly accessible.
  *       
  *       **Important**: For nested objects (primaryContact, secondaryContact), send them as JSON strings in multipart form data.
  *       
  *       Example for primaryContact: `{"firstName":"John","lastName":"Doe"}`
  *     tags:
- *       - Vendor
+ *       - Client
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -490,7 +490,7 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *                 example: '{"firstName":"John","lastName":"Doe"}'
  *               organizationName:
  *                 type: string
- *                 description: Name of the vendor organization (2-100 characters)
+ *                 description: Name of the client organization (2-100 characters)
  *                 example: Tech Solutions Inc.
  *               password:
  *                 type: string
@@ -507,7 +507,7 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *                 example: "9876543210"
  *               location:
  *                 type: string
- *                 description: Vendor location or address
+ *                 description: Client location or address
  *                 example: Mumbai, Maharashtra
  *               gstin:
  *                 type: string
@@ -520,15 +520,15 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *               category:
  *                 type: string
  *                 enum: [IT, Non-IT]
- *                 description: Vendor category
+ *                 description: Client category
  *                 example: IT
  *               logo:
  *                 type: string
  *                 format: binary
- *                 description: Company logo image (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF, max 5MB)
+ *                 description: Company logo image (JPEG, JPG, PNG,  WEBP, BMP, SVG, TIFF, max 5MB)
  *     responses:
  *       200:
- *         description: Vendor profile updated successfully.
+ *         description: Client profile updated successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -539,11 +539,11 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Vendor profile updated successfully !"
+ *                   example: "Client profile updated successfully !"
  *                 data:
  *                   type: object
  *                   properties:
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: "507f1f77bcf86cd799439011"
  *                     email:
@@ -617,7 +617,7 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "Invalid file type. Only image files (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF) are allowed."
  *       401:
- *         description: Unauthorized - invalid or missing JWT token, or vendor ID not found in token.
+ *         description: Unauthorized - invalid or missing JWT token, or client ID not found in token.
  *         content:
  *           application/json:
  *             schema:
@@ -630,7 +630,7 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Vendor not found.
+ *         description: Client not found.
  *         content:
  *           application/json:
  *             schema:
@@ -643,7 +643,7 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "Invalid Account !"
  *       500:
- *         description: Internal server error occurred while updating vendor profile or uploading logo.
+ *         description: Internal server error occurred while updating client profile or uploading logo.
  *         content:
  *           application/json:
  *             schema:
@@ -656,16 +656,16 @@ VendorRouter.get('/getvendorprofile', validateJWT, vendorPermission, vendorContr
  *                   type: string
  *                   example: "An error occurred while uploading logo. Please try again later !"
  */
-VendorRouter.put('/updatevendorprofile', validateJWT, vendorPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateVendorProfileSchema), vendorController.updateVendorProfile);
+ClientRouter.put('/updateclientprofile', validateJWT, clientPermission, uploadLogo.single('logo'), parseFormData, validateRequest(updateClientProfileSchema), clientController.updateClientProfile);
 
 /**
  * @swagger
- * /createjobbyvendor:
+ * /createjobbyclient:
  *   post:
- *     summary: Create a new job posting by vendor
- *     description: Allows an authenticated vendor to create a new job posting. The vendor ID is automatically extracted from the JWT token. Organization details are fetched from the vendor record and cannot be overridden.
+ *     summary: Create a new job posting by client
+ *     description: Allows an authenticated client to create a new job posting. The client ID is automatically extracted from the JWT token. Organization details are fetched from the client record and cannot be overridden.
  *     tags:
- *       - Vendor
+ *       - Client
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -760,7 +760,7 @@ VendorRouter.put('/updatevendorprofile', validateJWT, vendorPermission, uploadLo
  *                     jobDescription:
  *                       type: string
  *                       example: "We are looking for an experienced Full Stack Developer..."
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: "64fbc9876543210abcdef456"
  *                     organizationName:
@@ -824,16 +824,16 @@ VendorRouter.put('/updatevendorprofile', validateJWT, vendorPermission, uploadLo
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-VendorRouter.post('/createjobbyvendor', validateJWT, vendorPermission, validateRequest(createJobSchema), vendorController.createJobByVendor);
+ClientRouter.post('/createjobbyclient', validateJWT, clientPermission, validateRequest(createJobSchema), clientController.createJobByClient);
 
 /**
  * @swagger
  * /getalljobsbyclient:
  *   get:
- *     summary: Get all jobs created by vendor
- *     description: Retrieves all job postings created by the authenticated vendor. The vendor ID is automatically extracted from the JWT token. Jobs are sorted by creation date (newest first).
+ *     summary: Get all jobs created by client
+ *     description: Retrieves all job postings created by the authenticated client. The client ID is automatically extracted from the JWT token. Jobs are sorted by creation date (newest first).
  *     tags:
- *       - Vendor
+ *       - Client
  *     security:
  *       - BearerAuth: []
  *     responses:
@@ -855,7 +855,7 @@ VendorRouter.post('/createjobbyvendor', validateJWT, vendorPermission, validateR
  *                   items:
  *                     type: object
  *                     properties:
- *                       vendorId:
+ *                       clientId:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439012
  *                       jobTitle:
@@ -936,16 +936,16 @@ VendorRouter.post('/createjobbyvendor', validateJWT, vendorPermission, validateR
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorController.getAllJobsByVendor);
+ClientRouter.get('/getalljobsbyclient', validateJWT, clientPermission, clientController.getAllJobsByClient);
 
 /**
  * @swagger
- * /getjobbyvendor/{jobId}:
+ * /getjobbyclient/{jobId}:
  *   get:
  *     summary: Get a specific job by ID
- *     description: Allows an authenticated vendor to fetch details of a specific job by its ID. Vendor can only access jobs they have created. The vendor ID is extracted from the JWT token for authorization.
+ *     description: Allows an authenticated client to fetch details of a specific job by its ID. Client can only access jobs they have created. The client ID is extracted from the JWT token for authorization.
  *     tags:
- *       - Vendor
+ *       - Client
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -976,7 +976,7 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                     _id:
  *                       type: string
  *                       example: 507f1f77bcf86cd799439011
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: 507f191e810c19729de860ea
  *                     jobTitle:
@@ -1028,7 +1028,7 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                       format: date-time
  *                       example: 2025-01-15T14:20:00.000Z
  *       401:
- *         description: Unauthorized - Invalid or missing JWT token, or vendor ID not found in token.
+ *         description: Unauthorized - Invalid or missing JWT token, or client ID not found in token.
  *         content:
  *           application/json:
  *             schema:
@@ -1041,7 +1041,7 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Job not found or vendor is not authorized to access this job.
+ *         description: Job not found or client is not authorized to access this job.
  *         content:
  *           application/json:
  *             schema:
@@ -1067,16 +1067,16 @@ VendorRouter.get('/getalljobsbyclient', validateJWT, vendorPermission, vendorCon
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-VendorRouter.get('/getjobbyvendor/:jobId', validateJWT, vendorPermission, vendorController.getJobByVendor);
+ClientRouter.get('/getjobbyclient/:jobId', validateJWT, clientPermission, clientController.getJobByClient);
 
 /**
  * @swagger
- * /updatejobbyvendor:
+ * /updatejobbyclient:
  *   put:
- *     summary: Update an existing job posting by vendor
- *     description: Allows an authenticated vendor to update their existing job posting. The vendor ID is automatically extracted from the JWT token. Vendor can only update jobs they created. Job ID is required in the request body along with fields to update.
+ *     summary: Update an existing job posting by client
+ *     description: Allows an authenticated client to update their existing job posting. The client ID is automatically extracted from the JWT token. Client can only update jobs they created. Job ID is required in the request body along with fields to update.
  *     tags:
- *       - Vendor
+ *       - Client
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -1170,7 +1170,7 @@ VendorRouter.get('/getjobbyvendor/:jobId', validateJWT, vendorPermission, vendor
  *                     jobId:
  *                       type: string
  *                       example: 507f1f77bcf86cd799439011
- *                     vendorId:
+ *                     clientId:
  *                       type: string
  *                       example: 507f1f77bcf86cd799439012
  *                     jobTitle:
@@ -1246,7 +1246,7 @@ VendorRouter.get('/getjobbyvendor/:jobId', validateJWT, vendorPermission, vendor
  *                   type: string
  *                   example: "Invalid or expired token"
  *       404:
- *         description: Job not found or vendor not authorized to update this job.
+ *         description: Job not found or client not authorized to update this job.
  *         content:
  *           application/json:
  *             schema:
@@ -1272,48 +1272,6 @@ VendorRouter.get('/getjobbyvendor/:jobId', validateJWT, vendorPermission, vendor
  *                   type: string
  *                   example: "An error occurred while updating the job. Please try again later !"
  */
-VendorRouter.put('/updatejobbyvendor', validateJWT, vendorPermission, validateRequest(updateJobSchema), vendorController.updateJobByVendor);
+ClientRouter.put('/updatejobbyclient', validateJWT, clientPermission, validateRequest(updateJobSchema), clientController.updateJobByClient);
 
-/**
- * @swagger
- * /deletejob/{jobId}:
- *   delete:
- *     summary: Delete a job by ID
- *     tags:
- *       - Vendor 
- *     security:
- *       - BearerAuth: []
- *     description: Delete job created by a vendor.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Job ID to delete
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Job deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Job deleted successfully !"
- *       400:
- *         description: Invalid job ID
- *       401:
- *         description: Unauthorized - Missing or invalid JWT token
- *       404:
- *         description: Job not found
- *       500:
- *         description: Internal server error
- */
-VendorRouter.delete('/deletejob/:jobId', validateJWT, vendorPermission, vendorController.deleteJobByVendor)
-
-export default VendorRouter;
+export default ClientRouter;

@@ -1,13 +1,15 @@
 import adminModel from '../model/adminModel';
 import bcrypt from 'bcrypt';
 import jwtUtil from '../util/jwtUtil';
-import IAdmin, { FetchAllJobsResponse, FetchAllClientsResponse } from '../interfaces/admin';
-import vendorModel from '../model/vendorModel';
-import IVendor from '../interfaces/vendor';
+import IAdmin, { FetchAllJobsResponse, FetchAllClientsResponse, FetchAllRecruitersResponse } from '../interfaces/admin';
+import clientModel from '../model/clientModel';
+import IClient from '../interfaces/client';
 import hashPasswordUtility from '../util/hashPassword';
 import jobsModel from "../model/jobsModel";
 import candidateModel from '../model/candidateModel';
 import ICandidate from '../interfaces/candidate';
+import recruiterModel from '../model/recruiterModel';
+import IRecruiter from '../interfaces/recruiter';
 
 const adminLogin = async (username: string, password: string): Promise<{ admin: IAdmin; token: string }> => {
     const admin = await adminModel.findOne({ username }).select('+password');
@@ -31,62 +33,29 @@ const adminLogin = async (username: string, password: string): Promise<{ admin: 
     return { admin, token };
 };
 
-const updateVendorByAdmin = async (vendorId: string, updateData: Partial<IVendor>): Promise<IVendor> => {
+const updateClientByAdmin = async (clientId: string, updateData: Partial<IClient>): Promise<IClient> => {
     const { email, ...allowedUpdateData } = updateData as any;
 
     if (allowedUpdateData.password) {
         allowedUpdateData.password = await hashPasswordUtility.hashPassword(allowedUpdateData.password);
     }
 
-    const updatedVendor = await vendorModel.findByIdAndUpdate(
-        vendorId,
+    const updatedClient = await clientModel.findByIdAndUpdate(
+        clientId,
         { $set: allowedUpdateData },
         { new: true, runValidators: true }
     );
 
-    if (!updatedVendor) {
-        throw new Error('VENDOR_NOT_FOUND');
+    if (!updatedClient) {
+        throw new Error('CLIENT_NOT_FOUND');
     }
 
-    return updatedVendor;
+    return updatedClient;
 };
 
-const getAllJobsService = async (): Promise<FetchAllJobsResponse> => {
-    try {
-        const jobs = await jobsModel.find();
-        const alljobs = jobs.map(job => ({
-            id: job.id,
-            vendorId: job.vendorId,
-            organizationName: job.organizationName,
-            jobTitle: job.jobTitle,
-            jobDescription: job.jobDescription,
-            postStart: job.postStart,
-            postEnd: job.postEnd,
-            noOfPositions: job.noOfPositions,
-            minimumSalary: job.minimumSalary,
-            maximumSalary: job.maximumSalary,
-            jobType: job.jobType,
-            jobLocation: job.jobLocation,
-            minimumExperience: job.minimumExperience,
-            maximumExperience: job.maximumExperience,
-            status: job.status,
-            createdAt: job.createdAt,
-            updatedAt: job.updatedAt
-        }));
-
-        return {
-            success: true,
-            jobs: alljobs
-        };
-    } catch (error) {
-        throw new Error("Failed to fetch all jobs ");
-    };
-
-};
-
-const getVendorById = async (vendorId: string): Promise<IVendor | null> => {
-    const vendor = await vendorModel.findById(vendorId);
-    return vendor;
+const getClientById = async (clientId: string): Promise<IClient | null> => {
+    const client = await clientModel.findById(clientId);
+    return client;
 };
 
 const getCandidateDetailsByService = async (candidateId: string): Promise<ICandidate | null> => {
@@ -114,7 +83,7 @@ const createAdminService = async (username: string, password: string, role: stri
 
 const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
     try {
-        const clients = await vendorModel.find();
+        const clients = await clientModel.find();
 
         const formattedClients = clients.map(client => ({
             primaryContact: {
@@ -145,4 +114,48 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
     };
 };
 
-export default { adminLogin, createAdminService, updateVendorByAdmin, getAllJobsService, getVendorById, getCandidateDetailsByService, getAllClientsService };
+const createRecruiterService = async (firstName: string, lastName: string, email: string, password: string): Promise<IRecruiter> => {
+    // Check if recruiter already exists
+    const existingRecruiter = await recruiterModel.findOne({ email });
+
+    if (existingRecruiter) {
+        throw new Error('RECRUITER_ALREADY_EXISTS');
+    }
+
+    // Hash the password
+    const hashedPassword = await hashPasswordUtility.hashPassword(password);
+
+    // Create recruiter
+    const recruiter = await recruiterModel.create({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword
+    });
+
+    return recruiter;
+};
+
+const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> => {
+    try {
+        const recruiters = await recruiterModel.find();
+
+        const formattedRecruiters = recruiters.map(recruiter => ({
+            id: recruiter.id,
+            firstName: recruiter.firstName,
+            lastName: recruiter.lastName,
+            email: recruiter.email,
+            createdAt: recruiter.createdAt,
+            updatedAt: recruiter.updatedAt
+        }));
+
+        return {
+            success: true,
+            recruiters: formattedRecruiters
+        };
+    } catch (error) {
+        throw new Error("Failed to fetch recruiters");
+    }
+};
+
+export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService };

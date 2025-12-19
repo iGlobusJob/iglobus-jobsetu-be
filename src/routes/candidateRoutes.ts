@@ -3,10 +3,11 @@ import candidateController from '../controllers/candidateController';
 import validateRequest from '../middlewares/validateRequest';
 import candidateJoinSchema from '../middlewares/schemas/candidateJoinSchema';
 import validateOTPSchema from '../middlewares/schemas/validateOTPSchema';
+import jobIdSchema from '../middlewares/schemas/jobIdSchema';
 import validateJWT from '../middlewares/validateJWT';
 import candidatePermission from '../middlewares/candidatePermission';
 import updateCandidateProfileSchema from '../middlewares/schemas/updateCandidateProfileSchema';
-import upload from '../middlewares/uploadMiddleware';
+import uploadFields from '../middlewares/uploadFieldsMiddleware';
 
 const CandidateRouter: Router = express.Router();
 
@@ -266,11 +267,19 @@ CandidateRouter.post('/validateOTP', validateRequest(validateOTPSchema), candida
  *                     profile:
  *                       type: string
  *                       description: S3 path to uploaded resume
- *                       example: "candidates/67924fb9a4834c73c16fbab4/resume_1701234567890_resume.pdf"
+ *                       example: "candidates/67924fb9a4834c73c16fbab4/resumes/resume_1701234567890_resume.pdf"
  *                     profileUrl:
  *                       type: string
  *                       description: Presigned URL to download resume (valid for 1 hour)
- *                       example: "https://iglobus-job-sethu.s3.amazonaws.com/candidates/67924fb9a4834c73c16fbab4/resume_1701234567890_resume.pdf?X-Amz-Algorithm=..."
+ *                       example: "https://iglobus-job-sethu.s3.amazonaws.com/candidates/67924fb9a4834c73c16fbab4/resumes/resume_1701234567890_resume.pdf?X-Amz-Algorithm=..."
+ *                     profilePicture:
+ *                       type: string
+ *                       description: S3 path to uploaded profile picture
+ *                       example: "candidates/67924fb9a4834c73c16fbab4/profilepictures/profilepicture_1701234567890_profile.jpg"
+ *                     profilePictureUrl:
+ *                       type: string
+ *                       description: Presigned URL to view profile picture (valid for 1 hour)
+ *                       example: "https://iglobus-job-sethu.s3.amazonaws.com/candidates/67924fb9a4834c73c16fbab4/profilepictures/profilepicture_1701234567890_profile.jpg?X-Amz-Algorithm=..."
  *                     createdAt:
  *                       type: string
  *                       format: date-time
@@ -371,7 +380,11 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *               profile:
  *                 type: string
  *                 format: binary
- *                 description: Resume file (PDF, DOC, or DOCX, max 5MB)
+ *                 description: Resume file (PDF, DOC, or DOCX, max 10MB)
+ *               profilepicture:
+ *                 type: string
+ *                 format: binary
+ *                 description: Profile picture (JPEG, JPG, PNG, GIF, or WEBP, max 10MB)
  *     responses:
  *       200:
  *         description: Candidate profile updated successfully 
@@ -420,7 +433,11 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                     profile:
  *                       type: string
  *                       description: S3 path to uploaded resume
- *                       example: "candidates/507f1f77bcf86cd799439011/resume_1701234567890_John_Doe_Resume.pdf"
+ *                       example: "candidates/507f1f77bcf86cd799439011/resumes/resume_1701234567890_John_Doe_Resume.pdf"
+ *                     profilePicture:
+ *                       type: string
+ *                       description: S3 path to uploaded profile picture
+ *                       example: "candidates/507f1f77bcf86cd799439011/profilepictures/profilepicture_1701234567890_profile.jpg"
  *       400:
  *         description: Invalid file type or file too large
  *         content:
@@ -433,7 +450,20 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Invalid file type. Only PDF, DOC, and DOCX files are allowed."
+ *                   example: "Invalid file type for resume. Only PDF, DOC, and DOCX files are allowed."
+ *             examples:
+ *               invalidResume:
+ *                 value:
+ *                   success: false
+ *                   message: "Invalid file type for resume. Only PDF, DOC, and DOCX files are allowed."
+ *               invalidProfilePicture:
+ *                 value:
+ *                   success: false
+ *                   message: "Invalid file type for profile picture. Only JPEG, JPG, PNG, GIF, and WEBP images are allowed."
+ *               fileTooLarge:
+ *                 value:
+ *                   success: false
+ *                   message: "File too large"
  *       401:
  *         description: Unauthorized – Candidate ID missing in token
  *         content:
@@ -473,8 +503,17 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                 message:
  *                   type: string
  *                   example: "An error occurred while uploading resume. Please try again later !"
+ *             examples:
+ *               resumeUploadFailed:
+ *                 value:
+ *                   success: false
+ *                   message: "An error occurred while uploading resume. Please try again later !"
+ *               profilePictureUploadFailed:
+ *                 value:
+ *                   success: false
+ *                   message: "An error occurred while uploading profile picture. Please try again later !"
  */
-CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission, upload.single('profile'), validateRequest(updateCandidateProfileSchema), candidateController.updateCandidateProfile);
+CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission, uploadFields.fields([{ name: 'profile', maxCount: 1 }, { name: 'profilepicture', maxCount: 1 }]), validateRequest(updateCandidateProfileSchema), candidateController.updateCandidateProfile);
 
 /**
  * @swagger
@@ -505,18 +544,25 @@ CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission,
  *                   items:
  *                     type: object
  *                     properties:
- *                       _id:
+ *                       id:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439011
- *                       vendorId:
+ *                       clientId:
  *                         type: string
  *                         example: 507f191e810c19729de860ea
+ *                       organizationName:
+ *                         type: string
+ *                         example: "Tech Corp"
+ *                       logo:
+ *                         type: string
+ *                         format: uri
+ *                         example: "https://cdn.example.com/logos/company.png"
  *                       jobTitle:
  *                         type: string
  *                         example: Senior Backend Developer
  *                       jobDescription:
  *                         type: string
- *                         example: Looking for an experienced backend developer with Node.js expertise
+ *                         example: Looking for an experienced backend developer
  *                       postStart:
  *                         type: string
  *                         format: date-time
@@ -524,7 +570,7 @@ CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission,
  *                       postEnd:
  *                         type: string
  *                         format: date-time
- *                         example: 2025-03-01T00:00:00.000Z
+ *                         example: 2025-03-01T00:00:00.000Z 
  *                       noOfPositions:
  *                         type: number
  *                         example: 5
@@ -587,5 +633,441 @@ CandidateRouter.put('/updatecandidateprofile', validateJWT, candidatePermission,
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
 CandidateRouter.get('/getalljobsbycandidate', validateJWT, candidateController.getAllJobsByCandidate);
+
+/**
+ * @swagger
+ * /applytojob:
+ *   post:
+ *     summary: Apply to a job (Candidate only)
+ *     description: Allows a candidate to apply for a job. Creates a record in candidatejobs collection with isJobApplied set to true. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *                 pattern: '^[0-9a-fA-F]{24}$'
+ *                 description: MongoDB ObjectId of the job (24 character hexadecimal string)
+ *                 example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job applied successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Job applied successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     candidateId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439012
+ *                     jobId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     isJobApplied:
+ *                       type: boolean
+ *                       example: true
+ *                     isJobSaved:
+ *                       type: boolean
+ *                       example: false
+ *                     appliedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-15T10:30:00.000Z
+ *       400:
+ *         description: Bad Request - Invalid job ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *       401:
+ *         description: Unauthorized - No token provided or invalid candidate credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid candidate ID. Access denied !
+ *       404:
+ *         description: Job not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Job not found !
+ *       409:
+ *         description: Already applied to this job
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: You have already applied to this job !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while applying to job. Please try again later !
+ */
+CandidateRouter.post('/applytojob', validateJWT, candidatePermission, validateRequest(jobIdSchema), candidateController.applyToJob);
+
+/**
+ * @swagger
+ * /savejob:
+ *   post:
+ *     summary: Save a job for later (Candidate only)
+ *     description: Allows a candidate to save a job for later viewing. Creates or updates a record in candidatejobs collection with isJobSaved set to true. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *                 pattern: '^[0-9a-fA-F]{24}$'
+ *                 description: MongoDB ObjectId of the job (24 character hexadecimal string)
+ *                 example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job saved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Job saved successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     candidateId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439012
+ *                     jobId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     isJobSaved:
+ *                       type: boolean
+ *                       example: true
+ *                     isJobApplied:
+ *                       type: boolean
+ *                       example: false
+ *                     savedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-15T10:30:00.000Z
+ *       400:
+ *         description: Bad Request - Invalid job ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *       404:
+ *         description: Job not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Job not found !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while saving job. Please try again later !
+ */
+CandidateRouter.post('/savejob', validateJWT, candidatePermission, validateRequest(jobIdSchema), candidateController.saveJob);
+
+/**
+ * @swagger
+ * /unsavejob:
+ *   put:
+ *     summary: Unsave a previously saved job (Candidate only)
+ *     description: Allows a candidate to unsave a job. Updates the candidatejobs record by setting isJobSaved to false. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - jobId
+ *             properties:
+ *               jobId:
+ *                 type: string
+ *                 pattern: '^[0-9a-fA-F]{24}$'
+ *                 description: MongoDB ObjectId of the job (24 character hexadecimal string)
+ *                 example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job unsaved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Job unsaved successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     candidateId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439012
+ *                     jobId:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     isJobSaved:
+ *                       type: boolean
+ *                       example: false
+ *                     isJobApplied:
+ *                       type: boolean
+ *                       example: false
+ *       400:
+ *         description: Bad Request - Invalid job ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *       404:
+ *         description: Job not saved yet
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Job is not saved yet !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while unsaving job. Please try again later !
+ */
+CandidateRouter.put('/unsavejob', validateJWT, candidatePermission, validateRequest(jobIdSchema), candidateController.unsaveJob);
+
+/**
+ * @swagger
+ * /getmyjobs:
+ *   get:
+ *     summary: Get all jobs saved or applied by candidate (Candidate only)
+ *     description: Retrieves all jobs from candidatejobs collection for the logged-in candidate, including both saved and applied jobs. Returns complete job details with status flags. Requires JWT authentication and candidate permissions.
+ *     tags:
+ *       - Candidate
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: My jobs fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: My jobs fetched successfully !
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *                       candidateId:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439012
+ *                       jobId:
+ *                         type: object
+ *                         description: Populated job details
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: 507f1f77bcf86cd799439013
+ *                           jobTitle:
+ *                             type: string
+ *                             example: Senior Software Engineer
+ *                           organizationName:
+ *                             type: string
+ *                             example: Tech Corp
+ *                           jobLocation:
+ *                             type: string
+ *                             example: Bangalore
+ *                           minimumSalary:
+ *                             type: number
+ *                             example: 1000000
+ *                           maximumSalary:
+ *                             type: number
+ *                             example: 1500000
+ *                       isJobSaved:
+ *                         type: boolean
+ *                         example: true
+ *                       isJobApplied:
+ *                         type: boolean
+ *                         example: false
+ *                       savedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       appliedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: null
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *       401:
+ *         description: Unauthorized - No token provided or invalid candidate credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid candidate ID. Access denied !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while fetching my jobs. Please try again later !
+ */
+CandidateRouter.get('/getmyjobs', validateJWT, candidatePermission, candidateController.getMyJobs);
 
 export default CandidateRouter;

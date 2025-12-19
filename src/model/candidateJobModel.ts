@@ -1,21 +1,23 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import jobsModel from './jobsModel';
-import candidateModel from './candidateModel';
-import ICandidatejob from '../interfaces/candidateJob';
-import { required } from 'joi';
+import ICandidateJob from '../interfaces/candidateJob';
 
-const CandidateJobsSchema = new mongoose.Schema (
+const CandidateJobsSchema = new mongoose.Schema(
     {
-        condidatejobId: { type: mongoose.Schema.Types.ObjectId, required: true },
-        jobId: { type: mongoose.Schema.Types.ObjectId, ref: jobsModel, required: true },
-        candidateId: { type: mongoose.Schema.Types.ObjectId, ref: candidateModel, required: true },
+        jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Jobs', required: true },
+        candidateId: { type: mongoose.Schema.Types.ObjectId, ref: 'candidateSchema', required: true },
+        isJobSaved: { type: Boolean, default: false },
+        isJobApplied: { type: Boolean, default: false },
+        appliedAt: { type: Date },
+        savedAt: { type: Date },
     },
     {
         collection: 'candidatejobs',
+        timestamps: true,
         toObject: { virtuals: true },
         toJSON: { virtuals: true }
-    });
+    }
+);
 
 CandidateJobsSchema.plugin(uniqueValidator);
 
@@ -23,5 +25,7 @@ CandidateJobsSchema.virtual('id').get(function () {
     return String(this._id);
 });
 
-const candidatejobsModel = mongoose.model<ICandidatejob>('CandidateJobsSchema', CandidateJobsSchema);
-export default candidatejobsModel;
+CandidateJobsSchema.index({ candidateId: 1, jobId: 1 }, { unique: true });
+
+const candidateJobModel = mongoose.model<ICandidateJob>('CandidateJob', CandidateJobsSchema);
+export default candidateJobModel;

@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const updateVendorProfileSchema = Joi.object({
+const updateClientProfileSchema = Joi.object({
     primaryContact: Joi.object({
         firstName: Joi.string().pattern(/^[A-Za-z]+$/).min(2).trim().messages({
             'string.min': 'First name must be at least 2 characters long',
@@ -24,8 +24,12 @@ const updateVendorProfileSchema = Joi.object({
             'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
         }),
     secondaryContact: Joi.object({
-        firstName: Joi.string().trim().optional(),
-        lastName: Joi.string().trim().optional()
+        firstName: Joi.string().trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
+            'string.pattern.base': 'Firstname must contain only letters'
+        }),
+        lastName: Joi.string().trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
+            'string.pattern.base': 'Lastnamee must contain only letters'
+        })
     }).optional(),
     mobile: Joi.string().pattern(/^\d{10}$/).optional().messages({
         'string.pattern.base': 'Mobile number must be exactly 10 digits'
@@ -55,4 +59,4 @@ const updateVendorProfileSchema = Joi.object({
     'object.min': 'At least one field must be provided for update'
 });
 
-export default updateVendorProfileSchema;
+export default updateClientProfileSchema;

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import IVendor from '../interfaces/vendor';
+import IClient from '../interfaces/client';
 
-const vendorSchema = new mongoose.Schema(
+const clientSchema = new mongoose.Schema(
     {
         primaryContact: {
             firstName: { type: String, required: true, trim: true },
@@ -26,7 +26,7 @@ const vendorSchema = new mongoose.Schema(
         logo: { type: String, trim: true },
     },
     {
-        collection: 'vendors',
+        collection: 'client',
         timestamps: true,
         toObject: { virtuals: true },
         toJSON: {
@@ -39,14 +39,14 @@ const vendorSchema = new mongoose.Schema(
     }
 );
 
-vendorSchema.plugin(uniqueValidator, { message: '{PATH} already exists' });
+clientSchema.plugin(uniqueValidator, { message: '{PATH} already exists' });
 
-vendorSchema.virtual('id').get(function () {
+clientSchema.virtual('id').get(function () {
     return String(this._id);
 });
 
 // Add index for better query performance
-vendorSchema.index({ organizationName: 1 });
+clientSchema.index({ organizationName: 1 });
 
-const vendorModel = mongoose.model<IVendor>('Vendor', vendorSchema);
-export default vendorModel;
+const clientModel = mongoose.model<IClient>('client', clientSchema);
+export default clientModel;

@@ -1,12 +1,12 @@
 import Joi from 'joi';
 
-const updateVendorByAdminSchema = Joi.object({
-    vendorId: Joi.string()
+const updateClientByAdminSchema = Joi.object({
+    clientId: Joi.string()
         .pattern(/^[0-9a-fA-F]{24}$/)
         .required()
         .messages({
-            'string.pattern.base': 'Invalid vendor ID format. Must be a valid MongoDB ObjectId',
-            'any.required': 'Vendor ID is required'
+            'string.pattern.base': 'Invalid client ID format. Must be a valid MongoDB ObjectId',
+            'any.required': 'Client ID is required'
         }),
     primaryContact: Joi.object({
         firstName: Joi.string().pattern(/^[A-Za-z]+$/).min(2).trim().messages({
@@ -31,8 +31,12 @@ const updateVendorByAdminSchema = Joi.object({
             'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
         }),
     secondaryContact: Joi.object({
-        firstName: Joi.string().trim().optional().allow(''),
-        lastName: Joi.string().trim().optional().allow('')
+        firstName: Joi.string().trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
+            'string.pattern.base': 'Firstname must contain only letters'
+        }),
+        lastName: Joi.string().trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
+            'string.pattern.base': 'Firstname must contain only letters'
+        })
     }).optional(),
     status: Joi.string().valid('registered', 'active', 'inactive').required().messages({
         'any.only': 'Status must be either "registered", "active", or "inactive"'
@@ -66,7 +70,7 @@ const updateVendorByAdminSchema = Joi.object({
         'string.base': 'Logo must be a valid string URL'
     })
 }).min(2).messages({
-    'object.min': 'At least one field must be provided for update along with vendorId'
+    'object.min': 'At least one field must be provided for update along with clientId'
 });
 
-export default updateVendorByAdminSchema;
+export default updateClientByAdminSchema;

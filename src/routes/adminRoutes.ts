@@ -1,8 +1,11 @@
 import express, { Router } from 'express';
 import adminController from '../controllers/adminController';
 import validateRequest from '../middlewares/validateRequest';
-import updateVendorByAdminSchema from '../middlewares/schemas/updateVendorByAdminSchema';
+import updateClientByAdminSchema from '../middlewares/schemas/updateClientByAdminSchema';
+import clientIdSchema from '../middlewares/schemas/clientIdSchema';
+import recruiterSchema from '../middlewares/schemas/recruiterSchema';
 import validateJWT from '../middlewares/validateJWT';
+import adminPermission from '../middlewares/adminPermission';
 
 const AdminRouter: Router = express.Router();
 
@@ -152,7 +155,7 @@ AdminRouter.post('/createadmin', validateJWT, adminController.createAdmin);
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 vendors:
+ *                 clients:
  *                   type: array
  *                   items:
  *                     type: object
@@ -174,7 +177,7 @@ AdminRouter.post('/createadmin', validateJWT, adminController.createAdmin);
  *                         example: "Tech Solutions Pvt Ltd"
  *                       email:
  *                         type: string
- *                         example: "vendor@example.com"
+ *                         example: "client@example.com"
  *                       secondaryContact:
  *                         type: object
  *                         properties:
@@ -245,26 +248,46 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
 
 /**
  * @swagger
- * /getvendordetailsbyadmin/{vendorid}:
- *   get:
- *     summary: Get client details by ID (Admin only)
- *     description: Allows admin to retrieve complete details of a specific client by their ID. Requires JWT authentication.
+ * /createrecruiter:
+ *   post:
+ *     summary: Create a new recruiter (Admin only)
+ *     description: Allows admin to create a new recruiter account. Password will be hashed before storage. Requires JWT authentication and admin permissions.
  *     tags:
  *       - Admin
  *     security:
  *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: vendorid
- *         required: true
- *         schema:
- *           type: string
- *           pattern: '^[0-9a-fA-F]{24}$'
- *         description: MongoDB ObjectId of the client (24 character hexadecimal string)
- *         example: 
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - password
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 description: First name of the recruiter (2-50 characters, letters only)
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 description: Last name of the recruiter (2-50 characters, letters only)
+ *                 example: Doe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address of the recruiter (must be unique, will be converted to lowercase)
+ *                 example: john.doe@company.com
+ *               password:
+ *                 type: string
+ *                 description: Password for recruiter account (min 8 chars, must contain uppercase, lowercase, number and special character)
+ *                 example: SecurePass@123
  *     responses:
- *       200:
- *         description: Vendor details retrieved successfully
+ *       201:
+ *         description: Recruiter created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -275,7 +298,230 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Vendor details fetched successfully !"
+ *                   example: Recruiter created successfully !
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     email:
+ *                       type: string
+ *                       example: john.doe@company.com
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-14T10:30:00.000Z
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-12-14T10:30:00.000Z
+ *       400:
+ *         description: Bad Request - Validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Validation failed
+ *                 missingFields:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: email
+ *                       message:
+ *                         type: string
+ *                         example: Email is required
+ *       401:
+ *         description: Unauthorized - No token provided or invalid admin credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid admin credentials. Access denied !
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Insufficient permissions. Admin access required !
+ *       409:
+ *         description: Conflict - Recruiter already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Recruiter with this email already exists !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while creating recruiter. Please try again later !
+ */
+AdminRouter.post('/createrecruiter', validateJWT, adminPermission, validateRequest(recruiterSchema), adminController.createRecruiter);
+
+/**
+ * @swagger
+ * /getallrecruiters:
+ *   get:
+ *     summary: Get all recruiters (Admin only)
+ *     description: Retrieves a list of all recruiters in the system. Requires JWT authentication and admin permissions.
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Recruiters fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 recruiters:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *                       firstName:
+ *                         type: string
+ *                         example: John
+ *                       lastName:
+ *                         type: string
+ *                         example: Doe
+ *                       email:
+ *                         type: string
+ *                         example: john.doe@company.com
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-14T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-14T10:30:00.000Z
+ *       401:
+ *         description: Unauthorized - No token provided or invalid admin credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid admin credentials. Access denied !
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Insufficient permissions. Admin access required !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while fetching recruiters. Please try again later !
+ */
+AdminRouter.get('/getallrecruiters', validateJWT, adminPermission, adminController.getAllRecruiters);
+
+/**
+ * @swagger
+ * /getclientdetailsbyadmin/{clientId}:
+ *   get:
+ *     summary: Get client details by ID (Admin only)
+ *     description: Allows admin to retrieve complete details of a specific client by their ID. Requires JWT authentication. The clientId must be a valid 24-character MongoDB ObjectId.
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: clientId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           pattern: '^[0-9a-fA-F]{24}$'
+ *         description: MongoDB ObjectId of the client (24 character hexadecimal string)
+ *         example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Client details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Client details fetched successfully !"
  *                 data:
  *                   type: object
  *                   properties:
@@ -355,8 +601,32 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
  *                 message:
  *                   type: string
  *                   example: "No token provided !"
+ *       400:
+ *         description: Bad Request - Invalid clientId format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Validation failed"
+ *                 missingFields:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: "clientId"
+ *                       message:
+ *                         type: string
+ *                         example: "Invalid client ID format. Must be a valid MongoDB ObjectId"
  *       404:
- *         description: Vendor not found
+ *         description: Client not found
  *         content:
  *           application/json:
  *             schema:
@@ -367,9 +637,9 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Vendor not found !"
+ *                   example: "Client not found !"
  *       500:
- *         description: Internal server error occurred while fetching vendor details
+ *         description: Internal server error occurred while fetching client details
  *         content:
  *           application/json:
  *             schema:
@@ -380,16 +650,16 @@ AdminRouter.get('/getallclients', validateJWT, adminController.getAllClients);
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "An error occurred while fetching vendor details. Please try again later !"
+ *                   example: "An error occurred while fetching client details. Please try again later !"
  */
-AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminController.getVendorDetailsByAdmin);
+AdminRouter.get('/getclientdetailsbyadmin/:clientId', validateJWT, validateRequest(clientIdSchema, 'params'), adminController.getClientDetailsByAdmin);
 
 /**
  * @swagger
- * /updatevendorbyadmin:
+ * /updateclientbyadmin:
  *   put:
- *     summary: Update vendor details by admin
- *     description: Allows admin to update any vendor details except email. Requires JWT authentication. Password will be hashed if updated.
+ *     summary: Update client details by admin
+ *     description: Allows admin to update any client details except email. Requires JWT authentication. Password will be hashed if updated.
  *     tags:
  *       - Admin
  *     security:
@@ -401,12 +671,12 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *           schema:
  *             type: object
  *             required:
- *               - vendorId
+ *               - clientId
  *             properties:
- *               vendorId:
+ *               clientId:
  *                 type: string
  *                 pattern: '^[0-9a-fA-F]{24}$'
- *                 description: MongoDB ObjectId of the vendor (24 character hexadecimal string)
+ *                 description: MongoDB ObjectId of the client (24 character hexadecimal string)
  *                 example: 507f1f77bcf86cd799439011
  *               primaryContact:
  *                 type: object
@@ -421,11 +691,11 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *                     example: Doe
  *               organizationName:
  *                 type: string
- *                 description: Name of the vendor organization (2-100 characters)
+ *                 description: Name of the client organization (2-100 characters)
  *                 example: XYZ Technologies Pvt Ltd
  *               password:
  *                 type: string
- *                 description: New password for vendor account (min 8 chars, must contain uppercase, lowercase, number and special character)
+ *                 description: New password for client account (min 8 chars, must contain uppercase, lowercase, number and special character)
  *                 example: NewSecurePass@123
  *               secondaryContact:
  *                 type: object
@@ -441,7 +711,7 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *               status:
  *                 type: string
  *                 enum: [registered, active, inactive]
- *                 description: Registration status of the vendor
+ *                 description: Registration status of the client
  *                 example: active
  *               emailStatus:
  *                 type: string
@@ -450,7 +720,7 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *                 example: verified
  *               mobile:
  *                 type: string
- *                 description: Mobile number of the vendor (must be 10 digits)
+ *                 description: Mobile number of the client (must be 10 digits)
  *                 example: "9876543210"
  *               mobileStatus:
  *                 type: string
@@ -459,7 +729,7 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *                 example: verified
  *               location:
  *                 type: string
- *                 description: Location of the vendor
+ *                 description: Location of the client
  *                 example: Mumbai
  *               gstin:
  *                 type: string
@@ -472,11 +742,11 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *               category:
  *                 type: string
  *                 enum: [IT, Non-IT]
- *                 description: Vendor category
+ *                 description: Client category
  *                 example: IT
  *     responses:
  *       200:
- *         description: Vendor updated successfully
+ *         description: Client updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -487,7 +757,7 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Vendor updated successfully !
+ *                   example: Client updated successfully !
  *                 data:
  *                   type: object
  *                   properties:
@@ -557,7 +827,7 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *                   type: string
  *                   example: Invalid token !
  *       404:
- *         description: Vendor not found
+ *         description: Client not found
  *         content:
  *           application/json:
  *             schema:
@@ -568,7 +838,7 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: Vendor not found !
+ *                   example: Client not found !
  *       500:
  *         description: Internal server error
  *         content:
@@ -581,9 +851,9 @@ AdminRouter.get('/getvendordetailsbyadmin/:vendorid', validateJWT, adminControll
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: An error occurred while updating vendor details. Please try again later !
+ *                   example: An error occurred while updating client details. Please try again later !
  */
-AdminRouter.put('/updatevendorbyadmin', validateJWT, validateRequest(updateVendorByAdminSchema), adminController.updateVendorByAdmin);
+AdminRouter.put('/updateclientbyadmin', validateJWT, validateRequest(updateClientByAdminSchema), adminController.updateClientByAdmin);
 
 /**
  * @swagger
@@ -644,11 +914,23 @@ AdminRouter.put('/updatevendorbyadmin', validateJWT, validateRequest(updateVendo
  *                     gender:
  *                       type: string
  *                       example: "Male"
+ *                     profile:
+ *                       type: string
+ *                       format: uri
+ *                       example: "https://cdn.example.com/profiles/summary.pdf"
+ *                       nullable: true
+ *                     profilePicture:
+ *                       type: string
+ *                       format: uri
+ *                       example: "https://cdn.example.com/images/profile.jpg"
+ *                       nullable: true
  *                     createdAt:
  *                       type: string
+ *                       format: date-time
  *                       example: "2024-01-10T12:45:32.120Z"
  *                     updatedAt:
  *                       type: string
+ *                       format: date-time
  *                       example: "2024-01-10T12:45:32.120Z"
  *
  *       404:
@@ -680,108 +962,5 @@ AdminRouter.put('/updatevendorbyadmin', validateJWT, validateRequest(updateVendo
  *                   example: Failed to fetch candidate details.
  */
 AdminRouter.get('/getcandidatedetailsbyadmin/:candidateid', validateJWT, adminController.getCandidateDetailsByAdmin);
-
-/**
- * @swagger
- * /getalljobsbyadmin:
- *   get:
- *     tags:
- *       - Admin
- *     summary: Get all jobs (Admin only)
- *     description: Fetches a list of all jobs from the database.
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Successfully fetched all jobs
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 jobs:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: string
- *                         example: "64f1b5e4a1234567890abcd1"
- *                       vendorId:
- *                         type: string
- *                         example: "vendor123"
- *                       jobTitle:
- *                         type: string
- *                         example: "Software Engineer"
- *                       jobDescription:
- *                         type: string
- *                         example: "Responsible for backend API development."
- *                       postStart:
- *                         type: string
- *                         format: date-time
- *                         example: "2025-01-01T09:00:00Z"
- *                       noOfPositions:
- *                         type: integer
- *                         example: 3
- *                       minimumSalary:
- *                         type: number
- *                         example: 40000
- *                       maximumSalary:
- *                         type: number
- *                         example: 70000
- *                       jobType:
- *                         type: string
- *                         example: "Full-Time"
- *                       jobLocation:
- *                         type: string
- *                         example: "Remote"
- *                       minimumExperience:
- *                         type: integer
- *                         example: 2
- *                       maximumExperience:
- *                         type: integer
- *                         example: 5
- *                       status:
- *                         type: string
- *                         example: "Active"
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                         example: "2025-01-10T14:22:10Z"
- *                       updatedAt:
- *                         type: string
- *                         format: date-time
- *                         example: "2025-01-12T15:40:20Z"
- *       401:
- *         description: Unauthorized - JWT token missing or invalid
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Unauthorized access"
- *       500:
- *         description: Server error while fetching jobs
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Failed to fetch jobs details"
- */
-AdminRouter.get('/getalljobsbyadmin', validateJWT, adminController.getAllJobsByAdmin);
 
 export default AdminRouter;

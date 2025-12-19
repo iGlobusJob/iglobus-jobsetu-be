@@ -7,7 +7,7 @@ export interface IContact {
     lastName: string;
 }
 
-interface IVendor extends Document {
+interface IClient extends Document {
     primaryContact: IContact;
     organizationName: string;
     email: string;
@@ -26,10 +26,10 @@ interface IVendor extends Document {
     updatedAt?: Date;
 }
 
-export interface VendorTokenPayload {
-    vendorId: string;
+export interface ClientTokenPayload {
+    clientId: string;
     email: string;
     organizationName: string;
 }
 
-export default IVendor;
+export default IClient;

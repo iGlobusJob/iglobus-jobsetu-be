@@ -2,7 +2,7 @@ declare namespace Express {
     export interface Request {
         file?: Multer.File;
         user?: {
-            vendorId?: string;
+            clientId?: string;
             adminId?: string;
             candidateId?: string;
             email?: string;
