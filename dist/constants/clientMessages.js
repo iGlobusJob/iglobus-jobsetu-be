@@ -1,0 +1,63 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CLIENT_LOGIN_ERROR_MAPPING = exports.HTTP_STATUS = exports.CLIENT_ERROR_MESSAGES = exports.CLIENT_SUCCESS_MESSAGES = void 0;
+exports.CLIENT_SUCCESS_MESSAGES = {
+    CLIENT_ADD_SUCCESS_MESSAGE: 'Client registered successfully !',
+    CLIENT_LOGIN_SUCCESS_MESSAGE: ' Client login successfully !',
+    CLIENT_FETCH_SUCCESS_MESSAGE: 'Client details fetched successfully !',
+    CLIENT_PROFILE_UPDATED_SUCCESS_MESSAGE: 'Client profile updated successfully !',
+    JOB_CREATED_SUCCESS_MESSAGE: 'Job created successfully !',
+    JOB_UPDATED_SUCCESS_MESSAGE: 'Job updated successfully !',
+    JOB_DELETED_SUCCESS_MESSAGE: 'Job deleted successfully !',
+    JOB_FETCH_SUCCESS_MESSAGE: 'Job details fetched successfully !',
+    JOBS_FETCHED_SUCCESS_MESSAGE: 'Jobs fetched successfully !',
+};
+exports.CLIENT_ERROR_MESSAGES = {
+    CLIENT_NOT_FOUND: 'Invalid Account !',
+    LOGO_UPLOAD_FAILED: 'An error occurred while uploading logo. Please try again later !',
+    CLIENT_ADD_ERROR_MESSAGE: 'Email already exists !',
+    CLIENT_FETCH_ERROR_MESSAGE: 'Error in fetching client details !',
+    INVALID_CLIENT_DATA: 'Invalid client data provided',
+    REGISTRATION_FAILED: 'Email already exist !',
+    BAD_CREDENTIALS: 'Incorrect password !',
+    ACCOUNT_NOT_ACTIVE: 'Your account is under review by admin for activation !',
+    ACCOUNT_DEACTIVATED: 'Your account has been deactivated. Please contact support !',
+    LOGIN_FAILED: 'An error occurred during login. Please try again later !',
+    INVALID_CLIENT_ID: 'Invalid client ID provided !',
+    FETCH_FAILED: 'An error occurred while fetching client details. Please try again later !',
+    CLIENT_PROFILE_UPDATE_FAILED: 'An error occurred while updating client profile. Please try again later !',
+    JOB_CREATION_FAILED: 'An error occurred while creating the job. Please try again later !',
+    JOB_NOT_FOUND_OR_UNAUTHORIZED: 'Job not found or you are not authorized to update this job !',
+    JOB_UPDATE_FAILED: 'An error occurred while updating the job. Please try again later !',
+    JOB_NOT_FOUND: 'Job not found !',
+    JOB_DELETE_ERROR_MESSAGE: ' An error occured while deleting the job !',
+    JOBS_FETCH_FAILED: 'An error occurred while fetching jobs. Please try again later !',
+};
+exports.HTTP_STATUS = {
+    OK: 200,
+    CREATED: 201,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    CONFLICT: 409,
+    INTERNAL_SERVER_ERROR: 500,
+};
+exports.CLIENT_LOGIN_ERROR_MAPPING = {
+    BAD_CREDENTIALS: {
+        status: exports.HTTP_STATUS.UNAUTHORIZED,
+        message: exports.CLIENT_ERROR_MESSAGES.BAD_CREDENTIALS
+    },
+    CLIENT_NOT_FOUND: {
+        status: exports.HTTP_STATUS.UNAUTHORIZED,
+        message: exports.CLIENT_ERROR_MESSAGES.CLIENT_NOT_FOUND
+    },
+    ACCOUNT_NOT_ACTIVE: {
+        status: exports.HTTP_STATUS.FORBIDDEN,
+        message: exports.CLIENT_ERROR_MESSAGES.ACCOUNT_NOT_ACTIVE
+    },
+    ACCOUNT_DEACTIVATED: {
+        status: exports.HTTP_STATUS.FORBIDDEN,
+        message: exports.CLIENT_ERROR_MESSAGES.ACCOUNT_DEACTIVATED
+    }
+};

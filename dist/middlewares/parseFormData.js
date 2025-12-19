@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const parseFormData = (req, res, next) => {
+    if (req.body) {
+        if (req.body.primaryContact && typeof req.body.primaryContact === 'string') {
+            try {
+                req.body.primaryContact = JSON.parse(req.body.primaryContact);
+            }
+            catch (error) {
+                console.log('Failed to parse primaryContact:', error);
+            }
+        }
+        if (req.body.secondaryContact && typeof req.body.secondaryContact === 'string') {
+            try {
+                req.body.secondaryContact = JSON.parse(req.body.secondaryContact);
+            }
+            catch (error) {
+                console.log('Failed to parse secondaryContact:', error);
+            }
+        }
+    }
+    next();
+};
+exports.default = parseFormData;
