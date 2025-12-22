@@ -17,6 +17,13 @@ const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
 const commonRoutes_1 = __importDefault(require("./routes/commonRoutes"));
 const recruiterRoutes_1 = __importDefault(require("./routes/recruiterRoutes"));
 const clientRoutes_1 = __importDefault(require("./routes/clientRoutes"));
+// Import all models to ensure collections are created
+require("./model/adminModel");
+require("./model/candidateModel");
+require("./model/candidateJobModel");
+require("./model/clientModel");
+require("./model/jobsModel");
+require("./model/recruiterModel");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;

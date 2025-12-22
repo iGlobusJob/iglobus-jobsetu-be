@@ -13,6 +13,14 @@ import CommonRouter from './routes/commonRoutes';
 import RecruiterRouter from './routes/recruiterRoutes';
 import ClientRouter from './routes/clientRoutes';
 
+// Import all models to ensure collections are created
+import './model/adminModel';
+import './model/candidateModel';
+import './model/candidateJobModel';
+import './model/clientModel';
+import './model/jobsModel';
+import './model/recruiterModel';
+
 dotenv.config();
 
 const app: Express = express();
