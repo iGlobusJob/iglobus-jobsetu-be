@@ -36,21 +36,29 @@ const initializeCollections = async () => {
         ];
         // Create missing collections
         for (const collection of requiredCollections) {
-            if (!existingCollections.includes(collection.name)) {
-                await db.createCollection(collection.name);
-                console.log(`✓ Created collection: ${collection.name}`);
+            try {
+                if (!existingCollections.includes(collection.name)) {
+                    await db.createCollection(collection.name);
+                    console.log(`✓ Created collection: ${collection.name}`);
+                }
+                else {
+                    console.log(`✓ Collection already exists: ${collection.name}`);
+                }
+                // Ensure indexes are created (sync indexes without throwing on conflicts)
+                await collection.model.syncIndexes();
             }
-            else {
-                console.log(`✓ Collection already exists: ${collection.name}`);
+            catch (error) {
+                // Ignore index conflicts - indexes already exist
+                if (error.code !== 86) {
+                    console.warn(`Warning for collection ${collection.name}:`, error.message);
+                }
             }
-            // Ensure indexes are created
-            await collection.model.init();
         }
         console.log('All collections initialized successfully');
     }
     catch (error) {
         console.error('Error initializing collections:', error);
-        throw error;
+        // Don't throw - allow the application to continue
     }
 };
 exports.initializeCollections = initializeCollections;

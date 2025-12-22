@@ -26,7 +26,6 @@ recruiterSchema.plugin(mongoose_unique_validator_1.default, { message: '{PATH} a
 recruiterSchema.virtual('id').get(function () {
     return String(this._id);
 });
-// Add index for better query performance
-recruiterSchema.index({ email: 1 });
+// Note: email index is automatically created by unique: true in schema definition
 const recruiterModel = mongoose_1.default.model('Recruiter', recruiterSchema);
 exports.default = recruiterModel;

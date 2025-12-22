@@ -101,7 +101,8 @@ const getJobById = async (id) => {
 };
 const getAllJobs = async () => {
     try {
-        const jobs = await jobsModel_1.default.find().populate({
+        const now = new Date();
+        const jobs = await jobsModel_1.default.find({ postStart: { $lte: now } }).populate({
             path: 'clientId',
             select: 'organizationName primaryContact logo'
         });
