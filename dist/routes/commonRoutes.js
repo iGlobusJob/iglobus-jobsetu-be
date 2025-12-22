@@ -7,6 +7,9 @@ const express_1 = __importDefault(require("express"));
 const commonController_1 = __importDefault(require("../controllers/commonController"));
 const validateJWT_1 = __importDefault(require("../middlewares/validateJWT"));
 const CommonRouter = express_1.default.Router();
+CommonRouter.get('/', (req, res) => {
+    res.status(200).json({ message: 'Successfully server up and running !' });
+});
 /**
  * @swagger
  * /getallcandidates:
