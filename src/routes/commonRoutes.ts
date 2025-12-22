@@ -4,6 +4,10 @@ import validateJWT from '../middlewares/validateJWT';
 
 const CommonRouter: Router = express.Router();
 
+CommonRouter.get('/', (req, res) => {
+    res.status(200).json({ message: 'Successfully server up and running !' });
+});
+
 /**
  * @swagger
  * /getallcandidates:
