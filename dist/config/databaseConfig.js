@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const initializeCollections_1 = require("./initializeCollections");
 dotenv_1.default.config();
 const db_connection_string = process.env.DB_CONNECTION_STRING || '';
 const db_options = {
@@ -19,8 +20,10 @@ mongoose_1.default.connect(db_connection_string, db_options)
 const connectToDb = () => {
     const db = mongoose_1.default.connection;
     db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-    db.once('open', () => {
+    db.once('open', async () => {
         console.log('Connected to MongoDB !!');
+        // Initialize all collections
+        await (0, initializeCollections_1.initializeCollections)();
     });
 };
 exports.default = connectToDb;

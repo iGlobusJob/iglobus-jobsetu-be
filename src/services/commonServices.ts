@@ -108,7 +108,8 @@ const getJobById = async (id: string): Promise<any> => {
 
 const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
     try {
-        const jobs = await jobsModel.find().populate({
+        const now = new Date();
+        const jobs = await jobsModel.find({   postStart: { $lte: now } }).populate({
             path: 'clientId',
             select: 'organizationName primaryContact logo'
         });

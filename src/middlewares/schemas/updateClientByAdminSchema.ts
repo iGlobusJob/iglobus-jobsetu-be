@@ -35,7 +35,7 @@ const updateClientByAdminSchema = Joi.object({
             'string.pattern.base': 'Firstname must contain only letters'
         }),
         lastName: Joi.string().trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
-            'string.pattern.base': 'Firstname must contain only letters'
+            'string.pattern.base': 'Lastname must contain only letters'
         })
     }).optional(),
     status: Joi.string().valid('registered', 'active', 'inactive').required().messages({

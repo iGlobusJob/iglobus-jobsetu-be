@@ -29,8 +29,7 @@ recruiterSchema.virtual('id').get(function () {
     return String(this._id);
 });
 
-// Add index for better query performance
-recruiterSchema.index({ email: 1 });
+// Note: email index is automatically created by unique: true in schema definition
 
 const recruiterModel = mongoose.model<IRecruiter>('Recruiter', recruiterSchema);
 export default recruiterModel;
