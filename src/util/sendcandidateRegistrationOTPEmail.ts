@@ -16,9 +16,7 @@ const emailConfiguration: any = {
 
 const sendOTPEmail = async (email: string, otp: string) => {
   try {
-    console.warn('Reached to start sending OTP !!')
     const transporter = nodemailer.createTransport(emailConfiguration);
-    console.warn(`transporter created: ${transporter}`);
     const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
@@ -59,7 +57,6 @@ const sendOTPEmail = async (email: string, otp: string) => {
       subject: 'Your OTP to Login - Job Sethi',
       html: mailBody,
     };
-    console.warn(`Mail Options prepared: ${JSON.stringify(mailOptions)}`);
 
     const result = await transporter.sendMail(mailOptions);
     console.warn(`OTP Email sent successfully: ${result.response}`);
