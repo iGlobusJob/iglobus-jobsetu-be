@@ -35,7 +35,7 @@ const candidateJoin = async (email) => {
         candidate = await newCandidate.save();
     }
     sendcandidateRegistrationOTPEmail_1.default.sendOTPEmail(email, otp).catch(error => {
-        console.log('Failed to send OTP email:', error);
+        console.error('Failed to send OTP email:', error);
     });
     return { candidate, otp };
 };
