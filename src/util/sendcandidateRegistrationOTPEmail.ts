@@ -4,20 +4,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const emailConfiguration: any = {
-    service: process.env.EMAIL_CONFIG_SERVICE,
-    host: process.env.EMAIL_CONFIG_HOST,
-    port: Number(process.env.EMAIL_CONFIG_PORT),
-    secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
-    auth: {
-        user: process.env.EMAIL_CONFIG_AUTH_USER,
-        pass: process.env.EMAIL_CONFIG_AUTH_PASS,
-    }
+  service: process.env.EMAIL_CONFIG_SERVICE,
+  host: process.env.EMAIL_CONFIG_HOST,
+  port: Number(process.env.EMAIL_CONFIG_PORT),
+  secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
+  auth: {
+    user: process.env.EMAIL_CONFIG_AUTH_USER,
+    pass: process.env.EMAIL_CONFIG_AUTH_PASS,
+  }
 }
 
 const sendOTPEmail = async (email: string, otp: string) => {
-    try {
-        const transporter = nodemailer.createTransport(emailConfiguration);
-        const mailBody = `     
+  try {
+    const transporter = nodemailer.createTransport(emailConfiguration);
+    const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
     <div style="max-width: 750px; height:auto; margin: 0 auto; border: 1px solid #f7f1f4 ; border-radius: 5px;">
@@ -51,27 +51,27 @@ const sendOTPEmail = async (email: string, otp: string) => {
   </body>
 </html>`;
 
-        const mailOptions = {
-            from: process.env.EMAIL_FROM,
-            to: email,
-            subject: 'Your OTP to Login - Job Sethi',
-            html: mailBody,
-        };
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Your OTP to Login - Job Sethi',
+      html: mailBody,
+    };
 
-        const result = await transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log('Error sending OTP email:', error);
-                return error;
-            }
-
-            console.log('OTP Email sent successfully:', info.response);
-            return info.response;
-        });
-        return result;
-    } catch (error) {
-        console.log('Error in sending OTP Email at services:', error);
+    const result = await transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending OTP email:', error);
         return error;
-    }
+      }
+
+      console.warn('OTP Email sent successfully:', info.response);
+      return info.response;
+    });
+    return result;
+  } catch (error) {
+    console.log('Error in sending OTP Email at services:', error);
+    return error;
+  }
 }
 
 export default { sendOTPEmail };
