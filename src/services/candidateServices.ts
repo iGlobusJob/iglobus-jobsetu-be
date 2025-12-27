@@ -2,7 +2,7 @@ import candidateModel from "../model/candidateModel";
 import jobsModel from "../model/jobsModel";
 import candidateJobModel from "../model/candidateJobModel";
 import ICandidate, { FetchCandidateByIdResponse, FetchAllCandidateResponse } from "../interfaces/candidate";
-import IJobs, { FetchAllJobsResponse } from "../interfaces/jobs";
+import { FetchAllJobsResponse } from "../interfaces/jobs";
 import ICandidateJob from "../interfaces/candidateJob";
 import jwtUtil from "../util/jwtUtil";
 import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
@@ -36,7 +36,7 @@ const candidateJoin = async (email: string): Promise<{ candidate: ICandidate; ot
         });
         candidate = await newCandidate.save();
     }
-    console.warn(`Going go send OTP for email: ${email}, with OTP: ${otp}`);
+
     await sendOTPEmailUtil.sendOTPEmail(email, otp).catch(error => {
         console.error('Failed to send OTP email:', error);
     });
