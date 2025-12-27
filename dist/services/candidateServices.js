@@ -34,6 +34,7 @@ const candidateJoin = async (email) => {
         });
         candidate = await newCandidate.save();
     }
+    console.warn(`Going go send OTP for email: ${email}, with OTP: ${otp}`);
     sendcandidateRegistrationOTPEmail_1.default.sendOTPEmail(email, otp).catch(error => {
         console.error('Failed to send OTP email:', error);
     });
