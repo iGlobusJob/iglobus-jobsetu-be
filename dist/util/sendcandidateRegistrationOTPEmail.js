@@ -18,7 +18,9 @@ const emailConfiguration = {
 };
 const sendOTPEmail = async (email, otp) => {
     try {
+        console.warn('Reached to start sending OTP !!');
         const transporter = nodemailer_1.default.createTransport(emailConfiguration);
+        console.warn(`transporter created: ${transporter}`);
         const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
