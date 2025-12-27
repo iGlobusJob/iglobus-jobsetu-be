@@ -37,7 +37,7 @@ const candidateJoin = async (email: string): Promise<{ candidate: ICandidate; ot
         candidate = await newCandidate.save();
     }
     console.warn(`Going go send OTP for email: ${email}, with OTP: ${otp}`);
-    sendOTPEmailUtil.sendOTPEmail(email, otp).catch(error => {
+    await sendOTPEmailUtil.sendOTPEmail(email, otp).catch(error => {
         console.error('Failed to send OTP email:', error);
     });
 
