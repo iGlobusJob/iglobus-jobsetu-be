@@ -60,13 +60,13 @@ const sendOTPEmail = async (email: string, otp: string) => {
       html: mailBody,
     };
 
-    const result = await transporter.sendMail(mailOptions, (error, info) => {
+    const result = transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error('Error sending OTP email:', error);
         return error;
       }
 
-      console.warn('OTP Email sent successfully:', info.response);
+      console.warn(`OTP Email sent successfully: ${info.response}`);
       return info.response;
     });
     return result;
