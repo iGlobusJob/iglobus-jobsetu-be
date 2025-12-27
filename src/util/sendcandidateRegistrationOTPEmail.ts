@@ -59,20 +59,14 @@ const sendOTPEmail = async (email: string, otp: string) => {
       subject: 'Your OTP to Login - Job Sethi',
       html: mailBody,
     };
+    console.warn(`Mail Options prepared: ${JSON.stringify(mailOptions)}`);
 
-    const result = transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error('Error sending OTP email:', error);
-        return error;
-      }
-
-      console.warn(`OTP Email sent successfully: ${info.response}`);
-      return info.response;
-    });
+    const result = await transporter.sendMail(mailOptions);
+    console.warn(`OTP Email sent successfully: ${result.response}`);
     return result;
   } catch (error) {
-    console.log('Error in sending OTP Email at services:', error);
-    return error;
+    console.error('Error in sending OTP Email at services:', error);
+    throw error;
   }
 }
 
