@@ -12,6 +12,7 @@ const validateRequest = (schema, source = 'body') => {
         else {
             dataToValidate = req.body;
         }
+        console.warn(`Validating data from ${source} is: ${JSON.stringify(dataToValidate)}`);
         const { error } = schema.validate(dataToValidate, { abortEarly: false });
         if (error) {
             const missingFields = error.details.map(detail => ({

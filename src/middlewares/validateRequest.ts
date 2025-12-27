@@ -13,6 +13,7 @@ const validateRequest = (schema: Joi.ObjectSchema, source: 'body' | 'query' | 'p
             dataToValidate = req.body;
         }
 
+        console.warn(`Validating data from ${source} is: ${JSON.stringify(dataToValidate)}`);
         const { error } = schema.validate(dataToValidate, { abortEarly: false });
 
         if (error) {

@@ -60,10 +60,10 @@ const sendOTPEmail = async (email, otp) => {
         };
         const result = await transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log('Error sending OTP email:', error);
+                console.error('Error sending OTP email:', error);
                 return error;
             }
-            console.log('OTP Email sent successfully:', info.response);
+            console.warn('OTP Email sent successfully:', info.response);
             return info.response;
         });
         return result;
