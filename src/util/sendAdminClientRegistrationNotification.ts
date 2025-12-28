@@ -16,7 +16,9 @@ const emailConfiguration: any = {
 
 const sendAdminNotificationEmail = async (organizationName: string, clientEmail: string, clientId: string) => {
   try {
+    console.warn('Reached sendAdminNotificationEmail !!');
     const transporter = nodemailer.createTransport(emailConfiguration);
+    console.warn('Admin transporter created !!');
     const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
@@ -65,9 +67,9 @@ const sendAdminNotificationEmail = async (organizationName: string, clientEmail:
       subject: `New Client Registration: ${organizationName} - Approval Pending`,
       html: mailBody,
     };
-
+    console.warn(`Admin mail options prepared: ${JSON.stringify(mailOptions)}`);
     const result = await transporter.sendMail(mailOptions);
-    console.log('Admin notification email sent successfully:', result.response);
+    console.warn(`Admin notification email sent successfully: ${result.response}`);
     return result;
   } catch (error) {
     console.error('Error in sending admin notification email:', error);
