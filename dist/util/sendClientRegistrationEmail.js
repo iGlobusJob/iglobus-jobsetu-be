@@ -18,7 +18,9 @@ const emailConfiguration = {
 };
 const sendClientRegistrationEmail = async (email, organizationName) => {
     try {
+        console.warn('Reached sendClientRegistrationEmail !!');
         const transporter = nodemailer_1.default.createTransport(emailConfiguration);
+        console.warn('Transporter created !!');
         const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
@@ -61,8 +63,9 @@ const sendClientRegistrationEmail = async (email, organizationName) => {
             subject: 'Welcome to Job Setu - Account Under Review',
             html: mailBody,
         };
+        console.warn(`Mail options prepared: ${JSON.stringify(mailOptions)}`);
         const result = await transporter.sendMail(mailOptions);
-        console.log('Client registration email sent successfully:', result.response);
+        console.warn(`Client registration email sent successfully: ${result.response}`);
         return result;
     }
     catch (error) {
