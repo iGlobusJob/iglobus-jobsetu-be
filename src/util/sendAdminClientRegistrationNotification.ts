@@ -66,19 +66,12 @@ const sendAdminNotificationEmail = async (organizationName: string, clientEmail:
       html: mailBody,
     };
 
-    const result = await transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log('Error sending admin notification email:', error);
-        return error;
-      }
-
-      console.log('Admin notification email sent successfully:', info.response);
-      return info.response;
-    });
+    const result = await transporter.sendMail(mailOptions);
+    console.log('Admin notification email sent successfully:', result.response);
     return result;
   } catch (error) {
-    console.log('Error in sending admin notification email:', error);
-    return error;
+    console.error('Error in sending admin notification email:', error);
+    throw error;
   }
 }
 

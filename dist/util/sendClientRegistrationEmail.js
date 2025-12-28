@@ -61,19 +61,13 @@ const sendClientRegistrationEmail = async (email, organizationName) => {
             subject: 'Welcome to Job Setu - Account Under Review',
             html: mailBody,
         };
-        const result = await transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log('Error sending client registration email:', error);
-                return error;
-            }
-            console.log('Client registration email sent successfully:', info.response);
-            return info.response;
-        });
+        const result = await transporter.sendMail(mailOptions);
+        console.log('Client registration email sent successfully:', result.response);
         return result;
     }
     catch (error) {
-        console.log('Error in sending client registration email:', error);
-        return error;
+        console.error('Error in sending client registration email:', error);
+        throw error;
     }
 };
 exports.default = { sendClientRegistrationEmail };
