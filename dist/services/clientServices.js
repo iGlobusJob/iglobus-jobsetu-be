@@ -32,12 +32,12 @@ const clientRegistration = async (clientData, file) => {
         }
     }
     // Send registration email asynchronously (non-blocking)
-    sendClientRegistrationEmail_1.default.sendClientRegistrationEmail(savedClient.email, savedClient.organizationName).catch(error => {
-        console.log('Failed to send client registration email:', error);
+    await sendClientRegistrationEmail_1.default.sendClientRegistrationEmail(savedClient.email, savedClient.organizationName).catch(error => {
+        console.error('Failed to send client registration email:', error);
     });
     // Send admin notification email asynchronously (non-blocking)
-    sendAdminClientRegistrationNotification_1.default.sendAdminNotificationEmail(savedClient.organizationName, savedClient.email, savedClient.id).catch(error => {
-        console.log('Failed to send admin notification email:', error);
+    await sendAdminClientRegistrationNotification_1.default.sendAdminNotificationEmail(savedClient.organizationName, savedClient.email, savedClient.id).catch(error => {
+        console.error('Failed to send admin notification email:', error);
     });
     return savedClient;
 };

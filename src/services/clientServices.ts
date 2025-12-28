@@ -44,20 +44,20 @@ const clientRegistration = async (clientData: Partial<IClient>, file?: Express.M
     }
 
     // Send registration email asynchronously (non-blocking)
-    sendClientRegistrationEmailUtil.sendClientRegistrationEmail(
+    await sendClientRegistrationEmailUtil.sendClientRegistrationEmail(
         savedClient.email,
         savedClient.organizationName
     ).catch(error => {
-        console.log('Failed to send client registration email:', error);
+        console.error('Failed to send client registration email:', error);
     });
 
     // Send admin notification email asynchronously (non-blocking)
-    sendAdminNotificationUtil.sendAdminNotificationEmail(
+    await sendAdminNotificationUtil.sendAdminNotificationEmail(
         savedClient.organizationName,
         savedClient.email,
         savedClient.id
     ).catch(error => {
-        console.log('Failed to send admin notification email:', error);
+        console.error('Failed to send admin notification email:', error);
     });
 
     return savedClient;
