@@ -44,8 +44,8 @@ const sendOTPEmail = async (firstName: string, lastName: string, userName: strin
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
           Please reach out to 
-          <a href="mailto:admin@jobsethu.com" style="color: #007bff; text-decoration: none;">
-            admin@jobsethu.com
+          <a href="mailto:iglobusjobsetu@gmail.com" style="color: #007bff; text-decoration: none;">
+            iglobusjobsetu@gmail.com
           </a>, if you are facing any issues.
         </p><br>
 
