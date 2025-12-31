@@ -37,7 +37,7 @@ const sendAdminNotificationEmail = async (organizationName, clientEmail, clientI
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          A new client has registered on <b>Job Setu</b> and is awaiting your approval.
+          A new client has registered on <b>JobSetu</b> and is awaiting your approval.
         </p>
 
         <div style="background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;">
@@ -57,7 +57,7 @@ const sendAdminNotificationEmail = async (organizationName, clientEmail, clientI
         </p>
 
         <p style="margin: 20px 0 5px; font-size: 14px; color: #333;">Regards,</p>
-        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGLOBUS - Job Setu System</p>
+        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGLOBUS - JobSetu System</p>
       </div>
     </div>
   </body>

@@ -25,7 +25,7 @@ const sendOTPEmail = async (email, otp) => {
     <div style="max-width: 750px; height:auto; margin: 0 auto; border: 1px solid #f7f1f4 ; border-radius: 5px;">
       <!-- Header Section -->
       <div style="background-color:rgb(121, 181, 245); color: #fff; text-align: center; padding: 10px; border-top-left-radius: 5px; border-top-right-radius: 5px;">
-        <h2 style="margin: 0; font-size: 18px;">Your OTP for Job Setu</h2>
+        <h2 style="margin: 0; font-size: 18px;">Your OTP for JobSetu</h2>
       </div>
 
       <!-- Body Section -->
@@ -55,7 +55,7 @@ const sendOTPEmail = async (email, otp) => {
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to: email,
-            subject: 'Your OTP to Login - Job Sethi',
+            subject: 'Your OTP to Login - JobSetu',
             html: mailBody,
         };
         const result = await transporter.sendMail(mailOptions);
