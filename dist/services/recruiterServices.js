@@ -124,6 +124,7 @@ const getAllCandidatesService = async () => {
                 dateOfBirth: candidate.dateOfBirth || '',
                 address: candidate.address || '',
                 profilePicture: profilePictureUrl || '',
+                category: candidate.category || '',
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt,
             };
