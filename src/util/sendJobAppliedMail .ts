@@ -4,20 +4,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const emailConfiguration: any = {
-    service: process.env.EMAIL_CONFIG_SERVICE,
-    host: process.env.EMAIL_CONFIG_HOST,
-    port: Number(process.env.EMAIL_CONFIG_PORT),
-    secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
-    auth: {
-        user: process.env.EMAIL_CONFIG_AUTH_USER,
-        pass: process.env.EMAIL_CONFIG_AUTH_PASS,
-    }
+  service: process.env.EMAIL_CONFIG_SERVICE,
+  host: process.env.EMAIL_CONFIG_HOST,
+  port: Number(process.env.EMAIL_CONFIG_PORT),
+  secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
+  auth: {
+    user: process.env.EMAIL_CONFIG_AUTH_USER,
+    pass: process.env.EMAIL_CONFIG_AUTH_PASS,
+  }
 }
 
 const candidateJobApplied = async (email: string, jobTitle: string) => {
-    try {
-        const transporter = nodemailer.createTransport(emailConfiguration);
-        const mailBody = `     
+  try {
+    const transporter = nodemailer.createTransport(emailConfiguration);
+    const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
     <div style="max-width: 750px; height:auto; margin: 0 auto; border: 1px solid #f7f1f4; border-radius: 5px;">
@@ -43,15 +43,15 @@ const candidateJobApplied = async (email: string, jobTitle: string) => {
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Our recruitment team will review your application and contact you if your profile matches the job requirements.
+          Our recruitment team will review your application and contact you, if your profile matches the job requirements.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          You can track the status of your application by logging into your JobSetu account.
+          You can track the status of your application by logging into JobSetu Portal.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          If you have any questions or face issues, please reach out to
+          If you have any questions or face issues, Please reach out to
           <a href="mailto:iglobusjobsetu@gmail.com" style="color: #007bff; text-decoration: none;">
             iglobusjobsetu@gmail.com
           </a>.
@@ -67,27 +67,27 @@ const candidateJobApplied = async (email: string, jobTitle: string) => {
 </html>
 `;
 
-        const mailOptions = {
-            from: process.env.EMAIL_FROM,
-            to: email,
-            subject: 'Job Application Submitted Successfully',
-            html: mailBody,
-        };
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Job Application Submitted Successfully',
+      html: mailBody,
+    };
 
-        const result = await transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log('Error sending send job applied email:', error);
-                return error;
-            }
-
-            console.log('send job applied email sent successfully:', info.response);
-            return info.response;
-        });
-        return result;
-    } catch (error) {
-        console.log('Failed to send job applied email:', error);
+    const result = await transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error sending send job applied email:', error);
         return error;
-    }
+      }
+
+      console.log('send job applied email sent successfully:', info.response);
+      return info.response;
+    });
+    return result;
+  } catch (error) {
+    console.log('Failed to send job applied email:', error);
+    return error;
+  }
 };
 
 export default candidateJobApplied;
