@@ -45,15 +45,15 @@ const candidateJobApplied = async (email, jobTitle) => {
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Our recruitment team will review your application and contact you if your profile matches the job requirements.
+          Our recruitment team will review your application and contact you, if your profile matches the job requirements.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          You can track the status of your application by logging into your JobSetu account.
+          You can track the status of your application by logging into JobSetu Portal.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          If you have any questions or face issues, please reach out to
+          If you have any questions or face issues, Please reach out to
           <a href="mailto:iglobusjobsetu@gmail.com" style="color: #007bff; text-decoration: none;">
             iglobusjobsetu@gmail.com
           </a>.
