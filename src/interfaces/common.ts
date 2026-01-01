@@ -9,6 +9,7 @@ export interface CandidateData {
     gender: string;
     profile: string,
     profilePicture: string,
+    category: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
