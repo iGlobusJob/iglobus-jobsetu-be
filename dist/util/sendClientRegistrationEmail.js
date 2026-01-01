@@ -27,7 +27,7 @@ const sendClientRegistrationEmail = async (email, organizationName) => {
     <div style="max-width: 750px; height:auto; margin: 0 auto; border: 1px solid #f7f1f4 ; border-radius: 5px;">
       <!-- Header Section -->
       <div style="background-color:rgb(121, 181, 245); color: #fff; text-align: center; padding: 10px; border-top-left-radius: 5px; border-top-right-radius: 5px;">
-        <h2 style="margin: 0; font-size: 18px;">Welcome to Job Setu</h2>
+        <h2 style="margin: 0; font-size: 18px;">Welcome to JobSetu</h2>
       </div>
 
       <!-- Body Section -->
@@ -37,7 +37,7 @@ const sendClientRegistrationEmail = async (email, organizationName) => {
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Thank you for registering with <b>Job Setu</b>! Your account has been successfully created.
+          Thank you for registering with <b>JobSetu</b>! Your account has been successfully created.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
@@ -60,7 +60,7 @@ const sendClientRegistrationEmail = async (email, organizationName) => {
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to: email,
-            subject: 'Welcome to Job Setu - Account Under Review',
+            subject: 'Welcome to JobSetu - Account Under Review',
             html: mailBody,
         };
         console.warn(`Mail options prepared: ${JSON.stringify(mailOptions)}`);

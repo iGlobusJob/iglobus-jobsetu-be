@@ -50,7 +50,7 @@ const sendOTPEmail = async (firstName: string, lastName: string, userName: strin
         </p><br>
 
         <p style="margin: 20px 0 5px; font-size: 14px; color: #333;">Regards,</p>
-        <p style="font-size: 14px; font-weight: bold; color: #333;">JOB SETU.</p>
+        <p style="font-size: 14px; font-weight: bold; color: #333;">JOBSETU.</p>
       </div>
     </div>
   </body>
