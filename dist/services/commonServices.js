@@ -61,6 +61,7 @@ const getCandidateById = async (id) => {
             gender: candidate.gender || '',
             profile: candidate.profile || '',
             profilePicture: profilePictureUrl || '',
+            category: candidate.category || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }

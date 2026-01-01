@@ -171,6 +171,7 @@ const getCandidateDetailsByAdmin = async (req, res) => {
                 address: candidate.address || '',
                 dateOfBirth: candidate.dateOfBirth || '',
                 gender: candidate.gender || '',
+                category: candidate.category,
                 profile: candidate.profile,
                 profilePicture: candidate.profilePicture,
                 createdAt: candidate.createdAt,

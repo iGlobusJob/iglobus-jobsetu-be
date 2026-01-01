@@ -49,7 +49,7 @@ const candidateJobApplied = async (email, jobTitle) => {
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          You can track the status of your application by logging into your Job Setu account.
+          You can track the status of your application by logging into your JobSetu account.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
