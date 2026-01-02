@@ -63,7 +63,7 @@ const candidateJobApplied = async (email: string, jobTitle: string) => {
     const result = await transporter.sendMail(mailOptions);
     return result;
   } catch (error) {
-    console.log('Failed to send job applied email:', error);
+    console.error('Failed to send job applied email:', error);
     return error;
   }
 };
