@@ -1,23 +1,9 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const emailConfiguration: any = {
-  service: process.env.EMAIL_CONFIG_SERVICE,
-  host: process.env.EMAIL_CONFIG_HOST,
-  port: Number(process.env.EMAIL_CONFIG_PORT),
-  secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
-  auth: {
-    user: process.env.EMAIL_CONFIG_AUTH_USER,
-    pass: process.env.EMAIL_CONFIG_AUTH_PASS,
-  }
-}
+import createEmailTransporter from './emailConfig';
 
 const sendAdminNotificationEmail = async (organizationName: string, clientEmail: string, clientId: string) => {
   try {
     console.warn('Reached sendAdminNotificationEmail !!');
-    const transporter = nodemailer.createTransport(emailConfiguration);
+    const transporter = createEmailTransporter();
     console.warn('Admin transporter created !!');
     const mailBody = `     
 <html>
@@ -67,9 +53,9 @@ const sendAdminNotificationEmail = async (organizationName: string, clientEmail:
       subject: `New Client Registration: ${organizationName} - Approval Pending`,
       html: mailBody,
     };
-    console.warn(`Admin mail options prepared: ${JSON.stringify(mailOptions)}`);
+
     const result = await transporter.sendMail(mailOptions);
-    console.warn(`Admin notification email sent successfully: ${result.response}`);
+
     return result;
   } catch (error) {
     console.error('Error in sending admin notification email:', error);

@@ -80,4 +80,21 @@ const getAllJobs = async (req: Request, res: Response) => {
     };
 };
 
-export default { getAllCandidates, getCandidateById, getJobById, getAllJobs };
+const sendContactUsMail = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const mailDetailsToFire = req.body;
+        const emailResponse = await commonService.sendContactUsMail(mailDetailsToFire);
+        
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: COMMON_SUCCESS_MESSAGES.EMAIL_SEND_SUCCESS
+        });
+    } catch (error) {
+        console.error(`Error in sending contact us mail: ${error}`);
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: COMMON_ERROR_MESSAGES.EMAIL_SEND_FAILED
+        });
+    }
+};
+export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail };

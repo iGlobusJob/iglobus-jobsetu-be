@@ -3,22 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const nodemailer_1 = __importDefault(require("nodemailer"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-const emailConfiguration = {
-    service: process.env.EMAIL_CONFIG_SERVICE,
-    host: process.env.EMAIL_CONFIG_HOST,
-    port: Number(process.env.EMAIL_CONFIG_PORT),
-    secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
-    auth: {
-        user: process.env.EMAIL_CONFIG_AUTH_USER,
-        pass: process.env.EMAIL_CONFIG_AUTH_PASS,
-    }
-};
+const emailConfig_1 = __importDefault(require("./emailConfig"));
 const candidateJobApplied = async (email, jobTitle) => {
     try {
-        const transporter = nodemailer_1.default.createTransport(emailConfiguration);
+        const transporter = (0, emailConfig_1.default)();
         const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
@@ -74,14 +62,7 @@ const candidateJobApplied = async (email, jobTitle) => {
             subject: 'Job Application Submitted Successfully',
             html: mailBody,
         };
-        const result = await transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log('Error sending send job applied email:', error);
-                return error;
-            }
-            console.log('send job applied email sent successfully:', info.response);
-            return info.response;
-        });
+        const result = await transporter.sendMail(mailOptions);
         return result;
     }
     catch (error) {
