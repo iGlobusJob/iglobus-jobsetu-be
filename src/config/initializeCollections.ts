@@ -38,9 +38,9 @@ export const initializeCollections = async (): Promise<void> => {
             try {
                 if (!existingCollections.includes(collection.name)) {
                     await db.createCollection(collection.name);
-                    console.error(`✓ Created collection: ${collection.name}`);
+                    console.log(`✓ Created collection: ${collection.name}`);
                 } else {
-                    console.error(`✓ Collection already exists: ${collection.name}`);
+                    console.log(`✓ Collection already exists: ${collection.name}`);
                 }
 
                 // Ensure indexes are created (sync indexes without throwing on conflicts)
@@ -53,7 +53,7 @@ export const initializeCollections = async (): Promise<void> => {
             }
         }
 
-        console.error('All collections initialized successfully');
+        console.log('All collections initialized successfully');
     } catch (error) {
         console.error('Error initializing collections:', error);
         // Don't throw - allow the application to continue

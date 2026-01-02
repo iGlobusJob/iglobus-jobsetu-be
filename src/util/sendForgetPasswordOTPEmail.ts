@@ -54,7 +54,7 @@ const sendOTPEmail = async (firstName: string, lastName: string, userName: strin
         return error;
       }
 
-      console.error('Info after sent:', info.response)
+      console.log('Info after sent:', info.response)
       return info.response;
     });
     return result;
