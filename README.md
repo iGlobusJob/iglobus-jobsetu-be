@@ -573,4 +573,4 @@ For support and queries, contact via the Contact Us form or reach out to the dev
 
 ---
 
-**Built with ❤️ by iGlobus Team**
+**Built with ❤️ by SRYTAL Systems India Private Limited Development Team**
