@@ -77,4 +77,21 @@ const getAllJobs = async (req, res) => {
     }
     ;
 };
-exports.default = { getAllCandidates, getCandidateById, getJobById, getAllJobs };
+const sendContactUsMail = async (req, res) => {
+    try {
+        const mailDetailsToFire = req.body;
+        const emailResponse = await commonServices_1.default.sendContactUsMail(mailDetailsToFire);
+        return res.status(commonMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: commonMessages_1.COMMON_SUCCESS_MESSAGES.EMAIL_SEND_SUCCESS
+        });
+    }
+    catch (error) {
+        console.error(`Error in sending contact us mail: ${error}`);
+        return res.status(commonMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: commonMessages_1.COMMON_ERROR_MESSAGES.EMAIL_SEND_FAILED
+        });
+    }
+};
+exports.default = { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail };
