@@ -25,7 +25,7 @@ const sendContactUsMail = async (mailDetailsToFire) => {
         return result;
     }
     catch (error) {
-        console.log('Error in sending Email at services: ', error);
+        console.error('Error in sending Email at services: ', error);
         return error;
     }
 };
@@ -51,7 +51,7 @@ const sendThankYouEmailToCustomer = async (mailDetailsToFire) => {
         return result;
     }
     catch (error) {
-        console.log('Error in sending thank you email to customer: ', error);
+        console.error('Error in sending thank you email to customer: ', error);
         return error;
     }
 };

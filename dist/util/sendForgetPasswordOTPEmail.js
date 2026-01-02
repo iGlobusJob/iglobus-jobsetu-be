@@ -61,7 +61,7 @@ const sendOTPEmail = async (firstName, lastName, userName, tempPassword) => {
         return result;
     }
     catch (error) {
-        console.log('Error in sending Email at services: ', error);
+        console.error('Error in sending Email at services: ', error);
         return error;
     }
 };

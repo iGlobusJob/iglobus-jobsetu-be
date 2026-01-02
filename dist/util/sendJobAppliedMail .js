@@ -66,7 +66,7 @@ const candidateJobApplied = async (email, jobTitle) => {
         return result;
     }
     catch (error) {
-        console.log('Failed to send job applied email:', error);
+        console.error('Failed to send job applied email:', error);
         return error;
     }
 };
