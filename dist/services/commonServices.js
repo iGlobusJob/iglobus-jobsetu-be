@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const candidateModel_1 = __importDefault(require("../model/candidateModel"));
 const jobsModel_1 = __importDefault(require("../model/jobsModel"));
 const generatePresignedUrl_1 = __importDefault(require("../util/generatePresignedUrl"));
+const sendContactUsEmail_1 = __importDefault(require("../util/sendContactUsEmail"));
 const getAllCandidates = async () => {
     try {
         const candidates = await candidateModel_1.default.find();
@@ -143,4 +144,16 @@ const getAllJobs = async () => {
     }
     ;
 };
-exports.default = { getAllCandidates, getCandidateById, getJobById, getAllJobs };
+const sendContactUsMail = async (mailDetailsToFire) => {
+    try {
+        // Send email to admin
+        await sendContactUsEmail_1.default.sendContactUsMail(mailDetailsToFire);
+        // Send thank you email to customer
+        await sendContactUsEmail_1.default.sendThankYouEmailToCustomer(mailDetailsToFire);
+    }
+    catch (error) {
+        console.error('Error in sending Email at services: ', error);
+        return error;
+    }
+};
+exports.default = { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail };
