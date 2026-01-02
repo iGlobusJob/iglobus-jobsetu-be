@@ -3,6 +3,7 @@ import jobsModel from '../model/jobsModel';
 import { FetchAllCandidateResponse, FetchCandidateByIdResponse } from '../interfaces/common';
 import { FetchAllJobsResponse } from '../interfaces/jobs';
 import presignedUrlUtil from '../util/generatePresignedUrl';
+import sendContactUsMailUtility from '../util/sendContactUsEmail';
 
 const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
     try {
@@ -110,7 +111,7 @@ const getJobById = async (id: string): Promise<any> => {
 const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
     try {
         const now = new Date();
-        const jobs = await jobsModel.find({   postStart: { $lte: now } }).populate({
+        const jobs = await jobsModel.find({ postStart: { $lte: now } }).populate({
             path: 'clientId',
             select: 'organizationName primaryContact logo'
         });
@@ -151,4 +152,17 @@ const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
 
 };
 
-export default { getAllCandidates, getCandidateById, getJobById, getAllJobs };
+const sendContactUsMail = async (mailDetailsToFire: any) => {
+    try {
+        // Send email to admin
+        await sendContactUsMailUtility.sendContactUsMail(mailDetailsToFire);
+
+        // Send thank you email to customer
+        await sendContactUsMailUtility.sendThankYouEmailToCustomer(mailDetailsToFire);
+    } catch (error) {
+        console.error('Error in sending Email at services: ', error);
+        return error;
+    }
+};
+
+export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail };

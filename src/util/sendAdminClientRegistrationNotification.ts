@@ -67,9 +67,9 @@ const sendAdminNotificationEmail = async (organizationName: string, clientEmail:
       subject: `New Client Registration: ${organizationName} - Approval Pending`,
       html: mailBody,
     };
-    console.warn(`Admin mail options prepared: ${JSON.stringify(mailOptions)}`);
+
     const result = await transporter.sendMail(mailOptions);
-    console.warn(`Admin notification email sent successfully: ${result.response}`);
+
     return result;
   } catch (error) {
     console.error('Error in sending admin notification email:', error);
