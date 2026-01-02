@@ -1,22 +1,8 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const emailConfiguration: any = {
-    service: process.env.EMAIL_CONFIG_SERVICE,
-    host: process.env.EMAIL_CONFIG_HOST,
-    port: Number(process.env.EMAIL_CONFIG_PORT),
-    secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
-    auth: {
-        user: process.env.EMAIL_CONFIG_AUTH_USER,
-        pass: process.env.EMAIL_CONFIG_AUTH_PASS,
-    }
-}
+import createEmailTransporter from './emailConfig';
 
 const sendContactUsMail = async (mailDetailsToFire: any) => {
     try {
-        const transporter = nodemailer.createTransport(emailConfiguration);
+        const transporter = createEmailTransporter();
         const mailBody = `Hi Admin, 
                             <br />This is <b>${mailDetailsToFire.name}</b>.
                             <br />Please reach out to us at <b>${mailDetailsToFire.customerEmail}</b> to discuss more about ${mailDetailsToFire.subject}<br />
@@ -43,7 +29,7 @@ const sendContactUsMail = async (mailDetailsToFire: any) => {
 
 const sendThankYouEmailToCustomer = async (mailDetailsToFire: any) => {
     try {
-        const transporter = nodemailer.createTransport(emailConfiguration);
+        const transporter = createEmailTransporter();
         const mailBody = `Hi <b>${mailDetailsToFire.name}</b>,
                             <br /><br />
                             Thank you for reaching out to us!
