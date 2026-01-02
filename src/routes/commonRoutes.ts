@@ -450,6 +450,73 @@ CommonRouter.get('/getjobdetailsbyid/:jobId', commonController.getJobById);
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-CommonRouter.get('/getalljobs', commonController.getAllJobs)
+CommonRouter.get('/getalljobs', commonController.getAllJobs);
+
+/**
+ * @swagger
+ * /contactus:
+ *   post:
+ *     summary: Send contact us email
+ *     description: Sends an email to the admin with contact details and message from a user or visitor.
+ *     tags:
+ *       - Common
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - customerEmail
+ *               - subject
+ *               - message
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the person contacting
+ *                 example: "John Doe"
+ *               customerEmail:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address of the person contacting
+ *                 example: "john.doe@example.com"
+ *               subject:
+ *                 type: string
+ *                 description: Subject of the contact message
+ *                 example: "Inquiry about job posting"
+ *               message:
+ *                 type: string
+ *                 description: Detailed message or inquiry
+ *                 example: "I would like to know more about the available positions."
+ *     responses:
+ *       200:
+ *         description: Email sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Email sent successfully"
+ *       500:
+ *         description: Internal server error while sending email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to send email. Please try again later !"
+ */
+CommonRouter.post('/contactus', commonController.sendContactUsMail);
 
 export default CommonRouter;
