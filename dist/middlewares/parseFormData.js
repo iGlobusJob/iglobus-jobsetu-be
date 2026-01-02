@@ -7,7 +7,7 @@ const parseFormData = (req, res, next) => {
                 req.body.primaryContact = JSON.parse(req.body.primaryContact);
             }
             catch (error) {
-                console.log('Failed to parse primaryContact:', error);
+                console.error('Failed to parse primaryContact:', error);
             }
         }
         if (req.body.secondaryContact && typeof req.body.secondaryContact === 'string') {
@@ -15,7 +15,7 @@ const parseFormData = (req, res, next) => {
                 req.body.secondaryContact = JSON.parse(req.body.secondaryContact);
             }
             catch (error) {
-                console.log('Failed to parse secondaryContact:', error);
+                console.error('Failed to parse secondaryContact:', error);
             }
         }
     }

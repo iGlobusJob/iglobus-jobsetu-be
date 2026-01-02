@@ -22,7 +22,7 @@ const sendContactUsMail = async (mailDetailsToFire: any) => {
         const result = await transporter.sendMail(mailOptions);
         return result;
     } catch (error) {
-        console.log('Error in sending Email at services: ', error);
+        console.error('Error in sending Email at services: ', error);
         return error;
     }
 }
@@ -50,7 +50,7 @@ const sendThankYouEmailToCustomer = async (mailDetailsToFire: any) => {
         const result = await transporter.sendMail(mailOptions);
         return result;
     } catch (error) {
-        console.log('Error in sending thank you email to customer: ', error);
+        console.error('Error in sending thank you email to customer: ', error);
         return error;
     }
 }

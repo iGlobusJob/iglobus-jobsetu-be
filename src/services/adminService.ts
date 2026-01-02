@@ -1,11 +1,10 @@
 import adminModel from '../model/adminModel';
 import bcrypt from 'bcrypt';
 import jwtUtil from '../util/jwtUtil';
-import IAdmin, { FetchAllJobsResponse, FetchAllClientsResponse, FetchAllRecruitersResponse } from '../interfaces/admin';
+import IAdmin, { FetchAllClientsResponse, FetchAllRecruitersResponse } from '../interfaces/admin';
 import clientModel from '../model/clientModel';
 import IClient from '../interfaces/client';
 import hashPasswordUtility from '../util/hashPassword';
-import jobsModel from "../model/jobsModel";
 import candidateModel from '../model/candidateModel';
 import ICandidate from '../interfaces/candidate';
 import recruiterModel from '../model/recruiterModel';
