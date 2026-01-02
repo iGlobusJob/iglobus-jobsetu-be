@@ -1,22 +1,8 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const emailConfiguration: any = {
-  service: process.env.EMAIL_CONFIG_SERVICE,
-  host: process.env.EMAIL_CONFIG_HOST,
-  port: Number(process.env.EMAIL_CONFIG_PORT),
-  secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
-  auth: {
-    user: process.env.EMAIL_CONFIG_AUTH_USER,
-    pass: process.env.EMAIL_CONFIG_AUTH_PASS,
-  }
-}
+import createEmailTransporter from './emailConfig';
 
 const candidateJobApplied = async (email: string, jobTitle: string) => {
   try {
-    const transporter = nodemailer.createTransport(emailConfiguration);
+    const transporter = createEmailTransporter();
     const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
@@ -74,15 +60,7 @@ const candidateJobApplied = async (email: string, jobTitle: string) => {
       html: mailBody,
     };
 
-    const result = await transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log('Error sending send job applied email:', error);
-        return error;
-      }
-
-      console.log('send job applied email sent successfully:', info.response);
-      return info.response;
-    });
+    const result = await transporter.sendMail(mailOptions);
     return result;
   } catch (error) {
     console.log('Failed to send job applied email:', error);

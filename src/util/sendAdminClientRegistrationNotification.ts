@@ -1,23 +1,9 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const emailConfiguration: any = {
-  service: process.env.EMAIL_CONFIG_SERVICE,
-  host: process.env.EMAIL_CONFIG_HOST,
-  port: Number(process.env.EMAIL_CONFIG_PORT),
-  secure: Boolean(process.env.EMAIL_CONFIG_SECURE),
-  auth: {
-    user: process.env.EMAIL_CONFIG_AUTH_USER,
-    pass: process.env.EMAIL_CONFIG_AUTH_PASS,
-  }
-}
+import createEmailTransporter from './emailConfig';
 
 const sendAdminNotificationEmail = async (organizationName: string, clientEmail: string, clientId: string) => {
   try {
     console.warn('Reached sendAdminNotificationEmail !!');
-    const transporter = nodemailer.createTransport(emailConfiguration);
+    const transporter = createEmailTransporter();
     console.warn('Admin transporter created !!');
     const mailBody = `     
 <html>
