@@ -109,7 +109,7 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
             clients: formattedClients
         };
     } catch (error) {
-        throw new Error("Failed to fetch clients");
+        throw new Error('Failed to fetch clients');
     };
 };
 
@@ -153,7 +153,7 @@ const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> =>
             recruiters: formattedRecruiters
         };
     } catch (error) {
-        throw new Error("Failed to fetch recruiters");
+        throw new Error('Failed to fetch recruiters');
     }
 };
 

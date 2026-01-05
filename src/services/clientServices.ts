@@ -1,13 +1,13 @@
-import clientModel from "../model/clientModel";
-import IClient from "../interfaces/client";
-import hashPasswordUtility from "../util/hashPassword";
+import clientModel from '../model/clientModel';
+import IClient from '../interfaces/client';
+import hashPasswordUtility from '../util/hashPassword';
 import bcrypt from 'bcrypt';
-import jwtUtil from "../util/jwtUtil";
-import sendClientRegistrationEmailUtil from "../util/sendClientRegistrationEmail";
-import sendAdminNotificationUtil from "../util/sendAdminClientRegistrationNotification";
-import jobsModel from "../model/jobsModel";
-import IJobs from "../interfaces/jobs";
-import uploadLogoUtil from "../util/uploadLogoToS3";
+import jwtUtil from '../util/jwtUtil';
+import sendClientRegistrationEmailUtil from '../util/sendClientRegistrationEmail';
+import sendAdminNotificationUtil from '../util/sendAdminClientRegistrationNotification';
+import jobsModel from '../model/jobsModel';
+import IJobs from '../interfaces/jobs';
+import uploadLogoUtil from '../util/uploadLogoToS3';
 
 const clientRegistration = async (clientData: Partial<IClient>, file?: Express.Multer.File): Promise<IClient> => {
     if (!clientData.password) {
@@ -39,7 +39,7 @@ const clientRegistration = async (clientData: Partial<IClient>, file?: Express.M
             savedClient.logo = uploadResult.fileUrl;
             await savedClient.save();
         } catch (error) {
-            console.error('Error uploading logo during registration:', error);
+            console.error(`Error uploading logo during registration: ${error}`);
         }
     }
 
@@ -48,7 +48,7 @@ const clientRegistration = async (clientData: Partial<IClient>, file?: Express.M
         savedClient.email,
         savedClient.organizationName
     ).catch(error => {
-        console.error('Failed to send client registration email:', error);
+        console.error(`Failed to send client registration email: ${error}`);
     });
 
     // Send admin notification email asynchronously (non-blocking)
@@ -57,7 +57,7 @@ const clientRegistration = async (clientData: Partial<IClient>, file?: Express.M
         savedClient.email,
         savedClient.id
     ).catch(error => {
-        console.error('Failed to send admin notification email:', error);
+        console.error(`Failed to send admin notification email: ${error}`);
     });
 
     return savedClient;
@@ -101,7 +101,7 @@ const getClientById = async (clientId: string): Promise<IClient | null> => {
 
 const createJobByClient = async (clientId: string, jobData: Partial<IJobs>): Promise<IJobs> => {
     const client = await clientModel.findById(clientId);
-    if (!client) throw new Error("Client not found");
+    if (!client) throw new Error('Client not found');
     const jobToSave = {
         ...jobData,
         clientId,
@@ -154,7 +154,7 @@ const updateClientProfile = async (
 
             updateData.logo = uploadResult.fileUrl;
         } catch (error) {
-            console.error('Error uploading logo to S3:', error);
+            console.error(`Error uploading logo to S3: ${error}`);
             throw new Error('LOGO_UPLOAD_FAILED');
         }
     }

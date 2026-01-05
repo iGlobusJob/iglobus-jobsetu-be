@@ -37,7 +37,7 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
             candidates: formattedCandidates
         };
     } catch (error) {
-        throw new Error("Failed to fetch candidate details");
+        throw new Error('Failed to fetch candidate details');
     }
 };
 
@@ -160,7 +160,7 @@ const sendContactUsMail = async (mailDetailsToFire: any) => {
         // Send thank you email to customer
         await sendContactUsMailUtility.sendThankYouEmailToCustomer(mailDetailsToFire);
     } catch (error) {
-        console.error('Error in sending Email at services: ', error);
+        console.error(`Error in sending Email at services: ${error}`);
         return error;
     }
 };

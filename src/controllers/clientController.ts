@@ -216,7 +216,7 @@ const getAllJobsByClient = async (req: Request, res: Response): Promise<Response
             data: formattedJobs
         });
     } catch (error: any) {
-        console.error(`Error in fetching jobs: `, error);
+        console.error(`Error in fetching jobs: ${error}`);
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
@@ -268,7 +268,7 @@ const updateClientProfile = async (req: Request, res: Response): Promise<Respons
             }
         });
     } catch (error: any) {
-        console.error(`Error in updating client profile: `, error);
+        console.error(`Error in updating client profile: ${error}`);
 
         if (error.message === 'CLIENT_NOT_FOUND') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({

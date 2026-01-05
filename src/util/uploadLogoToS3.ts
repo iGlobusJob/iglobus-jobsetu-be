@@ -22,7 +22,7 @@ const uploadLogoToS3 = async (
 
         s3Client.upload(params, (error: any, data: any) => {
             if (error) {
-                console.error('Error uploading logo to S3:', error);
+                console.error(`Error uploading logo to S3: ${error}`);
                 reject(error);
             } else {
                 // Return the public URL

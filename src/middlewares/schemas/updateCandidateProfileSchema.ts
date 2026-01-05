@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 const updateCandidateProfileSchema = Joi.object({
     firstName: Joi.string().min(2).max(50).trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({

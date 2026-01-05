@@ -6,7 +6,7 @@ const parseFormData = (req: Request, res: Response, next: NextFunction) => {
             try {
                 req.body.primaryContact = JSON.parse(req.body.primaryContact);
             } catch (error) {
-                console.error('Failed to parse primaryContact:', error);
+                console.error(`Failed to parse primaryContact: ${error}`);
             }
         }
 
@@ -14,7 +14,7 @@ const parseFormData = (req: Request, res: Response, next: NextFunction) => {
             try {
                 req.body.secondaryContact = JSON.parse(req.body.secondaryContact);
             } catch (error) {
-                console.error('Failed to parse secondaryContact:', error);
+                console.error(`Failed to parse secondaryContact: ${error}`);
             }
         }
     }

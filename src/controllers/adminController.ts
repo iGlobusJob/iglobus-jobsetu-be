@@ -138,7 +138,7 @@ const getClientDetailsByAdmin = async (req: Request, res: Response): Promise<Res
             }
         });
     } catch (error: any) {
-        console.error(`Error in fetching client details by Admin: `, error);
+        console.error(`Error in fetching client details by Admin: ${error}`);
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: ADMIN_ERROR_MESSAGES.CLIENT_FETCH_FAILED
@@ -179,7 +179,7 @@ const getCandidateDetailsByAdmin = async (req: Request, res: Response): Promise<
             }
         });
     } catch (error: any) {
-        console.error(`Error in fetching candidate details by Admin: `, error);
+       console.error(`Error in fetching candidate details by Admin: ${error}`);
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: ADMIN_ERROR_MESSAGES.CANDIDATE_FETCH_FAILED

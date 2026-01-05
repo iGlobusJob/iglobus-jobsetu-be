@@ -14,13 +14,13 @@ const validateJWT = (req: Request, res: Response, next: NextFunction) => {
     if (authToken) {
         jwt.verify(authToken, SECRET_KEY, (error: any, decoded: any) => {
             if (error) {
-                return res.status(403).json({ message: "Invalid token !" });
+                return res.status(403).json({ message: 'Invalid token !' });
             }
             req.user = decoded;
             next();
         });
     } else {
-        res.status(401).json({ message: "No token provided !" });
+        res.status(401).json({ message: 'No token provided !' });
     }
 }
 

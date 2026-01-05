@@ -48,7 +48,7 @@ const sendOTPEmail = async (email: string, otp: string) => {
     console.warn(`OTP Email sent successfully: ${result.response}`);
     return result;
   } catch (error) {
-    console.error('Error in sending OTP Email at services:', error);
+    console.error(`Error in sending OTP Email at services: ${error}`);
     throw error;
   }
 }
