@@ -53,7 +53,7 @@ const sendClientRegistrationEmail = async (email: string, organizationName: stri
     console.warn(`Client registration email sent successfully: ${result.response}`);
     return result;
   } catch (error) {
-    console.error('Error in sending client registration email:', error);
+    console.error(`Error in sending client registration email: ${error}`);
     throw error;
   }
 }

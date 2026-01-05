@@ -58,7 +58,7 @@ const sendAdminNotificationEmail = async (organizationName: string, clientEmail:
 
     return result;
   } catch (error) {
-    console.error('Error in sending admin notification email:', error);
+    console.error(`Error in sending admin notification email: ${error}`);
     throw error;
   }
 }

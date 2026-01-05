@@ -1,6 +1,5 @@
 import express, { Router } from 'express';
 import recruiterController from '../controllers/recruiterController';
-import validateRequest from '../middlewares/validateRequest';
 import validateJWT from '../middlewares/validateJWT';
 
 const RecruiterRouter: Router = express.Router();

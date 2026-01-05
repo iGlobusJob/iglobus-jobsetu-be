@@ -47,7 +47,7 @@ const getAllJobsByRecruiter = async (req: Request, res: Response) => {
     const jobsResponse = await recruiterService.getAllJobsService();
     return res.status(HTTP_STATUS.OK).json(jobsResponse);
   } catch (error) {
-    console.error(`Error fetching jobs by Recruiter:`, error);
+    console.error(`Error fetching jobs by Recruiter: ${error}`);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: RECRUITER_ERROR_MESSAGES.RECRUITER_FETCH_JOBS_FAILED,
@@ -55,10 +55,7 @@ const getAllJobsByRecruiter = async (req: Request, res: Response) => {
   }
 };
 
-const getJobByIdByRecruiter = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+const getJobByIdByRecruiter = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { jobId } = req.params;
 
@@ -76,7 +73,7 @@ const getJobByIdByRecruiter = async (
       data: job,
     });
   } catch (error) {
-    console.error(`Error fetching job by ID:`, error);
+    console.error(`Error fetching job by ID: ${error}`);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: RECRUITER_ERROR_MESSAGES.JOB_FETCH_FAILED,
@@ -90,7 +87,7 @@ const getAllClientsByRecruiter = async (req: Request, res: Response) => {
       await recruiterService.getAllClientsService();
     return res.status(HTTP_STATUS.OK).json(clientsResponse);
   } catch (error) {
-    console.error(`Error fetching clients by Recruiter:`, error);
+    console.error(`Error fetching clients by Recruiter: ${error}`);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: RECRUITER_ERROR_MESSAGES.CLIENTS_FETCH_ERROR_MESSAGE,
@@ -98,15 +95,11 @@ const getAllClientsByRecruiter = async (req: Request, res: Response) => {
   }
 };
 
-const getClientByIdByRecruiter = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+const getClientByIdByRecruiter = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { clientId } = req.params;
 
-    const client =
-      await recruiterService.getClientByIdService(clientId);
+    const client = await recruiterService.getClientByIdService(clientId);
 
     if (!client) {
       return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -120,7 +113,7 @@ const getClientByIdByRecruiter = async (
       data: client,
     });
   } catch (error) {
-    console.error(`Error fetching client by ID:`, error);
+    console.error(`Error fetching client by ID: ${error}`);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: RECRUITER_ERROR_MESSAGES.CLIENT_FETCH_FAILED,
@@ -128,17 +121,14 @@ const getClientByIdByRecruiter = async (
   }
 };
 
-const getAllCandidatesByRecruiter = async (
-  req: Request,
-  res: Response
-) => {
+const getAllCandidatesByRecruiter = async (req: Request, res: Response) => {
   try {
     const candidatesResponse =
       await recruiterService.getAllCandidatesService();
 
     return res.status(HTTP_STATUS.OK).json(candidatesResponse);
   } catch (error) {
-    console.error(`Error fetching candidates by Recruiter:`, error);
+    console.error(`Error fetching candidates by Recruiter: ${error}`);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: RECRUITER_ERROR_MESSAGES.CANDIDATE_FETCH_FAILED,
@@ -146,10 +136,7 @@ const getAllCandidatesByRecruiter = async (
   }
 };
 
-const getCandidateByIdByRecruiter = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+const getCandidateByIdByRecruiter = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { candidateId } = req.params;
 
@@ -168,7 +155,7 @@ const getCandidateByIdByRecruiter = async (
       data: candidate,
     });
   } catch (error) {
-    console.error(`Error fetching candidate by ID:`, error);
+    console.error(`Error fetching candidate by ID: ${error}`);
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: RECRUITER_ERROR_MESSAGES.CANDIDATE_FETCH_FAILED,

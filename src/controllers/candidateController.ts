@@ -109,7 +109,7 @@ const getAllJobsByCandidate = async (req: Request, res: Response): Promise<Respo
             data: jobs
         });
     } catch (error: any) {
-        console.error(`Error in fetching jobs by candidate: `, error);
+        console.error(`Error in fetching jobs by candidate: ${error}`);
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
@@ -309,7 +309,7 @@ const getMyJobs = async (req: Request, res: Response): Promise<Response> => {
             data: myJobs
         });
     } catch (error: any) {
-        console.error(`Error in fetching my jobs: `, error);
+        console.error(`Error in fetching my jobs: ${error}`);
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,

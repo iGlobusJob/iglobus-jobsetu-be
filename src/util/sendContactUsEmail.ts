@@ -50,7 +50,7 @@ const sendThankYouEmailToCustomer = async (mailDetailsToFire: any) => {
         const result = await transporter.sendMail(mailOptions);
         return result;
     } catch (error) {
-        console.error('Error in sending thank you email to customer: ', error);
+        console.error(`Error in sending thank you email to customer: ${error}`);
         return error;
     }
 }

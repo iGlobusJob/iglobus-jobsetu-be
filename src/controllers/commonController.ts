@@ -26,7 +26,7 @@ const getCandidateById = async (req: Request, res: Response): Promise<Response> 
             data: candidateResponse.data
         });
     } catch (error: any) {
-        console.error(`Error in fetching candidate details: `, error);
+        console.error(`Error in fetching candidate details: ${error}`);
 
         if (error.message === 'CANDIDATE_NOT_FOUND') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -53,7 +53,7 @@ const getJobById = async (req: Request, res: Response): Promise<Response> => {
             data: job
         });
     } catch (error: any) {
-        console.error(`Error in fetching job details: `, error);
+        console.error(`Error in fetching job details: ${error}`);
 
         if (error.message === 'JOB_NOT_FOUND') {
             return res.status(HTTP_STATUS.NOT_FOUND).json({
