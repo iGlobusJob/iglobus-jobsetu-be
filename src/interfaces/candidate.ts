@@ -14,7 +14,7 @@ interface ICandidate extends Document {
     profilePicture?: string;
     profilePictureUrl?: string;
     otp?: string;
-    designation? :string;
+    designation?: string;
     experience?: number;
     otpexpiredAt?: Date;
     createdAt?: Date;

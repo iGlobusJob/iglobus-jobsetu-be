@@ -390,9 +390,9 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                 description: Designation of the candidate
  *                 example: "Software Engineer"
  *               experience:
- *                 type: string
+ *                 type: integer
  *                 description: Experience of the candidate
- *                 example: "5 years"
+ *                 example: 5
  *     responses:
  *       200:
  *         description: Candidate profile updated successfully 
