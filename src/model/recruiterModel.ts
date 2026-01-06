@@ -8,6 +8,7 @@ const recruiterSchema = new mongoose.Schema(
         lastName: { type: String, required: true, trim: true },
         email: { type: String, required: true, unique: true, lowercase: true, trim: true },
         password: { type: String, required: true, select: false },
+        isDeleted: { type: mongoose.Schema.Types.Boolean },
     },
     {
         collection: 'recruiters',

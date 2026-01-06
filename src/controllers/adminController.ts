@@ -247,4 +247,21 @@ const getAllRecruiters = async (req: Request, res: Response) => {
     }
 };
 
-export default { adminLogin, updateClientByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters };
+const softDeleteRecruiteByAdmin= async (req: Request, res: Response) => {
+    try {
+        const { recruiterId } = req.params;
+        await adminService.softDeleteRecruiterByAdminService(recruiterId);
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: ADMIN_SUCCESS_MESSAGE.RECRUITER_DELETED_SUCCESS_MESSAGE
+        });
+    } catch (error) {
+        console.error(`Error in deleting recruiter: ${error}`);
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: ADMIN_ERROR_MESSAGES.RECRUITER_DELETED_MESSAGE
+        });
+    }
+}
+
+export default { adminLogin, updateClientByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters, softDeleteRecruiteByAdmin };

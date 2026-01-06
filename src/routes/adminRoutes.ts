@@ -963,4 +963,79 @@ AdminRouter.put('/updateclientbyadmin', validateJWT, validateRequest(updateClien
  */
 AdminRouter.get('/getcandidatedetailsbyadmin/:candidateid', validateJWT, adminController.getCandidateDetailsByAdmin);
 
+/**
+ * @swagger
+ * /softdeleterecruiter/{recruiterId}:
+ *   delete:
+ *     summary: Soft delete recruiter by admin
+ *     description: Allows admin to soft delete a recruiter by setting isDeleted to true.
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: recruiterId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Recruiter ID to be soft deleted
+ *         example: "507f1f77bcf86cd799439011"
+ *     responses:
+ *       200:
+ *         description: Recruiter deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Recruiter deleted successfully"
+ *       404:
+ *         description: Recruiter not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Recruiter not found"
+ *       401:
+ *         description: Unauthorized – Invalid or missing admin token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unauthorized access"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to delete recruiter"
+ */
+
+AdminRouter.delete('/softdeleterecruiter/:recruiterId', validateJWT, adminPermission, adminController.softDeleteRecruiteByAdmin);
+
 export default AdminRouter;
