@@ -8,6 +8,7 @@ import sendAdminNotificationUtil from '../util/sendAdminClientRegistrationNotifi
 import jobsModel from '../model/jobsModel';
 import IJobs from '../interfaces/jobs';
 import uploadLogoUtil from '../util/uploadLogoToS3';
+import sendClientForgetPasswordOTPEmail from '../util/sendClientForgetPasswordOTPEmail';
 
 const clientRegistration = async (clientData: Partial<IClient>, file?: Express.Multer.File): Promise<IClient> => {
     if (!clientData.password) {
@@ -187,4 +188,89 @@ const getJobByClient = async (clientId: string, jobId: string): Promise<IJobs> =
     return job;
 };
 
-export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, getAllJobsByClient, updateClientProfile, getJobByClient };
+const generateOTP = (): string => {
+    return Math.floor(10000 + Math.random() * 90000).toString();
+};
+
+const sendForgetPasswordOTP = async (email: string): Promise<void> => {
+    const client = await clientModel.findOne({ email });
+
+    if (!client) {
+        throw new Error('EMAIL_NOT_FOUND');
+    }
+
+    const otp = generateOTP();
+    const otpExpiredAt = new Date();
+    otpExpiredAt.setMinutes(otpExpiredAt.getMinutes() + 10);
+
+    client.otp = otp;
+    client.otpExpiredAt = otpExpiredAt;
+    await client.save();
+
+    // Send OTP email
+    await sendClientForgetPasswordOTPEmail(
+        client.primaryContact.firstName,
+        client.primaryContact.lastName,
+        client.email,
+        otp
+    );
+
+    console.warn(`Forget password OTP generated and sent successfully for email: ${email}`);
+};
+
+// Validate OTP for forget password
+const validateForgetPasswordOTP = async (email: string, otp: string): Promise<void> => {
+    const client = await clientModel.findOne({ email });
+
+    if (!client) {
+        throw new Error('EMAIL_NOT_FOUND');
+    }
+
+    if (!client.otp || !client.otpExpiredAt) {
+        throw new Error('INVALID_OTP');
+    }
+
+    const currentTime = new Date();
+    if (currentTime > client.otpExpiredAt) {
+        throw new Error('OTP_EXPIRED');
+    }
+
+    if (client.otp !== otp) {
+        throw new Error('INVALID_OTP');
+    }
+
+    console.warn(`OTP validated successfully for email: ${email}`);
+};
+
+const updateClientPassword = async (email: string, newPassword: string): Promise<void> => {
+    const client = await clientModel.findOne({ email }).select('+password');
+
+    if (!client) {
+        throw new Error('EMAIL_NOT_FOUND');
+    }
+
+    // Hash the new password
+    const hashedPassword = await hashPasswordUtility.hashPassword(newPassword);
+
+    // Update password and clear OTP fields
+    client.password = hashedPassword;
+    client.otp = undefined;
+    client.otpExpiredAt = undefined;
+    await client.save();
+
+    console.warn(`Password updated successfully for email: ${email}`);
+};
+
+export default {
+    clientRegistration,
+    clientLogin,
+    getClientById,
+    createJobByClient,
+    updateJobByClient,
+    getAllJobsByClient,
+    updateClientProfile,
+    getJobByClient,
+    sendForgetPasswordOTP,
+    validateForgetPasswordOTP,
+    updateClientPassword
+};

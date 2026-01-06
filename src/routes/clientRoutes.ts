@@ -6,6 +6,9 @@ import clientLoginSchema from '../middlewares/schemas/clientLoginSchema';
 import createJobSchema from '../middlewares/schemas/createJobSchema';
 import updateJobSchema from '../middlewares/schemas/updateJobSchema';
 import updateClientProfileSchema from '../middlewares/schemas/updateClientProfileSchema';
+import sendOTPSchema from '../middlewares/schemas/sendOTPSchema';
+import validateForgetPasswordOTPSchema from '../middlewares/schemas/validateForgetPasswordOTPSchema';
+import updateClientPasswordSchema from '../middlewares/schemas/updateClientPasswordSchema';
 import validateJWT from '../middlewares/validateJWT';
 import clientPermission from '../middlewares/clientPermission';
 import uploadLogo from '../middlewares/uploadLogoMiddleware';
@@ -1273,5 +1276,269 @@ ClientRouter.get('/getjobbyclient/:jobId', validateJWT, clientPermission, client
  *                   example: "An error occurred while updating the job. Please try again later !"
  */
 ClientRouter.put('/updatejobbyclient', validateJWT, clientPermission, validateRequest(updateJobSchema), clientController.updateJobByClient);
+
+/**
+ * @swagger
+ * /sendOTP:
+ *   post:
+ *     summary: Send OTP for forget password
+ *     description: Generates a 5-digit OTP and sends it to the client's email address for password reset. OTP is valid for 10 minutes.
+ *     tags:
+ *       - Client
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address of the client
+ *                 example: john.doe@xyztechnologies.com
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully to the client's email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "OTP sent successfully to your email !"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     email:
+ *                       type: string
+ *                       example: john.doe@xyztechnologies.com
+ *       404:
+ *         description: Email not found in the system
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Email address not found in our records !"
+ *       400:
+ *         description: Validation error - Invalid email format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Validation failed"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while generating OTP. Please try again later !"
+ */
+ClientRouter.post('/sendOTP', validateRequest(sendOTPSchema), clientController.sendForgetPasswordOTP);
+
+/**
+ * @swagger
+ * /validateOTP:
+ *   post:
+ *     summary: Validate OTP for forget password
+ *     description: Validates the OTP sent to the client's email. OTP must match and must not be expired (valid for 10 minutes).
+ *     tags:
+ *       - Client
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - otp
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address of the client
+ *                 example: john.doe@xyztechnologies.com
+ *               otp:
+ *                 type: string
+ *                 description: 5-digit OTP received in email
+ *                 example: "12345"
+ *     responses:
+ *       200:
+ *         description: OTP validated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "OTP validated successfully !"
+ *       400:
+ *         description: Invalid or expired OTP
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid OTP. Please try again !"
+ *             examples:
+ *               invalidOTP:
+ *                 value:
+ *                   success: false
+ *                   message: "Invalid OTP. Please try again !"
+ *               expiredOTP:
+ *                 value:
+ *                   success: false
+ *                   message: "OTP has expired. Please request a new one !"
+ *       404:
+ *         description: Email not found in the system
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Email address not found in our records !"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while validating OTP. Please try again later !"
+ */
+ClientRouter.post('/validateOTP', validateRequest(validateForgetPasswordOTPSchema), clientController.validateForgetPasswordOTP);
+
+/**
+ * @swagger
+ * /updateClientPassword:
+ *   put:
+ *     summary: Update client password after OTP validation
+ *     description: Updates the client's password after successful OTP validation. Password must meet security requirements (min 8 chars, uppercase, lowercase, number, special character). Both password fields must match.
+ *     tags:
+ *       - Client
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - newPassword
+ *               - reEnterNewPassword
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address of the client
+ *                 example: john.doe@xyztechnologies.com
+ *               newPassword:
+ *                 type: string
+ *                 description: New password (min 8 chars, must contain uppercase, lowercase, number, and special character)
+ *                 example: "NewSecure@123"
+ *               reEnterNewPassword:
+ *                 type: string
+ *                 description: Re-enter the new password (must match newPassword)
+ *                 example: "NewSecure@123"
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Password updated successfully !"
+ *       400:
+ *         description: Validation error - passwords don't match or invalid format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Passwords do not match"
+ *       404:
+ *         description: Email not found in the system
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Email address not found in our records !"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while updating password. Please try again later !"
+ */
+ClientRouter.put('/updateClientPassword', validateRequest(updateClientPasswordSchema), clientController.updateClientPassword);
 
 export default ClientRouter;

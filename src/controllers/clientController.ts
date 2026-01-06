@@ -320,5 +320,120 @@ const getJobByClient = async (req: Request, res: Response): Promise<Response> =>
     }
 };
 
+const sendForgetPasswordOTP = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { email } = req.body;
+        await clientService.sendForgetPasswordOTP(email);
 
-export default { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, getAllJobsByClient, updateClientProfile, getJobByClient };
+        console.warn(`Forget password OTP sent successfully to: ${email}`);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: CLIENT_SUCCESS_MESSAGES.OTP_SENT_SUCCESS,
+            data: {
+                email
+            }
+        });
+    } catch (error: any) {
+        if (error.message === 'EMAIL_NOT_FOUND') {
+            console.error(`Failed to send OTP - Email not found: ${req.body.email}`);
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: CLIENT_ERROR_MESSAGES.EMAIL_NOT_FOUND
+            });
+        }
+
+        console.error(`Error sending OTP for forget password: ${error}`);
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: CLIENT_ERROR_MESSAGES.OTP_GENERATION_FAILED
+        });
+    }
+};
+
+const validateForgetPasswordOTP = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { email, otp } = req.body;
+        await clientService.validateForgetPasswordOTP(email, otp);
+
+        console.warn(`OTP validated successfully for email: ${email}`);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: CLIENT_SUCCESS_MESSAGES.OTP_VALIDATION_SUCCESS
+        });
+    } catch (error: any) {
+        if (error.message === 'EMAIL_NOT_FOUND') {
+            console.error(`Failed to validate OTP - Email not found: ${req.body.email}`);
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: CLIENT_ERROR_MESSAGES.EMAIL_NOT_FOUND
+            });
+        }
+
+        if (error.message === 'OTP_EXPIRED') {
+            console.error(`Failed to validate OTP - OTP expired for email: ${req.body.email}`);
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                success: false,
+                message: CLIENT_ERROR_MESSAGES.OTP_EXPIRED
+            });
+        }
+
+        if (error.message === 'INVALID_OTP') {
+            console.error(`Failed to validate OTP - Invalid OTP for email: ${req.body.email}`);
+            return res.status(HTTP_STATUS.BAD_REQUEST).json({
+                success: false,
+                message: CLIENT_ERROR_MESSAGES.INVALID_OTP
+            });
+        }
+
+        console.error(`Error validating OTP: ${error}`);
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: CLIENT_ERROR_MESSAGES.OTP_VALIDATION_FAILED
+        });
+    }
+};
+
+const updateClientPassword = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { email, newPassword } = req.body;
+        await clientService.updateClientPassword(email, newPassword);
+
+        console.warn(`Password updated successfully for email: ${email}`);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: CLIENT_SUCCESS_MESSAGES.PASSWORD_UPDATED_SUCCESS
+        });
+    } catch (error: any) {
+        if (error.message === 'EMAIL_NOT_FOUND') {
+            console.error(`Failed to update password - Email not found: ${req.body.email}`);
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: CLIENT_ERROR_MESSAGES.EMAIL_NOT_FOUND
+            });
+        }
+
+        console.error(`Error updating client password: ${error}`);
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: CLIENT_ERROR_MESSAGES.PASSWORD_UPDATE_FAILED
+        });
+    }
+};
+
+
+export default {
+    clientRegistration,
+    clientLogin,
+    getClientById,
+    updateClientProfile,
+    createJobByClient,
+    updateJobByClient,
+    getAllJobsByClient,
+    getJobByClient,
+    sendForgetPasswordOTP,
+    validateForgetPasswordOTP,
+    updateClientPassword
+};
