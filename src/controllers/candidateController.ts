@@ -88,17 +88,6 @@ const getCandidateById = async (req: Request, res: Response): Promise<Response> 
     }
 };
 
-const getAllCandidates = async (req: Request, res: Response) => {
-    try {
-        const candidateResponse = await candidateService.getAllCandidateService();
-        return res.status(200).json(candidateResponse);
-
-    } catch (error) {
-        console.error(`Error in fetching Candidate details: ${error}`);
-        res.status(500).json({ success: false, message: CANDIDATE_ERROR_MESSAGES.FETCH_ALLCANDIDATES_ERROR_MESSAGE });
-    };
-};
-
 const getAllJobsByCandidate = async (req: Request, res: Response): Promise<Response> => {
     try {
         const jobs = await candidateService.getAllJobsByCandidate();
@@ -320,4 +309,4 @@ const getMyJobs = async (req: Request, res: Response): Promise<Response> => {
     }
 };
 
-export default { candidateJoin, validateOTP, getCandidateById, getAllCandidates, getAllJobsByCandidate, updateCandidateProfile, applyToJob, saveJob, unsaveJob, getMyJobs };
+export default { candidateJoin, validateOTP, getCandidateById, getAllJobsByCandidate, updateCandidateProfile, applyToJob, saveJob, unsaveJob, getMyJobs };

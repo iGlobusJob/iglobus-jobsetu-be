@@ -27,6 +27,8 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
                 category: candidate.category || '',
                 profile: candidate.profile || '',
                 profilePicture: profilePictureUrl || '',
+                experience: candidate.experience || '',
+                designation: candidate.designation || '',
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt
             };
