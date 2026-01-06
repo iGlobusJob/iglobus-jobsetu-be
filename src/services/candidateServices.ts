@@ -106,6 +106,8 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             profileUrl: profileUrl,
             profilePicture: candidate.profilePicture || '',
             profilePictureUrl: profilePictureUrl,
+            designation: candidate.designation || '',
+            experience: candidate.experience || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
@@ -132,6 +134,8 @@ const getAllCandidateService = async (): Promise<FetchAllCandidateResponse> => {
                 dateOfBirth: candidate.dateOfBirth || '',
                 gender: candidate.gender || '',
                 profilePicture: profilePictureUrl || '',
+                designation: candidate.designation || '',
+                experience: candidate.experience || '',
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt
             };
