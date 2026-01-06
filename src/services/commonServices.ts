@@ -69,6 +69,8 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             profile: candidate.profile || '',
             profilePicture: profilePictureUrl || '',
             category: candidate.category || '',
+            designation: candidate.designation || '',
+            experience: candidate.experience || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }

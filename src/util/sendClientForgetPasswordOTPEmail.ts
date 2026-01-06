@@ -38,7 +38,7 @@ const sendClientForgetPasswordOTPEmail = async (firstName: string, lastName: str
         </p><br>
 
         <p style="margin: 20px 0 5px; font-size: 14px; color: #333;">Regards,</p>
-        <p style="font-size: 14px; font-weight: bold; color: #333;">JOBSETU Team.</p>
+        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGlobus JobSetu.</p>
       </div>
     </div>
   </body>
