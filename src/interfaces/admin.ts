@@ -27,4 +27,8 @@ export interface FetchAllRecruitersResponse {
     recruiters?: any;
 }
 
+export interface DeleteRecruiterResponse {
+    success: boolean;
+}
+
 export default IAdmin;

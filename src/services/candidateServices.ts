@@ -114,43 +114,6 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
     };
 };
 
-const getAllCandidateService = async (): Promise<FetchAllCandidateResponse> => {
-    try {
-        const candidates = await candidateModel.find();
-
-        const formattedCandidates = await Promise.all(candidates.map(async candidate => {
-            let profilePictureUrl: string | null = null;
-            if (candidate.profilePicture) {
-                profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
-            }
-
-            return {
-                id: candidate.id,
-                email: candidate.email || '',
-                firstName: candidate.firstName || '',
-                lastName: candidate.lastName || '',
-                mobileNumber: candidate.mobileNumber || '',
-                address: candidate.address || '',
-                dateOfBirth: candidate.dateOfBirth || '',
-                gender: candidate.gender || '',
-                profilePicture: profilePictureUrl || '',
-                designation: candidate.designation || '',
-                experience: candidate.experience || '',
-                createdAt: candidate.createdAt,
-                updatedAt: candidate.updatedAt
-            };
-        }));
-
-        return {
-            success: true,
-            candidates: formattedCandidates
-        };
-    } catch (error) {
-        throw new Error('Failed to fetch candidate details');
-    };
-
-};
-
 const getAllJobsByCandidate = async (): Promise<FetchAllJobsResponse> => {
     try {
         const jobs = await jobsModel.find({ status: 'active' }).sort({ createdAt: -1 }).populate({
@@ -351,4 +314,4 @@ const getMyJobs = async (candidateId: string): Promise<ICandidateJob[]> => {
     return myJobs;
 };
 
-export default { candidateJoin, validateOTP, getCandidateById, getAllCandidateService, getAllJobsByCandidate, updateCandidateService, applyToJob, saveJob, unsaveJob, getMyJobs };
+export default { candidateJoin, validateOTP, getCandidateById, getAllJobsByCandidate, updateCandidateService, applyToJob, saveJob, unsaveJob, getMyJobs };
