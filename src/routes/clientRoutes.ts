@@ -1363,7 +1363,7 @@ ClientRouter.post('/sendOTP', validateRequest(sendOTPSchema), clientController.s
 
 /**
  * @swagger
- * /validateOTP:
+ * /clientvalidateOTP:
  *   post:
  *     summary: Validate OTP for forget password
  *     description: Validates the OTP sent to the client's email. OTP must match and must not be expired (valid for 10 minutes).
@@ -1451,7 +1451,7 @@ ClientRouter.post('/sendOTP', validateRequest(sendOTPSchema), clientController.s
  *                   type: string
  *                   example: "An error occurred while validating OTP. Please try again later !"
  */
-ClientRouter.post('/validateOTP', validateRequest(validateForgetPasswordOTPSchema), clientController.validateForgetPasswordOTP);
+ClientRouter.post('/clientvalidateOTP', validateRequest(validateForgetPasswordOTPSchema), clientController.validateForgetPasswordOTP);
 
 /**
  * @swagger

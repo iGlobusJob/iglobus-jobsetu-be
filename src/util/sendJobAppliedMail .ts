@@ -46,7 +46,7 @@ const candidateJobApplied = async (email: string, jobTitle: string) => {
         <br>
 
         <p style="margin: 20px 0 5px; font-size: 14px; color: #333;">Regards,</p>
-        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGLOBUS</p>
+        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGlobus JobSetu.</p>
       </div>
     </div>
   </body>
