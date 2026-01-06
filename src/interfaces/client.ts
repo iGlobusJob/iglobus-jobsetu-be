@@ -22,6 +22,8 @@ interface IClient extends Document {
     panCard: string;
     category: 'IT' | 'Non-IT';
     logo?: string;
+    otp?: string;
+    otpExpiredAt?: Date;
     createdAt?: Date;
     updatedAt?: Date;
 }
