@@ -159,7 +159,9 @@ const updateCandidateProfile = async (req: Request, res: Response): Promise<Resp
                 gender: updatedcandidate.gender,
                 category: updatedcandidate.category,
                 profile: updatedcandidate.profile,
-                profilePicture: updatedcandidate.profilePicture
+                profilePicture: updatedcandidate.profilePicture,
+                designation: updatedcandidate.designation,
+                experience: updatedcandidate.experience
             }
         });
     } catch (error: any) {

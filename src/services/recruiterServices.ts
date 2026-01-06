@@ -146,6 +146,8 @@ const getAllCandidatesService = async () => {
         address: candidate.address || '',
         profilePicture: profilePictureUrl || '',
         category: candidate.category || '',
+        designation: candidate.designation || '',
+        experience: candidate.experience || '',
         createdAt: candidate.createdAt,
         updatedAt: candidate.updatedAt,
       };
@@ -160,10 +162,41 @@ const getAllCandidatesService = async () => {
   }
 };
 
-const getCandidateByIdService = async (
-  candidateId: string
-): Promise<ICandidate | null> => {
-  return candidateModel.findById(candidateId);
+const getCandidateByIdService = async (candidateId: string) => {
+  const candidate = await candidateModel.findById(candidateId);
+
+  if (!candidate) {
+    return null;
+  }
+
+  let profileUrl: string | null = null;
+  if (candidate.profile) {
+    profileUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profile);
+  }
+
+  let profilePictureUrl: string | null = null;
+  if (candidate.profilePicture) {
+    profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
+  }
+
+  return {
+    id: candidate.id,
+    email: candidate.email,
+    firstName: candidate.firstName || '',
+    lastName: candidate.lastName || '',
+    mobileNumber: candidate.mobileNumber || '',
+    gender: candidate.gender || '',
+    dateOfBirth: candidate.dateOfBirth || '',
+    address: candidate.address || '',
+    profilePicture: profilePictureUrl || '',
+    category: candidate.category || '',
+    designation: candidate.designation || '',
+    experience: candidate.experience || '',
+    profile: candidate.profile || '',
+    profileUrl: profileUrl,
+    createdAt: candidate.createdAt,
+    updatedAt: candidate.updatedAt,
+  };
 };
 
 export default {
