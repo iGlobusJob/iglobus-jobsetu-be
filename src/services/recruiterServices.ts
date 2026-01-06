@@ -15,7 +15,7 @@ const recruiterLogin = async (
   password: string
 ): Promise<{ recruiter: IRecruiter; token: string }> => {
   const recruiter = await recruiterModel
-    .findOne({ email }, {isDeleted: false})
+    .findOne({ email, isDeleted: false })
     .select('+password');
 
   if (!recruiter) {

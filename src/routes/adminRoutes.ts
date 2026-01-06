@@ -965,7 +965,7 @@ AdminRouter.get('/getcandidatedetailsbyadmin/:candidateid', validateJWT, adminCo
 
 /**
  * @swagger
- * /softdeleterecruiter/{recruiterId}:
+ * /deleterecruiter/{recruiterId}:
  *   delete:
  *     summary: Soft delete recruiter by admin
  *     description: Allows admin to soft delete a recruiter by setting isDeleted to true.
@@ -1036,6 +1036,6 @@ AdminRouter.get('/getcandidatedetailsbyadmin/:candidateid', validateJWT, adminCo
  *                   example: "Failed to delete recruiter"
  */
 
-AdminRouter.delete('/softdeleterecruiter/:recruiterId', validateJWT, adminPermission, adminController.softDeleteRecruiteByAdmin);
+AdminRouter.delete('/deleterecruiter/:recruiterId', validateJWT, adminPermission, adminController.deleteRecruiteByAdmin);
 
 export default AdminRouter;

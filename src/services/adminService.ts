@@ -129,7 +129,8 @@ const createRecruiterService = async (firstName: string, lastName: string, email
         firstName,
         lastName,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        isDeleted: false
     });
 
     return recruiter;
@@ -157,20 +158,20 @@ const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> =>
     }
 };
 
-const softDeleteRecruiterByAdminService = async ( recruiterId: string ): Promise<DeleteRecruiterResponse> => {
-  const deletedRecruiter = await recruiterModel.findByIdAndUpdate(
-    recruiterId,
-    { isDeleted: true },
-    { new: true } 
-  );
+const deleteRecruiterByAdminService = async (recruiterId: string): Promise<DeleteRecruiterResponse> => {
+    const deletedRecruiter = await recruiterModel.findByIdAndUpdate(
+        recruiterId,
+        { isDeleted: true },
+        { new: true }
+    );
 
-  if (!deletedRecruiter) {
-    throw new Error('RECRUITER_NOT_FOUND');
-  }
+    if (!deletedRecruiter) {
+        throw new Error('RECRUITER_NOT_FOUND');
+    }
 
-  return {
-    success: true,
-  };
+    return {
+        success: true,
+    };
 };
 
-export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, softDeleteRecruiterByAdminService };
+export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, deleteRecruiterByAdminService };

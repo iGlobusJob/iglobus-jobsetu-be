@@ -170,7 +170,7 @@ const getCandidateDetailsByAdmin = async (req: Request, res: Response): Promise<
                 address: candidate.address || '',
                 dateOfBirth: candidate.dateOfBirth || '',
                 gender: candidate.gender || '',
-                category: candidate.category ,
+                category: candidate.category,
                 profile: candidate.profile,
                 profilePicture: candidate.profilePicture,
                 createdAt: candidate.createdAt,
@@ -179,7 +179,7 @@ const getCandidateDetailsByAdmin = async (req: Request, res: Response): Promise<
             }
         });
     } catch (error: any) {
-       console.error(`Error in fetching candidate details by Admin: ${error}`);
+        console.error(`Error in fetching candidate details by Admin: ${error}`);
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: ADMIN_ERROR_MESSAGES.CANDIDATE_FETCH_FAILED
@@ -247,10 +247,10 @@ const getAllRecruiters = async (req: Request, res: Response) => {
     }
 };
 
-const softDeleteRecruiteByAdmin= async (req: Request, res: Response) => {
+const deleteRecruiteByAdmin = async (req: Request, res: Response) => {
     try {
         const { recruiterId } = req.params;
-        await adminService.softDeleteRecruiterByAdminService(recruiterId);
+        await adminService.deleteRecruiterByAdminService(recruiterId);
         return res.status(HTTP_STATUS.OK).json({
             success: true,
             message: ADMIN_SUCCESS_MESSAGE.RECRUITER_DELETED_SUCCESS_MESSAGE
@@ -264,4 +264,4 @@ const softDeleteRecruiteByAdmin= async (req: Request, res: Response) => {
     }
 }
 
-export default { adminLogin, updateClientByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters, softDeleteRecruiteByAdmin };
+export default { adminLogin, updateClientByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters, deleteRecruiteByAdmin };
