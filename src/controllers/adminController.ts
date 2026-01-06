@@ -173,6 +173,8 @@ const getCandidateDetailsByAdmin = async (req: Request, res: Response): Promise<
                 category: candidate.category,
                 profile: candidate.profile,
                 profilePicture: candidate.profilePicture,
+                designation: candidate.designation,
+                experience: candidate.experience,
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt
 
