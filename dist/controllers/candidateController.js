@@ -82,17 +82,6 @@ const getCandidateById = async (req, res) => {
         });
     }
 };
-const getAllCandidates = async (req, res) => {
-    try {
-        const candidateResponse = await candidateServices_1.default.getAllCandidateService();
-        return res.status(200).json(candidateResponse);
-    }
-    catch (error) {
-        console.error(`Error in fetching Candidate details: ${error}`);
-        res.status(500).json({ success: false, message: candidateMessages_1.CANDIDATE_ERROR_MESSAGES.FETCH_ALLCANDIDATES_ERROR_MESSAGE });
-    }
-    ;
-};
 const getAllJobsByCandidate = async (req, res) => {
     try {
         const jobs = await candidateServices_1.default.getAllJobsByCandidate();
@@ -103,7 +92,7 @@ const getAllJobsByCandidate = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error in fetching jobs by candidate: `, error);
+        console.error(`Error in fetching jobs by candidate: ${error}`);
         return res.status(candidateMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: candidateMessages_1.CANDIDATE_ERROR_MESSAGES.JOBS_FETCH_FAILED
@@ -147,7 +136,9 @@ const updateCandidateProfile = async (req, res) => {
                 gender: updatedcandidate.gender,
                 category: updatedcandidate.category,
                 profile: updatedcandidate.profile,
-                profilePicture: updatedcandidate.profilePicture
+                profilePicture: updatedcandidate.profilePicture,
+                designation: updatedcandidate.designation,
+                experience: updatedcandidate.experience
             }
         });
     }
@@ -284,11 +275,11 @@ const getMyJobs = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error in fetching my jobs: `, error);
+        console.error(`Error in fetching my jobs: ${error}`);
         return res.status(candidateMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: candidateMessages_1.CANDIDATE_ERROR_MESSAGES.MY_JOBS_FETCH_FAILED
         });
     }
 };
-exports.default = { candidateJoin, validateOTP, getCandidateById, getAllCandidates, getAllJobsByCandidate, updateCandidateProfile, applyToJob, saveJob, unsaveJob, getMyJobs };
+exports.default = { candidateJoin, validateOTP, getCandidateById, getAllJobsByCandidate, updateCandidateProfile, applyToJob, saveJob, unsaveJob, getMyJobs };

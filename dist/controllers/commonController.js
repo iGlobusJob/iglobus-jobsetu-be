@@ -29,7 +29,7 @@ const getCandidateById = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error in fetching candidate details: `, error);
+        console.error(`Error in fetching candidate details: ${error}`);
         if (error.message === 'CANDIDATE_NOT_FOUND') {
             return res.status(commonMessages_1.HTTP_STATUS.NOT_FOUND).json({
                 success: false,
@@ -53,7 +53,7 @@ const getJobById = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error in fetching job details: `, error);
+        console.error(`Error in fetching job details: ${error}`);
         if (error.message === 'JOB_NOT_FOUND') {
             return res.status(commonMessages_1.HTTP_STATUS.NOT_FOUND).json({
                 success: false,

@@ -142,7 +142,7 @@ const getClientDetailsByAdmin = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error in fetching client details by Admin: `, error);
+        console.error(`Error in fetching client details by Admin: ${error}`);
         return res.status(adminMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: adminMessages_1.ADMIN_ERROR_MESSAGES.CLIENT_FETCH_FAILED
@@ -174,13 +174,15 @@ const getCandidateDetailsByAdmin = async (req, res) => {
                 category: candidate.category,
                 profile: candidate.profile,
                 profilePicture: candidate.profilePicture,
+                designation: candidate.designation,
+                experience: candidate.experience,
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt
             }
         });
     }
     catch (error) {
-        console.error(`Error in fetching candidate details by Admin: `, error);
+        console.error(`Error in fetching candidate details by Admin: ${error}`);
         return res.status(adminMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: adminMessages_1.ADMIN_ERROR_MESSAGES.CANDIDATE_FETCH_FAILED
@@ -242,4 +244,21 @@ const getAllRecruiters = async (req, res) => {
         });
     }
 };
-exports.default = { adminLogin, updateClientByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters };
+const deleteRecruiteByAdmin = async (req, res) => {
+    try {
+        const { recruiterId } = req.params;
+        await adminService_1.default.deleteRecruiterByAdminService(recruiterId);
+        return res.status(adminMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: adminMessages_1.ADMIN_SUCCESS_MESSAGE.RECRUITER_DELETED_SUCCESS_MESSAGE
+        });
+    }
+    catch (error) {
+        console.error(`Error in deleting recruiter: ${error}`);
+        res.status(adminMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: adminMessages_1.ADMIN_ERROR_MESSAGES.RECRUITER_DELETED_MESSAGE
+        });
+    }
+};
+exports.default = { adminLogin, updateClientByAdmin, getClientDetailsByAdmin, getCandidateDetailsByAdmin, createAdmin, getAllClients, createRecruiter, getAllRecruiters, deleteRecruiteByAdmin };

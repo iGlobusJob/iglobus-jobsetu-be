@@ -45,7 +45,7 @@ const sendAdminNotificationEmail = async (organizationName, clientEmail, clientI
         </p>
 
         <p style="margin: 20px 0 5px; font-size: 14px; color: #333;">Regards,</p>
-        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGLOBUS - JobSetu System</p>
+        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGlobus JobSetu.</p>
       </div>
     </div>
   </body>
@@ -60,7 +60,7 @@ const sendAdminNotificationEmail = async (organizationName, clientEmail, clientI
         return result;
     }
     catch (error) {
-        console.error('Error in sending admin notification email:', error);
+        console.error(`Error in sending admin notification email: ${error}`);
         throw error;
     }
 };

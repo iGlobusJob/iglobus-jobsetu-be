@@ -12,7 +12,7 @@ const candidateModel_1 = __importDefault(require("../model/candidateModel"));
 const generatePresignedUrl_1 = __importDefault(require("../util/generatePresignedUrl"));
 const recruiterLogin = async (email, password) => {
     const recruiter = await recruiterModel_1.default
-        .findOne({ email })
+        .findOne({ email, isDeleted: false })
         .select('+password');
     if (!recruiter) {
         throw new Error('RECRUITER_NOT_FOUND');
@@ -125,6 +125,8 @@ const getAllCandidatesService = async () => {
                 address: candidate.address || '',
                 profilePicture: profilePictureUrl || '',
                 category: candidate.category || '',
+                designation: candidate.designation || '',
+                experience: candidate.experience || '',
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt,
             };
@@ -139,7 +141,36 @@ const getAllCandidatesService = async () => {
     }
 };
 const getCandidateByIdService = async (candidateId) => {
-    return candidateModel_1.default.findById(candidateId);
+    const candidate = await candidateModel_1.default.findById(candidateId);
+    if (!candidate) {
+        return null;
+    }
+    let profileUrl = null;
+    if (candidate.profile) {
+        profileUrl = await generatePresignedUrl_1.default.generatePresignedUrl(candidate.profile);
+    }
+    let profilePictureUrl = null;
+    if (candidate.profilePicture) {
+        profilePictureUrl = await generatePresignedUrl_1.default.generatePresignedUrl(candidate.profilePicture);
+    }
+    return {
+        id: candidate.id,
+        email: candidate.email,
+        firstName: candidate.firstName || '',
+        lastName: candidate.lastName || '',
+        mobileNumber: candidate.mobileNumber || '',
+        gender: candidate.gender || '',
+        dateOfBirth: candidate.dateOfBirth || '',
+        address: candidate.address || '',
+        profilePicture: profilePictureUrl || '',
+        category: candidate.category || '',
+        designation: candidate.designation || '',
+        experience: candidate.experience || '',
+        profile: candidate.profile || '',
+        profileUrl: profileUrl,
+        createdAt: candidate.createdAt,
+        updatedAt: candidate.updatedAt,
+    };
 };
 exports.default = {
     recruiterLogin,

@@ -18,7 +18,7 @@ const uploadLogoToS3 = async (clientId, fileName, buffer, mimetype) => {
         };
         s3Client_1.default.upload(params, (error, data) => {
             if (error) {
-                console.error('Error uploading logo to S3:', error);
+                console.error(`Error uploading logo to S3: ${error}`);
                 reject(error);
             }
             else {

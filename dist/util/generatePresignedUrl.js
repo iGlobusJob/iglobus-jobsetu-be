@@ -19,7 +19,7 @@ const generatePresignedUrl = async (s3Key, expiresIn = 3600) => {
         return url;
     }
     catch (error) {
-        console.error('Error generating presigned URL:', error);
+        console.error(`Error generating presigned URL: ${error}`);
         return null;
     }
 };

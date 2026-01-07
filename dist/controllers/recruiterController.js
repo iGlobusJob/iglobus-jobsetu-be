@@ -38,7 +38,7 @@ const getAllJobsByRecruiter = async (req, res) => {
         return res.status(recruiterMessages_1.HTTP_STATUS.OK).json(jobsResponse);
     }
     catch (error) {
-        console.error(`Error fetching jobs by Recruiter:`, error);
+        console.error(`Error fetching jobs by Recruiter: ${error}`);
         return res.status(recruiterMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: recruiterMessages_1.RECRUITER_ERROR_MESSAGES.RECRUITER_FETCH_JOBS_FAILED,
@@ -61,7 +61,7 @@ const getJobByIdByRecruiter = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error fetching job by ID:`, error);
+        console.error(`Error fetching job by ID: ${error}`);
         return res.status(recruiterMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: recruiterMessages_1.RECRUITER_ERROR_MESSAGES.JOB_FETCH_FAILED,
@@ -74,7 +74,7 @@ const getAllClientsByRecruiter = async (req, res) => {
         return res.status(recruiterMessages_1.HTTP_STATUS.OK).json(clientsResponse);
     }
     catch (error) {
-        console.error(`Error fetching clients by Recruiter:`, error);
+        console.error(`Error fetching clients by Recruiter: ${error}`);
         return res.status(recruiterMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: recruiterMessages_1.RECRUITER_ERROR_MESSAGES.CLIENTS_FETCH_ERROR_MESSAGE,
@@ -97,7 +97,7 @@ const getClientByIdByRecruiter = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error fetching client by ID:`, error);
+        console.error(`Error fetching client by ID: ${error}`);
         return res.status(recruiterMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: recruiterMessages_1.RECRUITER_ERROR_MESSAGES.CLIENT_FETCH_FAILED,
@@ -110,7 +110,7 @@ const getAllCandidatesByRecruiter = async (req, res) => {
         return res.status(recruiterMessages_1.HTTP_STATUS.OK).json(candidatesResponse);
     }
     catch (error) {
-        console.error(`Error fetching candidates by Recruiter:`, error);
+        console.error(`Error fetching candidates by Recruiter: ${error}`);
         return res.status(recruiterMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: recruiterMessages_1.RECRUITER_ERROR_MESSAGES.CANDIDATE_FETCH_FAILED,
@@ -133,7 +133,7 @@ const getCandidateByIdByRecruiter = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error fetching candidate by ID:`, error);
+        console.error(`Error fetching candidate by ID: ${error}`);
         return res.status(recruiterMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: recruiterMessages_1.RECRUITER_ERROR_MESSAGES.CANDIDATE_FETCH_FAILED,

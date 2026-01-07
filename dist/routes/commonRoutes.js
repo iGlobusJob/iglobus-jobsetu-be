@@ -14,7 +14,7 @@ CommonRouter.get('/', (req, res) => {
  * @swagger
  * /getallcandidates:
  *   get:
- *     summary: Get all candidates - [Admin/Client]
+ *     summary: Get all candidates - [Admin/Recruiters]
  *     description: Fetches a list of all candidates from the database.
  *     tags:
  *       - Common

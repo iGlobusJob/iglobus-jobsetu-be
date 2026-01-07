@@ -12,7 +12,7 @@ const sendContactUsMail = async (mailDetailsToFire) => {
                             <br />Please reach out to us at <b>${mailDetailsToFire.customerEmail}</b> to discuss more about ${mailDetailsToFire.subject}<br />
                             <br />Here is the glimpse of discussion:<p>${mailDetailsToFire.message}</p>
                             <br />
-                            <b>Thanks and Regards</b>
+                            <b>Regards</b>
                             <br />
                             <b>${mailDetailsToFire.name}</b>`;
         const mailOptions = {
@@ -38,9 +38,9 @@ const sendThankYouEmailToCustomer = async (mailDetailsToFire) => {
                             <br /><br />
                             We have received your message regarding "<b>${mailDetailsToFire.subject}</b>" and our team will contact you soon.
                             <br /><br />
-                            <b>Thanks and Regards</b>
+                            <b>Regards</b>
                             <br />
-                            <b>Team iGlobusJobSetu</b>`;
+                            <b>Team iGlobus JobSetu.</b>`;
         const mailOptions = {
             from: process.env.ADMIN_EMAIL_ABOUT_CUSTOMER,
             to: mailDetailsToFire.customerEmail,
@@ -51,7 +51,7 @@ const sendThankYouEmailToCustomer = async (mailDetailsToFire) => {
         return result;
     }
     catch (error) {
-        console.error('Error in sending thank you email to customer: ', error);
+        console.error(`Error in sending thank you email to customer: ${error}`);
         return error;
     }
 };

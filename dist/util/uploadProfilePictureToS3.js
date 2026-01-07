@@ -16,7 +16,7 @@ const uploadProfilePictureToS3 = async (candidateId, fileName, buffer, mimetype)
         };
         s3Client_1.default.upload(params, (error, data) => {
             if (error) {
-                console.error('Error uploading profile picture to S3:', error);
+                console.error(`Error uploading profile picture to S3: ${error}`);
                 reject(error);
             }
             else {
