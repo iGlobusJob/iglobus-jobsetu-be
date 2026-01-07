@@ -8,6 +8,7 @@ export interface CandidateData {
     dateOfBirth: string;
     gender: string;
     profile: string,
+    profileUrl?: string;
     profilePicture: string,
     category: string;
     designation?: string;
