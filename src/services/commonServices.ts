@@ -10,6 +10,10 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
         const candidates = await candidateModel.find();
 
         const formattedCandidates = await Promise.all(candidates.map(async candidate => {
+            let profileUrl: string | null = null;
+            if (candidate.profile) {
+                profileUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profile);
+            }
             let profilePictureUrl: string | null = null;
             if (candidate.profilePicture) {
                 profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
@@ -26,7 +30,7 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
                 gender: candidate.gender || '',
                 category: candidate.category || '',
                 profile: candidate.profile || '',
-                profileUrl: candidate.profileUrl || '',
+                profileUrl: profileUrl || '',
                 profilePicture: profilePictureUrl || '',
                 experience: candidate.experience || '',
                 designation: candidate.designation || '',
@@ -50,7 +54,10 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
     if (!candidate) {
         throw new Error('CANDIDATE_NOT_FOUND');
     }
-
+    let profileUrl: string | null = null;
+    if (candidate.profile) {
+        profileUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profile);
+    }
     let profilePictureUrl: string | null = null;
     if (candidate.profilePicture) {
         profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
@@ -68,7 +75,7 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             dateOfBirth: candidate.dateOfBirth || '',
             gender: candidate.gender || '',
             profile: candidate.profile || '',
-            profileUrl: candidate.profileUrl || '',
+            profileUrl: profileUrl || '',
             profilePicture: profilePictureUrl || '',
             category: candidate.category || '',
             designation: candidate.designation || '',
