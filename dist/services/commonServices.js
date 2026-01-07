@@ -27,6 +27,8 @@ const getAllCandidates = async () => {
                 category: candidate.category || '',
                 profile: candidate.profile || '',
                 profilePicture: profilePictureUrl || '',
+                experience: candidate.experience || '',
+                designation: candidate.designation || '',
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt
             };
@@ -37,7 +39,7 @@ const getAllCandidates = async () => {
         };
     }
     catch (error) {
-        throw new Error("Failed to fetch candidate details");
+        throw new Error('Failed to fetch candidate details');
     }
 };
 const getCandidateById = async (id) => {
@@ -63,6 +65,8 @@ const getCandidateById = async (id) => {
             profile: candidate.profile || '',
             profilePicture: profilePictureUrl || '',
             category: candidate.category || '',
+            designation: candidate.designation || '',
+            experience: candidate.experience || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
@@ -152,7 +156,7 @@ const sendContactUsMail = async (mailDetailsToFire) => {
         await sendContactUsEmail_1.default.sendThankYouEmailToCustomer(mailDetailsToFire);
     }
     catch (error) {
-        console.error('Error in sending Email at services: ', error);
+        console.error(`Error in sending Email at services: ${error}`);
         return error;
     }
 };

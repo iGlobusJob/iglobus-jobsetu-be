@@ -1,7 +1,7 @@
 import adminModel from '../model/adminModel';
 import bcrypt from 'bcrypt';
 import jwtUtil from '../util/jwtUtil';
-import IAdmin, { FetchAllClientsResponse, FetchAllRecruitersResponse } from '../interfaces/admin';
+import IAdmin, { FetchAllClientsResponse, FetchAllRecruitersResponse, DeleteRecruiterResponse } from '../interfaces/admin';
 import clientModel from '../model/clientModel';
 import IClient from '../interfaces/client';
 import hashPasswordUtility from '../util/hashPassword';
@@ -109,7 +109,7 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
             clients: formattedClients
         };
     } catch (error) {
-        throw new Error("Failed to fetch clients");
+        throw new Error('Failed to fetch clients');
     };
 };
 
@@ -129,7 +129,8 @@ const createRecruiterService = async (firstName: string, lastName: string, email
         firstName,
         lastName,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        isDeleted: false
     });
 
     return recruiter;
@@ -137,7 +138,7 @@ const createRecruiterService = async (firstName: string, lastName: string, email
 
 const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> => {
     try {
-        const recruiters = await recruiterModel.find();
+        const recruiters = await recruiterModel.find({ isDeleted: false });
 
         const formattedRecruiters = recruiters.map(recruiter => ({
             id: recruiter.id,
@@ -153,8 +154,24 @@ const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> =>
             recruiters: formattedRecruiters
         };
     } catch (error) {
-        throw new Error("Failed to fetch recruiters");
+        throw new Error('Failed to fetch recruiters');
     }
 };
 
-export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService };
+const deleteRecruiterByAdminService = async (recruiterId: string): Promise<DeleteRecruiterResponse> => {
+    const deletedRecruiter = await recruiterModel.findByIdAndUpdate(
+        recruiterId,
+        { isDeleted: true },
+        { new: true }
+    );
+
+    if (!deletedRecruiter) {
+        throw new Error('RECRUITER_NOT_FOUND');
+    }
+
+    return {
+        success: true,
+    };
+};
+
+export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, deleteRecruiterByAdminService };

@@ -27,6 +27,8 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
                 category: candidate.category || '',
                 profile: candidate.profile || '',
                 profilePicture: profilePictureUrl || '',
+                experience: candidate.experience || '',
+                designation: candidate.designation || '',
                 createdAt: candidate.createdAt,
                 updatedAt: candidate.updatedAt
             };
@@ -37,7 +39,7 @@ const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
             candidates: formattedCandidates
         };
     } catch (error) {
-        throw new Error("Failed to fetch candidate details");
+        throw new Error('Failed to fetch candidate details');
     }
 };
 
@@ -67,6 +69,8 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             profile: candidate.profile || '',
             profilePicture: profilePictureUrl || '',
             category: candidate.category || '',
+            designation: candidate.designation || '',
+            experience: candidate.experience || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
@@ -160,7 +164,7 @@ const sendContactUsMail = async (mailDetailsToFire: any) => {
         // Send thank you email to customer
         await sendContactUsMailUtility.sendThankYouEmailToCustomer(mailDetailsToFire);
     } catch (error) {
-        console.error('Error in sending Email at services: ', error);
+        console.error(`Error in sending Email at services: ${error}`);
         return error;
     }
 };

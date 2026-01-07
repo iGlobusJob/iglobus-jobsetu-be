@@ -1,15 +1,15 @@
-import candidateModel from "../model/candidateModel";
-import jobsModel from "../model/jobsModel";
-import candidateJobModel from "../model/candidateJobModel";
-import ICandidate, { FetchCandidateByIdResponse, FetchAllCandidateResponse } from "../interfaces/candidate";
-import { FetchAllJobsResponse } from "../interfaces/jobs";
-import ICandidateJob from "../interfaces/candidateJob";
-import jwtUtil from "../util/jwtUtil";
-import sendOTPEmailUtil from "../util/sendcandidateRegistrationOTPEmail";
-import uploadResumeUtil from "../util/uploadResumeToS3";
-import uploadProfilePictureUtil from "../util/uploadProfilePictureToS3";
-import presignedUrlUtil from "../util/generatePresignedUrl";
-import candidateJobApplied from "../util/sendJobAppliedMail ";
+import candidateModel from '../model/candidateModel';
+import jobsModel from '../model/jobsModel';
+import candidateJobModel from '../model/candidateJobModel';
+import ICandidate, { FetchCandidateByIdResponse, FetchAllCandidateResponse } from '../interfaces/candidate';
+import { FetchAllJobsResponse } from '../interfaces/jobs';
+import ICandidateJob from '../interfaces/candidateJob';
+import jwtUtil from '../util/jwtUtil';
+import sendOTPEmailUtil from '../util/sendcandidateRegistrationOTPEmail';
+import uploadResumeUtil from '../util/uploadResumeToS3';
+import uploadProfilePictureUtil from '../util/uploadProfilePictureToS3';
+import presignedUrlUtil from '../util/generatePresignedUrl';
+import candidateJobApplied from '../util/sendJobAppliedMail ';
 
 const generateOTP = (): string => {
     const otp = Math.floor(10000 + Math.random() * 90000).toString();
@@ -38,7 +38,7 @@ const candidateJoin = async (email: string): Promise<{ candidate: ICandidate; ot
     }
 
     await sendOTPEmailUtil.sendOTPEmail(email, otp).catch(error => {
-        console.error('Failed to send OTP email:', error);
+        console.error(`Failed to send OTP email: ${error}`);
     });
 
     return { candidate, otp };
@@ -106,45 +106,12 @@ const getCandidateById = async (id: string): Promise<FetchCandidateByIdResponse>
             profileUrl: profileUrl,
             profilePicture: candidate.profilePicture || '',
             profilePictureUrl: profilePictureUrl,
+            designation: candidate.designation || '',
+            experience: candidate.experience || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
     };
-};
-
-const getAllCandidateService = async (): Promise<FetchAllCandidateResponse> => {
-    try {
-        const candidates = await candidateModel.find();
-
-        const formattedCandidates = await Promise.all(candidates.map(async candidate => {
-            let profilePictureUrl: string | null = null;
-            if (candidate.profilePicture) {
-                profilePictureUrl = await presignedUrlUtil.generatePresignedUrl(candidate.profilePicture);
-            }
-
-            return {
-                id: candidate.id,
-                email: candidate.email || '',
-                firstName: candidate.firstName || '',
-                lastName: candidate.lastName || '',
-                mobileNumber: candidate.mobileNumber || '',
-                address: candidate.address || '',
-                dateOfBirth: candidate.dateOfBirth || '',
-                gender: candidate.gender || '',
-                profilePicture: profilePictureUrl || '',
-                createdAt: candidate.createdAt,
-                updatedAt: candidate.updatedAt
-            };
-        }));
-
-        return {
-            success: true,
-            candidates: formattedCandidates
-        };
-    } catch (error) {
-        throw new Error("Failed to fetch candidate details");
-    };
-
 };
 
 const getAllJobsByCandidate = async (): Promise<FetchAllJobsResponse> => {
@@ -185,7 +152,7 @@ const getAllJobsByCandidate = async (): Promise<FetchAllJobsResponse> => {
             jobs: alljobs
         };
     } catch (error) {
-        throw new Error("Failed to fetch all jobs ");
+        throw new Error('Failed to fetch all jobs');
     };
 
 };
@@ -210,7 +177,7 @@ const updateCandidateService = async (
 
             updateData.profile = uploadResult.fileUrl;
         } catch (error) {
-            console.error('Error uploading resume to S3:', error);
+            console.error(`Error uploading resume to S3: ${error}`);
             throw new Error('RESUME_UPLOAD_FAILED');
         }
     }
@@ -230,7 +197,7 @@ const updateCandidateService = async (
 
             updateData.profilePicture = uploadResult.fileUrl;
         } catch (error) {
-            console.error('Error uploading profile picture to S3:', error);
+            console.error(`Error uploading profile picture to S3: ${error}`);
             throw new Error('PROFILE_PICTURE_UPLOAD_FAILED');
         }
     }
@@ -286,7 +253,7 @@ const applyToJob = async (candidateId: string, jobId: string): Promise<ICandidat
 
     // send email after applying the job
     candidateJobApplied(candidate.email, job.jobTitle).catch((error: any) => {
-        console.error('Failed to send job applied email:', error);
+        console.error(`Failed to send job applied email: ${error}`);
     });
     return candidateJob;
 };
@@ -347,4 +314,4 @@ const getMyJobs = async (candidateId: string): Promise<ICandidateJob[]> => {
     return myJobs;
 };
 
-export default { candidateJoin, validateOTP, getCandidateById, getAllCandidateService, getAllJobsByCandidate, updateCandidateService, applyToJob, saveJob, unsaveJob, getMyJobs };
+export default { candidateJoin, validateOTP, getCandidateById, getAllJobsByCandidate, updateCandidateService, applyToJob, saveJob, unsaveJob, getMyJobs };

@@ -18,6 +18,8 @@ const candidateSchema = new mongoose_1.default.Schema({
     profileUrl: { type: mongoose_1.default.Schema.Types.String, trim: true },
     profilePicture: { type: mongoose_1.default.Schema.Types.String, trim: true },
     profilePictureUrl: { type: mongoose_1.default.Schema.Types.String, trim: true },
+    designation: { type: mongoose_1.default.Schema.Types.String, trim: true },
+    experience: { type: mongoose_1.default.Schema.Types.Number, min: 0 },
     otp: {
         type: mongoose_1.default.Schema.Types.String,
         minlength: 5,

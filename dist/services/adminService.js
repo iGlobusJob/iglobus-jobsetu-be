@@ -97,7 +97,7 @@ const getAllClientsService = async () => {
         };
     }
     catch (error) {
-        throw new Error("Failed to fetch clients");
+        throw new Error('Failed to fetch clients');
     }
     ;
 };
@@ -114,13 +114,14 @@ const createRecruiterService = async (firstName, lastName, email, password) => {
         firstName,
         lastName,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        isDeleted: false
     });
     return recruiter;
 };
 const getAllRecruitersService = async () => {
     try {
-        const recruiters = await recruiterModel_1.default.find();
+        const recruiters = await recruiterModel_1.default.find({ isDeleted: false });
         const formattedRecruiters = recruiters.map(recruiter => ({
             id: recruiter.id,
             firstName: recruiter.firstName,
@@ -135,7 +136,16 @@ const getAllRecruitersService = async () => {
         };
     }
     catch (error) {
-        throw new Error("Failed to fetch recruiters");
+        throw new Error('Failed to fetch recruiters');
     }
 };
-exports.default = { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService };
+const deleteRecruiterByAdminService = async (recruiterId) => {
+    const deletedRecruiter = await recruiterModel_1.default.findByIdAndUpdate(recruiterId, { isDeleted: true }, { new: true });
+    if (!deletedRecruiter) {
+        throw new Error('RECRUITER_NOT_FOUND');
+    }
+    return {
+        success: true,
+    };
+};
+exports.default = { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, deleteRecruiterByAdminService };

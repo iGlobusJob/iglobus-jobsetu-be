@@ -385,6 +385,14 @@ CandidateRouter.get('/getcandidateprofile', validateJWT, candidatePermission, ca
  *                 type: string
  *                 format: binary
  *                 description: Profile picture (JPEG, JPG, PNG, GIF, or WEBP, max 10MB)
+ *               designation:
+ *                 type: string
+ *                 description: Designation of the candidate
+ *                 example: "Software Engineer"
+ *               experience:
+ *                 type: integer
+ *                 description: Experience of the candidate
+ *                 example: 5
  *     responses:
  *       200:
  *         description: Candidate profile updated successfully 

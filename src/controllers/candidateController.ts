@@ -88,17 +88,6 @@ const getCandidateById = async (req: Request, res: Response): Promise<Response> 
     }
 };
 
-const getAllCandidates = async (req: Request, res: Response) => {
-    try {
-        const candidateResponse = await candidateService.getAllCandidateService();
-        return res.status(200).json(candidateResponse);
-
-    } catch (error) {
-        console.error(`Error in fetching Candidate details: ${error}`);
-        res.status(500).json({ success: false, message: CANDIDATE_ERROR_MESSAGES.FETCH_ALLCANDIDATES_ERROR_MESSAGE });
-    };
-};
-
 const getAllJobsByCandidate = async (req: Request, res: Response): Promise<Response> => {
     try {
         const jobs = await candidateService.getAllJobsByCandidate();
@@ -109,7 +98,7 @@ const getAllJobsByCandidate = async (req: Request, res: Response): Promise<Respo
             data: jobs
         });
     } catch (error: any) {
-        console.error(`Error in fetching jobs by candidate: `, error);
+        console.error(`Error in fetching jobs by candidate: ${error}`);
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
@@ -159,7 +148,9 @@ const updateCandidateProfile = async (req: Request, res: Response): Promise<Resp
                 gender: updatedcandidate.gender,
                 category: updatedcandidate.category,
                 profile: updatedcandidate.profile,
-                profilePicture: updatedcandidate.profilePicture
+                profilePicture: updatedcandidate.profilePicture,
+                designation: updatedcandidate.designation,
+                experience: updatedcandidate.experience
             }
         });
     } catch (error: any) {
@@ -309,7 +300,7 @@ const getMyJobs = async (req: Request, res: Response): Promise<Response> => {
             data: myJobs
         });
     } catch (error: any) {
-        console.error(`Error in fetching my jobs: `, error);
+        console.error(`Error in fetching my jobs: ${error}`);
 
         return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
@@ -318,4 +309,4 @@ const getMyJobs = async (req: Request, res: Response): Promise<Response> => {
     }
 };
 
-export default { candidateJoin, validateOTP, getCandidateById, getAllCandidates, getAllJobsByCandidate, updateCandidateProfile, applyToJob, saveJob, unsaveJob, getMyJobs };
+export default { candidateJoin, validateOTP, getCandidateById, getAllJobsByCandidate, updateCandidateProfile, applyToJob, saveJob, unsaveJob, getMyJobs };

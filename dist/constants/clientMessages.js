@@ -11,6 +11,9 @@ exports.CLIENT_SUCCESS_MESSAGES = {
     JOB_DELETED_SUCCESS_MESSAGE: 'Job deleted successfully !',
     JOB_FETCH_SUCCESS_MESSAGE: 'Job details fetched successfully !',
     JOBS_FETCHED_SUCCESS_MESSAGE: 'Jobs fetched successfully !',
+    OTP_SENT_SUCCESS: 'OTP sent successfully to your email !',
+    OTP_VALIDATION_SUCCESS: 'OTP validated successfully !',
+    PASSWORD_UPDATED_SUCCESS: 'Password updated successfully !',
 };
 exports.CLIENT_ERROR_MESSAGES = {
     CLIENT_NOT_FOUND: 'Invalid Account !',
@@ -32,6 +35,12 @@ exports.CLIENT_ERROR_MESSAGES = {
     JOB_NOT_FOUND: 'Job not found !',
     JOB_DELETE_ERROR_MESSAGE: ' An error occured while deleting the job !',
     JOBS_FETCH_FAILED: 'An error occurred while fetching jobs. Please try again later !',
+    OTP_GENERATION_FAILED: 'An error occurred while generating OTP. Please try again later !',
+    OTP_EXPIRED: 'OTP has expired. Please request a new one !',
+    INVALID_OTP: 'Invalid OTP. Please try again !',
+    OTP_VALIDATION_FAILED: 'An error occurred while validating OTP. Please try again later !',
+    PASSWORD_UPDATE_FAILED: 'An error occurred while updating password. Please try again later !',
+    EMAIL_NOT_FOUND: 'Email address not found !',
 };
 exports.HTTP_STATUS = {
     OK: 200,

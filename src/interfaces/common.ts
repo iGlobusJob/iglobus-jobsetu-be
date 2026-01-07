@@ -10,6 +10,8 @@ export interface CandidateData {
     profile: string,
     profilePicture: string,
     category: string;
+    designation?: string;
+    experience?: string | number;
     createdAt?: Date;
     updatedAt?: Date;
 }

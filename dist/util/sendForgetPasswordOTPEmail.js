@@ -40,7 +40,7 @@ const sendOTPEmail = async (firstName, lastName, userName, tempPassword) => {
         </p><br>
 
         <p style="margin: 20px 0 5px; font-size: 14px; color: #333;">Regards,</p>
-        <p style="font-size: 14px; font-weight: bold; color: #333;">JOBSETU.</p>
+        <p style="font-size: 14px; font-weight: bold; color: #333;">Team iGlobus JobSetu.</p>
       </div>
     </div>
   </body>
@@ -55,13 +55,13 @@ const sendOTPEmail = async (firstName, lastName, userName, tempPassword) => {
             if (error) {
                 return error;
             }
-            console.log('Info after sent:', info.response);
+            console.warn('Info after sent:', info.response);
             return info.response;
         });
         return result;
     }
     catch (error) {
-        console.error('Error in sending Email at services: ', error);
+        console.error(`Error in sending Email at services: ${error}`);
         return error;
     }
 };

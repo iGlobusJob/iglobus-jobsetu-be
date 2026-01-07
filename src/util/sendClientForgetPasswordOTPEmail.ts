@@ -1,30 +1,33 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const emailConfig_1 = __importDefault(require("./emailConfig"));
-const sendOTPEmail = async (email, otp) => {
+import createEmailTransporter from './emailConfig';
+
+const sendClientForgetPasswordOTPEmail = async (firstName: string, lastName: string, email: string, otp: string) => {
     try {
-        const transporter = (0, emailConfig_1.default)();
+        const transporter = createEmailTransporter();
         const mailBody = `     
 <html>
   <body style="font-family: serif; background-color: #f4f4f9; padding: 20px;">
     <div style="max-width: 750px; height:auto; margin: 0 auto; border: 1px solid #f7f1f4 ; border-radius: 5px;">
       <!-- Header Section -->
       <div style="background-color:rgb(121, 181, 245); color: #fff; text-align: center; padding: 10px; border-top-left-radius: 5px; border-top-right-radius: 5px;">
-        <h2 style="margin: 0; font-size: 18px;">Your OTP for JobSetu</h2>
+        <h2 style="margin: 0; font-size: 18px;">Hello <b>${firstName} ${lastName}</b></h2>
       </div>
 
       <!-- Body Section -->
       <div style="background-color:rgb(220, 235, 248); padding: 20px; color:#4f4a4c "><br><br>
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          Please use the below OTP to login to the system. Note that OTP will expire in 10 min. 
-          If you are not using OTP in next 10 min, you need to generate again.
+          We received a request to reset your password. Please use the OTP below to proceed with resetting your password.
+        </p>
+
+        <p style="margin: 0 0 15px; font-size: 16px; color: #333;">
+          <b>Your OTP is:</b> <span style="font-size: 24px; color: #007bff; font-weight: bold;">${otp}</span>
+        </p>
+
+        <p style="margin: 0 0 15px; font-size: 14px; color: #d9534f; font-weight: bold;">
+          <u>Note:</u> This OTP is valid for 10 minutes only. Please do not share this OTP with anyone.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
-          <b>Your OTP is:</b> <span style="font-size: 18px; font-weight: bold; color: #007bff;">${otp}</span>
+          If you did not request a password reset, please ignore this email or contact support immediately.
         </p>
 
         <p style="margin: 0 0 15px; font-size: 14px; color: #333;">
@@ -40,19 +43,20 @@ const sendOTPEmail = async (email, otp) => {
     </div>
   </body>
 </html>`;
+
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to: email,
-            subject: 'Your OTP to Login - JobSetu',
+            subject: 'Password Reset OTP - JobSetu',
             html: mailBody,
         };
-        const result = await transporter.sendMail(mailOptions);
-        console.warn(`OTP Email sent successfully: ${result.response}`);
-        return result;
-    }
-    catch (error) {
-        console.error(`Error in sending OTP Email at services: ${error}`);
-        throw error;
+
+        await transporter.sendMail(mailOptions);
+        console.warn('Forget password OTP email sent successfully to:', email);
+    } catch (error) {
+        console.error('Error sending forget password OTP email:', error);
+        throw new Error('Failed to send OTP email');
     }
 };
-exports.default = { sendOTPEmail };
+
+export default sendClientForgetPasswordOTPEmail;

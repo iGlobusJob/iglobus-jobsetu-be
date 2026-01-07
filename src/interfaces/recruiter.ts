@@ -5,6 +5,7 @@ interface IRecruiter extends Document {
     lastName: string;
     email: string;
     password: string;
+    isDeleted?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }

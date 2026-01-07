@@ -24,6 +24,13 @@ const clientSchema = new mongoose.Schema(
         panCard: { type: String, trim: true, uppercase: true, required: true },
         category: { type: String, enum: ['IT', 'Non-IT'], required: true },
         logo: { type: String, trim: true },
+        otp: {
+            type: String,
+            minlength: 5,
+            maxlength: 5,
+            match: /^\d{5}$/
+        },
+        otpExpiredAt: { type: Date },
     },
     {
         collection: 'client',

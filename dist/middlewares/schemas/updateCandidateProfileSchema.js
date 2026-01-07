@@ -45,6 +45,8 @@ const updateCandidateProfileSchema = joi_1.default.object({
     }),
     // File upload fields - handled by multer middleware, just allow them in validation
     profile: joi_1.default.any().optional().allow(''),
-    profilepicture: joi_1.default.any().optional().allow('')
+    profilepicture: joi_1.default.any().optional().allow(''),
+    designation: joi_1.default.string().min(2).max(100).trim().optional().allow(''),
+    experience: joi_1.default.number().min(0).max(50).optional().allow('')
 });
 exports.default = updateCandidateProfileSchema;

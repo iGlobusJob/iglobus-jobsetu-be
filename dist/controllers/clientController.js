@@ -218,7 +218,7 @@ const getAllJobsByClient = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error in fetching jobs: `, error);
+        console.error(`Error in fetching jobs: ${error}`);
         return res.status(clientMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: clientMessages_1.CLIENT_ERROR_MESSAGES.JOBS_FETCH_FAILED
@@ -266,7 +266,7 @@ const updateClientProfile = async (req, res) => {
         });
     }
     catch (error) {
-        console.error(`Error in updating client profile: `, error);
+        console.error(`Error in updating client profile: ${error}`);
         if (error.message === 'CLIENT_NOT_FOUND') {
             return res.status(clientMessages_1.HTTP_STATUS.NOT_FOUND).json({
                 success: false,
@@ -311,4 +311,108 @@ const getJobByClient = async (req, res) => {
         });
     }
 };
-exports.default = { clientRegistration, clientLogin, getClientById, createJobByClient, updateJobByClient, getAllJobsByClient, updateClientProfile, getJobByClient };
+const sendForgetPasswordOTP = async (req, res) => {
+    try {
+        const { email } = req.body;
+        await clientServices_1.default.sendForgetPasswordOTP(email);
+        console.warn(`Forget password OTP sent successfully to: ${email}`);
+        return res.status(clientMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: clientMessages_1.CLIENT_SUCCESS_MESSAGES.OTP_SENT_SUCCESS,
+            data: {
+                email
+            }
+        });
+    }
+    catch (error) {
+        if (error.message === 'EMAIL_NOT_FOUND') {
+            console.error(`Failed to send OTP - Email not found: ${req.body.email}`);
+            return res.status(clientMessages_1.HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: clientMessages_1.CLIENT_ERROR_MESSAGES.EMAIL_NOT_FOUND
+            });
+        }
+        console.error(`Error sending OTP for forget password: ${error}`);
+        return res.status(clientMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: clientMessages_1.CLIENT_ERROR_MESSAGES.OTP_GENERATION_FAILED
+        });
+    }
+};
+const validateForgetPasswordOTP = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        await clientServices_1.default.validateForgetPasswordOTP(email, otp);
+        console.warn(`OTP validated successfully for email: ${email}`);
+        return res.status(clientMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: clientMessages_1.CLIENT_SUCCESS_MESSAGES.OTP_VALIDATION_SUCCESS
+        });
+    }
+    catch (error) {
+        if (error.message === 'EMAIL_NOT_FOUND') {
+            console.error(`Failed to validate OTP - Email not found: ${req.body.email}`);
+            return res.status(clientMessages_1.HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: clientMessages_1.CLIENT_ERROR_MESSAGES.EMAIL_NOT_FOUND
+            });
+        }
+        if (error.message === 'OTP_EXPIRED') {
+            console.error(`Failed to validate OTP - OTP expired for email: ${req.body.email}`);
+            return res.status(clientMessages_1.HTTP_STATUS.BAD_REQUEST).json({
+                success: false,
+                message: clientMessages_1.CLIENT_ERROR_MESSAGES.OTP_EXPIRED
+            });
+        }
+        if (error.message === 'INVALID_OTP') {
+            console.error(`Failed to validate OTP - Invalid OTP for email: ${req.body.email}`);
+            return res.status(clientMessages_1.HTTP_STATUS.BAD_REQUEST).json({
+                success: false,
+                message: clientMessages_1.CLIENT_ERROR_MESSAGES.INVALID_OTP
+            });
+        }
+        console.error(`Error validating OTP: ${error}`);
+        return res.status(clientMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: clientMessages_1.CLIENT_ERROR_MESSAGES.OTP_VALIDATION_FAILED
+        });
+    }
+};
+const updateClientPassword = async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+        await clientServices_1.default.updateClientPassword(email, newPassword);
+        console.warn(`Password updated successfully for email: ${email}`);
+        return res.status(clientMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: clientMessages_1.CLIENT_SUCCESS_MESSAGES.PASSWORD_UPDATED_SUCCESS
+        });
+    }
+    catch (error) {
+        if (error.message === 'EMAIL_NOT_FOUND') {
+            console.error(`Failed to update password - Email not found: ${req.body.email}`);
+            return res.status(clientMessages_1.HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: clientMessages_1.CLIENT_ERROR_MESSAGES.EMAIL_NOT_FOUND
+            });
+        }
+        console.error(`Error updating client password: ${error}`);
+        return res.status(clientMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: clientMessages_1.CLIENT_ERROR_MESSAGES.PASSWORD_UPDATE_FAILED
+        });
+    }
+};
+exports.default = {
+    clientRegistration,
+    clientLogin,
+    getClientById,
+    updateClientProfile,
+    createJobByClient,
+    updateJobByClient,
+    getAllJobsByClient,
+    getJobByClient,
+    sendForgetPasswordOTP,
+    validateForgetPasswordOTP,
+    updateClientPassword
+};

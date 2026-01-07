@@ -35,7 +35,7 @@ const candidateJoin = async (email) => {
         candidate = await newCandidate.save();
     }
     await sendcandidateRegistrationOTPEmail_1.default.sendOTPEmail(email, otp).catch(error => {
-        console.error('Failed to send OTP email:', error);
+        console.error(`Failed to send OTP email: ${error}`);
     });
     return { candidate, otp };
 };
@@ -91,42 +91,12 @@ const getCandidateById = async (id) => {
             profileUrl: profileUrl,
             profilePicture: candidate.profilePicture || '',
             profilePictureUrl: profilePictureUrl,
+            designation: candidate.designation || '',
+            experience: candidate.experience || '',
             createdAt: candidate.createdAt,
             updatedAt: candidate.updatedAt
         }
     };
-};
-const getAllCandidateService = async () => {
-    try {
-        const candidates = await candidateModel_1.default.find();
-        const formattedCandidates = await Promise.all(candidates.map(async (candidate) => {
-            let profilePictureUrl = null;
-            if (candidate.profilePicture) {
-                profilePictureUrl = await generatePresignedUrl_1.default.generatePresignedUrl(candidate.profilePicture);
-            }
-            return {
-                id: candidate.id,
-                email: candidate.email || '',
-                firstName: candidate.firstName || '',
-                lastName: candidate.lastName || '',
-                mobileNumber: candidate.mobileNumber || '',
-                address: candidate.address || '',
-                dateOfBirth: candidate.dateOfBirth || '',
-                gender: candidate.gender || '',
-                profilePicture: profilePictureUrl || '',
-                createdAt: candidate.createdAt,
-                updatedAt: candidate.updatedAt
-            };
-        }));
-        return {
-            success: true,
-            candidates: formattedCandidates
-        };
-    }
-    catch (error) {
-        throw new Error("Failed to fetch candidate details");
-    }
-    ;
 };
 const getAllJobsByCandidate = async () => {
     try {
@@ -166,7 +136,7 @@ const getAllJobsByCandidate = async () => {
         };
     }
     catch (error) {
-        throw new Error("Failed to fetch all jobs ");
+        throw new Error('Failed to fetch all jobs');
     }
     ;
 };
@@ -180,7 +150,7 @@ const updateCandidateService = async (candidateId, updateData, files) => {
             updateData.profile = uploadResult.fileUrl;
         }
         catch (error) {
-            console.error('Error uploading resume to S3:', error);
+            console.error(`Error uploading resume to S3: ${error}`);
             throw new Error('RESUME_UPLOAD_FAILED');
         }
     }
@@ -193,7 +163,7 @@ const updateCandidateService = async (candidateId, updateData, files) => {
             updateData.profilePicture = uploadResult.fileUrl;
         }
         catch (error) {
-            console.error('Error uploading profile picture to S3:', error);
+            console.error(`Error uploading profile picture to S3: ${error}`);
             throw new Error('PROFILE_PICTURE_UPLOAD_FAILED');
         }
     }
@@ -239,7 +209,7 @@ const applyToJob = async (candidateId, jobId) => {
     }
     // send email after applying the job
     (0, sendJobAppliedMail_1.default)(candidate.email, job.jobTitle).catch((error) => {
-        console.error('Failed to send job applied email:', error);
+        console.error(`Failed to send job applied email: ${error}`);
     });
     return candidateJob;
 };
@@ -290,4 +260,4 @@ const getMyJobs = async (candidateId) => {
         .sort({ createdAt: -1 });
     return myJobs;
 };
-exports.default = { candidateJoin, validateOTP, getCandidateById, getAllCandidateService, getAllJobsByCandidate, updateCandidateService, applyToJob, saveJob, unsaveJob, getMyJobs };
+exports.default = { candidateJoin, validateOTP, getCandidateById, getAllJobsByCandidate, updateCandidateService, applyToJob, saveJob, unsaveJob, getMyJobs };

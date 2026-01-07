@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 const updateCandidateProfileSchema = Joi.object({
     firstName: Joi.string().min(2).max(50).trim().optional().allow('').pattern(/^[A-Za-z]+$/).messages({
@@ -48,7 +48,9 @@ const updateCandidateProfileSchema = Joi.object({
 
     // File upload fields - handled by multer middleware, just allow them in validation
     profile: Joi.any().optional().allow(''),
-    profilepicture: Joi.any().optional().allow('')
+    profilepicture: Joi.any().optional().allow(''),
+    designation: Joi.string().min(2).max(100).trim().optional().allow(''),
+    experience: Joi.number().min(0).max(50).optional().allow('')
 });
 
 export default updateCandidateProfileSchema;
