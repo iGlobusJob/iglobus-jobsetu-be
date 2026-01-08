@@ -11,6 +11,10 @@ const getAllCandidates = async () => {
     try {
         const candidates = await candidateModel_1.default.find();
         const formattedCandidates = await Promise.all(candidates.map(async (candidate) => {
+            let profileUrl = null;
+            if (candidate.profile) {
+                profileUrl = await generatePresignedUrl_1.default.generatePresignedUrl(candidate.profile);
+            }
             let profilePictureUrl = null;
             if (candidate.profilePicture) {
                 profilePictureUrl = await generatePresignedUrl_1.default.generatePresignedUrl(candidate.profilePicture);
@@ -26,6 +30,7 @@ const getAllCandidates = async () => {
                 gender: candidate.gender || '',
                 category: candidate.category || '',
                 profile: candidate.profile || '',
+                profileUrl: profileUrl || '',
                 profilePicture: profilePictureUrl || '',
                 experience: candidate.experience || '',
                 designation: candidate.designation || '',
@@ -47,6 +52,10 @@ const getCandidateById = async (id) => {
     if (!candidate) {
         throw new Error('CANDIDATE_NOT_FOUND');
     }
+    let profileUrl = null;
+    if (candidate.profile) {
+        profileUrl = await generatePresignedUrl_1.default.generatePresignedUrl(candidate.profile);
+    }
     let profilePictureUrl = null;
     if (candidate.profilePicture) {
         profilePictureUrl = await generatePresignedUrl_1.default.generatePresignedUrl(candidate.profilePicture);
@@ -63,6 +72,7 @@ const getCandidateById = async (id) => {
             dateOfBirth: candidate.dateOfBirth || '',
             gender: candidate.gender || '',
             profile: candidate.profile || '',
+            profileUrl: profileUrl || '',
             profilePicture: profilePictureUrl || '',
             category: candidate.category || '',
             designation: candidate.designation || '',
