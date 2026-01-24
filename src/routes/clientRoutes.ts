@@ -105,6 +105,10 @@ const ClientRouter: Router = express.Router();
  *                 type: string
  *                 format: binary
  *                 description: Company logo image (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF, max 5MB, optional)
+ *               isTermsAndConditionsAgreed:
+ *                 type: boolean
+ *                 description: Indicates if the client has agreed to the terms and conditions (required)
+ *                 example: true
  *     responses:
  *       201:
  *         description: Client registered successfully
