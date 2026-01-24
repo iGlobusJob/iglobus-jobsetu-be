@@ -162,4 +162,93 @@ RecruiterRouter.get(
   recruiterController.getCandidateByIdByRecruiter
 );
 
+/**
+ * @swagger
+ * /recruiter/clients:
+ *   get:
+ *     summary: Get all clients assigned to a recruiter
+ *     description: Fetches a list of all clients associated with the recruiter.
+ *     security:
+ *       - BearerAuth: []
+ *     tags:
+ *       - Recruiter
+ *     responses:
+ *       200:
+ *         description: Clients fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 clients:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "64f1c9e2a3b4c1234567890"
+ *                       organizationName:
+ *                         type: string
+ *                         example: "Acme Corporation"
+ *                       logo:
+ *                         type: string
+ *                         example: "https://example.com/logo.png"
+ *                       email:
+ *                         type: string
+ *                         example: "contact@acme.com"
+ *                       status:
+ *                         type: string
+ *                         example: "ACTIVE"
+ *                       emailStatus:
+ *                         type: string
+ *                         example: "VERIFIED"
+ *                       mobile:
+ *                         type: string
+ *                         example: "+91-9876543210"
+ *                       mobileStatus:
+ *                         type: string
+ *                         example: "VERIFIED"
+ *                       category:
+ *                         type: string
+ *                         example: "IT Services"
+ *                       gstin:
+ *                         type: string
+ *                         example: "27ABCDE1234F1Z5"
+ *                       panCard:
+ *                         type: string
+ *                         example: "ABCDE1234F"
+ *                       primaryContact:
+ *                         type: string
+ *                         example: "John Doe"
+ *                       secondaryContact:
+ *                         type: string
+ *                         example: "Jane Smith"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-01-01T10:30:00.000Z"
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-01-10T15:45:00.000Z"
+ *       500:
+ *         description: Internal server error while fetching clients
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to fetch clients"
+ */
+
+RecruiterRouter.get('/recruiter/clients', validateJWT, recruiterController.getAllClientsByRecruiter);
 export default RecruiterRouter;
