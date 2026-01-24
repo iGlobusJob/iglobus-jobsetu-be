@@ -24,6 +24,7 @@ interface IClient extends Document {
     logo?: string;
     otp?: string;
     otpExpiredAt?: Date;
+    isTermsAndConditionsAgreed: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }
