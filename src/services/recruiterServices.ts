@@ -90,7 +90,7 @@ const getJobByIdService = async (jobId: string) => {
 
 const getAllClientsService = async () => {
   try {
-    const clients = await clientModel.find();
+    const clients = await clientModel.find({ status: 'active' });
 
     const formattedClients = clients.map(client => ({
       id: client.id,

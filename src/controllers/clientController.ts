@@ -184,47 +184,6 @@ const updateJobByClient = async (req: Request, res: Response): Promise<Response>
     }
 };
 
-const getAllJobsByClient = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const clientId = req.user?.clientId as string;
-
-        const jobs = await clientService.getAllJobsByClient(clientId);
-
-        const formattedJobs = jobs.map(job => ({
-            clientId: job.clientId,
-            organizationName: job.organizationName,
-            jobTitle: job.jobTitle,
-            jobDescription: job.jobDescription,
-            postStart: job.postStart,
-            postEnd: job.postEnd,
-            noOfPositions: job.noOfPositions,
-            minimumSalary: job.minimumSalary,
-            maximumSalary: job.maximumSalary,
-            jobType: job.jobType,
-            jobLocation: job.jobLocation,
-            minimumExperience: job.minimumExperience,
-            maximumExperience: job.maximumExperience,
-            status: job.status,
-            createdAt: job.createdAt,
-            updatedAt: job.updatedAt,
-            id: job.id
-        }));
-
-        return res.status(HTTP_STATUS.OK).json({
-            success: true,
-            message: CLIENT_SUCCESS_MESSAGES.JOBS_FETCHED_SUCCESS_MESSAGE,
-            data: formattedJobs
-        });
-    } catch (error: any) {
-        console.error(`Error in fetching jobs: ${error}`);
-
-        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            message: CLIENT_ERROR_MESSAGES.JOBS_FETCH_FAILED
-        });
-    }
-};
-
 const updateClientProfile = async (req: Request, res: Response): Promise<Response> => {
     try {
         const clientId = req.user?.clientId;
@@ -431,7 +390,6 @@ export default {
     updateClientProfile,
     createJobByClient,
     updateJobByClient,
-    getAllJobsByClient,
     getJobByClient,
     sendForgetPasswordOTP,
     validateForgetPasswordOTP,

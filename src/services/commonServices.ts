@@ -4,6 +4,7 @@ import { FetchAllCandidateResponse, FetchCandidateByIdResponse } from '../interf
 import { FetchAllJobsResponse } from '../interfaces/jobs';
 import presignedUrlUtil from '../util/generatePresignedUrl';
 import sendContactUsMailUtility from '../util/sendContactUsEmail';
+import IJobs from '../interfaces/jobs';
 
 const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
     try {
@@ -178,4 +179,9 @@ const sendContactUsMail = async (mailDetailsToFire: any) => {
     }
 };
 
-export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail };
+const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
+    const jobs = await jobsModel.find({ clientId }).sort({ createdAt: -1 });
+    return jobs;
+};
+
+export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient };

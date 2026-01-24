@@ -131,11 +131,6 @@ const updateJobByClient = async (clientId: string, jobId: string, jobData: Parti
     return updatedJob;
 };
 
-const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
-    const jobs = await jobsModel.find({ clientId }).sort({ createdAt: -1 });
-    return jobs;
-};
-
 const updateClientProfile = async (
     clientId: string,
     updateData: Partial<IClient>,
@@ -267,7 +262,6 @@ export default {
     getClientById,
     createJobByClient,
     updateJobByClient,
-    getAllJobsByClient,
     updateClientProfile,
     getJobByClient,
     sendForgetPasswordOTP,
