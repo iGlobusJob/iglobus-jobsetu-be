@@ -164,7 +164,7 @@ RecruiterRouter.get(
 
 /**
  * @swagger
- * /recruiter/clients:
+ * /recruiter/getallassignedclientsbyrecruiter:
  *   get:
  *     summary: Get all clients assigned to a recruiter
  *     description: Fetches a list of all clients associated with the recruiter.
@@ -250,5 +250,5 @@ RecruiterRouter.get(
  *                   example: "Failed to fetch clients"
  */
 
-RecruiterRouter.get('/recruiter/clients', validateJWT, recruiterController.getAllClientsByRecruiter);
+RecruiterRouter.get('/recruiter/getallassignedclientsbyrecruiter', validateJWT, recruiterController.getAllClientsByRecruiter);
 export default RecruiterRouter;
