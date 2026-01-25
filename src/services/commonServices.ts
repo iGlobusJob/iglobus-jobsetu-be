@@ -128,10 +128,21 @@ const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
         const now = new Date();
         const jobs = await jobsModel.find({ postStart: { $lte: now } }).populate({
             path: 'clientId',
-            select: 'organizationName primaryContact logo'
+            select: 'organizationName primaryContact logo status'
         });
 
-        const alljobs = jobs.map(job => {
+        const activeClientJobs = jobs.filter(job => {
+            const client = job.clientId as any;
+            return client?.status === 'active';
+        });
+
+        const sortedJobs = activeClientJobs.sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return dateB - dateA;
+        });
+
+        const alljobs = sortedJobs.map(job => {
             const client = job.clientId as any;
             return {
                 id: job.id,
