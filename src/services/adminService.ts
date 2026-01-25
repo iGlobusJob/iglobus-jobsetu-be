@@ -104,9 +104,21 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
             updatedAt: client.updatedAt
         }));
 
+        // Sort clients: registered first, then inactive, then active
+        const statusOrder: Record<string, number> = {
+            'registered': 1,
+            'inactive': 2,
+            'active': 3
+        };
+        const sortedClients = formattedClients.sort((a, b) => {
+            const statusA = a.status as string;
+            const statusB = b.status as string;
+            return (statusOrder[statusA] || 4) - (statusOrder[statusB] || 4);
+        });
+
         return {
             success: true,
-            clients: formattedClients
+            clients: sortedClients
         };
     } catch (error) {
         throw new Error('Failed to fetch clients');
