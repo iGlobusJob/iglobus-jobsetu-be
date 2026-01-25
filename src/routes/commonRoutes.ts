@@ -715,7 +715,7 @@ CommonRouter.post('/contactus', commonController.sendContactUsMail);
  * @swagger
  * /getalljobsbyclientid/{clientId}:
  *   get:
- *     summary: Get all jobs created by a specific client
+ *     summary: Get all jobs created by a specific client - [Admin/Recruiter]
  *     description: Retrieves all job postings created by the specified client. Jobs are sorted by creation date (newest first).
  *     tags:
  *       - Common
