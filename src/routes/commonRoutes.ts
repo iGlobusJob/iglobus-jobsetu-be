@@ -627,7 +627,7 @@ CommonRouter.post('/contactus', commonController.sendContactUsMail);
  *                   type: string
  *                   example: "An error occurred while fetching jobs. Please try again later !"
  */
-CommonRouter.get('/getalljobsbyclient',  commonController.getAllJobsByClient);
+CommonRouter.get('/getalljobsbyclientid/:clientId', commonController.getAllJobsByClient);
 
 
 export default CommonRouter;

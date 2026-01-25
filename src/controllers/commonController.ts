@@ -84,7 +84,7 @@ const sendContactUsMail = async (req: Request, res: Response): Promise<any> => {
     try {
         const mailDetailsToFire = req.body;
         const emailResponse = await commonService.sendContactUsMail(mailDetailsToFire);
-        
+
         return res.status(HTTP_STATUS.OK).json({
             success: true,
             message: COMMON_SUCCESS_MESSAGES.EMAIL_SEND_SUCCESS
@@ -100,7 +100,7 @@ const sendContactUsMail = async (req: Request, res: Response): Promise<any> => {
 
 const getAllJobsByClient = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const clientId = req.user?.clientId as string;
+        const clientId = req.params.clientId;
 
         const jobs = await commonService.getAllJobsByClient(clientId);
 
@@ -138,4 +138,5 @@ const getAllJobsByClient = async (req: Request, res: Response): Promise<Response
         });
     }
 };
+
 export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient };
