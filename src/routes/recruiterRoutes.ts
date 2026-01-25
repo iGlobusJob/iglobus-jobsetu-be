@@ -49,10 +49,7 @@ const RecruiterRouter: Router = express.Router();
  *       500:
  *         description: Login failed
  */
-RecruiterRouter.post(
-  '/recruiter',
-  recruiterController.recruiterLogin
-);
+RecruiterRouter.post('/recruiter', recruiterController.recruiterLogin);
 
 /**
  * @swagger
@@ -72,11 +69,7 @@ RecruiterRouter.post(
  *       500:
  *         description: Failed to fetch jobs
  */
-RecruiterRouter.get(
-  '/recruiter/jobs',
-  validateJWT,
-  recruiterController.getAllJobsByRecruiter
-);
+RecruiterRouter.get('/recruiter/jobs', validateJWT, recruiterController.getAllJobsByRecruiter);
 
 /**
  * @swagger
@@ -103,11 +96,7 @@ RecruiterRouter.get(
  *       500:
  *         description: Failed to fetch job
  */
-RecruiterRouter.get(
-  '/recruiter/job/:jobId',
-  validateJWT,
-  recruiterController.getJobByIdByRecruiter
-);
+RecruiterRouter.get('/recruiter/job/:jobId', validateJWT, recruiterController.getJobByIdByRecruiter);
 
 /**
  * @swagger
@@ -125,11 +114,7 @@ RecruiterRouter.get(
  *       500:
  *         description: Failed to fetch candidates
  */
-RecruiterRouter.get(
-  '/recruiter/candidates',
-  validateJWT,
-  recruiterController.getAllCandidatesByRecruiter
-);
+RecruiterRouter.get('/recruiter/candidates', validateJWT, recruiterController.getAllCandidatesByRecruiter);
 
 /**
  * @swagger
@@ -156,11 +141,7 @@ RecruiterRouter.get(
  *       500:
  *         description: Failed to fetch candidate
  */
-RecruiterRouter.get(
-  '/recruiter/candidate/:candidateId',
-  validateJWT,
-  recruiterController.getCandidateByIdByRecruiter
-);
+RecruiterRouter.get('/recruiter/candidate/:candidateId', validateJWT, recruiterController.getCandidateByIdByRecruiter);
 
 /**
  * @swagger
@@ -249,6 +230,6 @@ RecruiterRouter.get(
  *                   type: string
  *                   example: "Failed to fetch clients"
  */
-
 RecruiterRouter.get('/recruiter/getallassignedclientsbyrecruiter', validateJWT, recruiterController.getAllClientsByRecruiter);
+
 export default RecruiterRouter;
