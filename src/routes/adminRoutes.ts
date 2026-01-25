@@ -1042,8 +1042,8 @@ AdminRouter.delete('/deleterecruiter/:recruiterId', validateJWT, adminPermission
  * @swagger
  * /getalljobsbyadmin:
  *   get:
- *     summary: Get all jobs 
- *     description: Fetches all jobs. 
+ *     summary: Get all jobs (Admin only)
+ *     description: Fetches all jobs with client details. Requires JWT authentication and admin permissions.
  *     tags:
  *       - Admin
  *     security:
@@ -1059,20 +1059,29 @@ AdminRouter.delete('/deleterecruiter/:recruiterId', validateJWT, adminPermission
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Jobs fetched successfully !"
- *                 data:
+ *                 jobs:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
- *                       _id:
+ *                       id:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439011
  *                       clientId:
  *                         type: string
  *                         example: 507f191e810c19729de860ea
+ *                       organizationName:
+ *                         type: string
+ *                         example: Tech Solutions Inc.
+ *                       primaryContactFirstName:
+ *                         type: string
+ *                         example: John
+ *                       primaryContactLastName:
+ *                         type: string
+ *                         example: Doe
+ *                       logo:
+ *                         type: string
+ *                         example: https://iglobus-job-sethu.s3.amazonaws.com/clients/507f191e810c19729de860ea/logos/logo.png
  *                       jobTitle:
  *                         type: string
  *                         example: Senior Backend Developer
@@ -1133,7 +1142,20 @@ AdminRouter.delete('/deleterecruiter/:recruiterId', validateJWT, adminPermission
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Invalid or expired token"
+ *                   example: "No token provided !"
+ *       403:
+ *         description: Forbidden - Insufficient permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Insufficient permissions. Admin access required !"
  *       500:
  *         description: Internal server error occurred while fetching jobs
  *         content:
