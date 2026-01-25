@@ -1038,4 +1038,117 @@ AdminRouter.get('/getcandidatedetailsbyadmin/:candidateid', validateJWT, adminCo
 
 AdminRouter.delete('/deleterecruiter/:recruiterId', validateJWT, adminPermission, adminController.deleteRecruiteByAdmin);
 
+/**
+ * @swagger
+ * /getalljobsbyadmin:
+ *   get:
+ *     summary: Get all jobs 
+ *     description: Fetches all jobs. 
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Jobs fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Jobs fetched successfully !"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *                       clientId:
+ *                         type: string
+ *                         example: 507f191e810c19729de860ea
+ *                       jobTitle:
+ *                         type: string
+ *                         example: Senior Backend Developer
+ *                       jobDescription:
+ *                         type: string
+ *                         example: Looking for an experienced backend developer with Node.js expertise
+ *                       postStart:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-01T00:00:00.000Z
+ *                       postEnd:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-03-01T00:00:00.000Z
+ *                       noOfPositions:
+ *                         type: number
+ *                         example: 5
+ *                       minimumSalary:
+ *                         type: number
+ *                         example: 800000
+ *                       maximumSalary:
+ *                         type: number
+ *                         example: 1500000
+ *                       jobType:
+ *                         type: string
+ *                         enum: [full-time, part-time, internship, freelance, contract]
+ *                         example: full-time
+ *                       jobLocation:
+ *                         type: string
+ *                         example: Hyderabad, India
+ *                       minimumExperience:
+ *                         type: number
+ *                         example: 3
+ *                       maximumExperience:
+ *                         type: number
+ *                         example: 7
+ *                       status:
+ *                         type: string
+ *                         enum: [active, closed, drafted]
+ *                         example: active
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-01T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-15T14:20:00.000Z
+ *       401:
+ *         description: Unauthorized - Invalid or missing JWT token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid or expired token"
+ *       500:
+ *         description: Internal server error occurred while fetching jobs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while fetching jobs. Please try again later !"
+ */
+AdminRouter.get('/getalljobsbyadmin', validateJWT, adminPermission, adminController.getAllJobsByAdmin);
+
+
 export default AdminRouter;

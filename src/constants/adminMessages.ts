@@ -28,6 +28,7 @@ export const ADMIN_ERROR_MESSAGES = {
     RECRUITER_ALREADY_EXISTS: 'Recruiter with this email already exists !',
     RECRUITERS_FETCH_ERROR_MESSAGE: 'An error occurred while fetching recruiters. Please try again later !',
     RECRUITER_DELETED_MESSAGE: 'An error occurred while deleting recruiter. please try again later !',
+    JOBS_FETCH_FAILED: 'An error occurred while fetching jobs. Please try again later !',
 } as const;
 
 export const HTTP_STATUS = {
