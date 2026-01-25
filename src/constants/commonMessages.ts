@@ -1,6 +1,7 @@
 export const COMMON_SUCCESS_MESSAGES = {
     CANDIDATE_FETCH_SUCCESS_MESSAGE: 'Candidate details fetched successfully !',
     JOB_FETCH_SUCCESS_MESSAGE: 'Job details fetched successfully !',
+    JOB_WITH_APPLICANTS_FETCH_SUCCESS_MESSAGE: 'Job details with applicants fetched successfully !',
     JOBS_FETCHED_SUCCESS_MESSAGE: 'Jobs fetched successfully !',
     EMAIL_SEND_SUCCESS: 'Email sent successfully !',
 } as const;

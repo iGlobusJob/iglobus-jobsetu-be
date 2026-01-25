@@ -1,5 +1,6 @@
 import candidateModel from '../model/candidateModel';
 import jobsModel from '../model/jobsModel';
+import candidateJobModel from '../model/candidateJobModel';
 import { FetchAllCandidateResponse, FetchCandidateByIdResponse } from '../interfaces/common';
 import { FetchAllJobsResponse } from '../interfaces/jobs';
 import presignedUrlUtil from '../util/generatePresignedUrl';
@@ -184,4 +185,72 @@ const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
     return jobs;
 };
 
-export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient };
+const getJobWithApplicants = async (jobId: string): Promise<any> => {
+    const job = await jobsModel.findById(jobId).populate({
+        path: 'clientId',
+        select: 'organizationName primaryContact logo'
+    });
+
+    if (!job) {
+        throw new Error('JOB_NOT_FOUND');
+    }
+
+    // Get all candidates who applied for this job
+    const candidateJobs = await candidateJobModel.find({ jobId, isJobApplied: true }).populate({
+        path: 'candidateId',
+        select: 'email firstName lastName mobileNumber address dateOfBirth gender category profile profilePicture designation experience createdAt updatedAt'
+    });
+
+    const applicants = await Promise.all(candidateJobs.map(async (candidateJob) => {
+        const candidate = candidateJob.candidateId as any;
+        if (!candidate) return null;
+
+        return {
+            id: candidate._id,
+            email: candidate.email || '',
+            firstName: candidate.firstName || '',
+            lastName: candidate.lastName || '',
+            mobileNumber: candidate.mobileNumber || '',
+            designation: candidate.designation || '',
+            experience: candidate.experience || '',
+            appliedAt: candidateJob.appliedAt
+        };
+    }));
+
+    const filteredApplicants = applicants.filter(applicant => applicant !== null);
+
+    // Sort applicants by appliedAt in descending order (latest first)
+    const sortedApplicants = filteredApplicants.sort((a, b) => {
+        const dateA = a?.appliedAt ? new Date(a.appliedAt).getTime() : 0;
+        const dateB = b?.appliedAt ? new Date(b.appliedAt).getTime() : 0;
+        return dateB - dateA;
+    });
+
+    const client = job.clientId as any;
+    return {
+        id: job.id,
+        clientId: client?._id || job.clientId,
+        organizationName: client?.organizationName || '',
+        primaryContactFirstName: client?.primaryContact?.firstName || '',
+        primaryContactLastName: client?.primaryContact?.lastName || '',
+        logo: client?.logo || '',
+        jobTitle: job.jobTitle,
+        jobDescription: job.jobDescription,
+        postStart: job.postStart,
+        postEnd: job.postEnd,
+        noOfPositions: job.noOfPositions,
+        minimumSalary: job.minimumSalary,
+        maximumSalary: job.maximumSalary,
+        jobType: job.jobType,
+        jobLocation: job.jobLocation,
+        minimumExperience: job.minimumExperience,
+        maximumExperience: job.maximumExperience,
+        status: job.status,
+        createdAt: job.createdAt,
+        updatedAt: job.updatedAt,
+        applicants: sortedApplicants,
+        totalApplicants: sortedApplicants.length
+    };
+};
+
+export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient, getJobWithApplicants };

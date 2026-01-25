@@ -342,6 +342,198 @@ CommonRouter.get('/getjobdetailsbyid/:jobId', commonController.getJobById);
 
 /**
  * @swagger
+ * /getjobdetailswithapplicants/{jobId}:
+ *   get:
+ *     summary: Get job details with applicants - [Admin/Recruiter]
+ *     description: Fetches detailed information about a specific job by its ID along with all candidates who applied for the job.
+ *     tags:
+ *       - Common
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: jobId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique ID of the job to fetch
+ *         example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job details with applicants fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Job details with applicants fetched successfully !"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     clientId:
+ *                       type: string
+ *                       example: 507f191e810c19729de860ea
+ *                     organizationName:
+ *                       type: string
+ *                       example: Tech Solutions Inc.
+ *                     primaryContactFirstName:
+ *                       type: string
+ *                       example: John
+ *                     primaryContactLastName:
+ *                       type: string
+ *                       example: Doe
+ *                     logo:
+ *                       type: string
+ *                       example: https://iglobus-job-sethu.s3.amazonaws.com/clients/507f191e810c19729de860ea/logos/logo.png
+ *                     jobTitle:
+ *                       type: string
+ *                       example: Senior Backend Developer
+ *                     jobDescription:
+ *                       type: string
+ *                       example: Looking for an experienced backend developer with Node.js expertise
+ *                     postStart:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-01-01T00:00:00.000Z
+ *                     postEnd:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-03-01T00:00:00.000Z
+ *                     noOfPositions:
+ *                       type: number
+ *                       example: 5
+ *                     minimumSalary:
+ *                       type: number
+ *                       example: 800000
+ *                     maximumSalary:
+ *                       type: number
+ *                       example: 1500000
+ *                     jobType:
+ *                       type: string
+ *                       enum: [full-time, part-time, internship, freelance, contract]
+ *                       example: full-time
+ *                     jobLocation:
+ *                       type: string
+ *                       example: Hyderabad
+ *                     minimumExperience:
+ *                       type: number
+ *                       example: 3
+ *                     maximumExperience:
+ *                       type: number
+ *                       example: 7
+ *                     status:
+ *                       type: string
+ *                       enum: [active, closed, drafted]
+ *                       example: active
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                     totalApplicants:
+ *                       type: number
+ *                       example: 3
+ *                     applicants:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: 65a8d7f82c4a3f6f12345678
+ *                           email:
+ *                             type: string
+ *                             example: john.doe@example.com
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                           mobileNumber:
+ *                             type: string
+ *                             example: "9876543210"
+ *                           address:
+ *                             type: string
+ *                             example: 123 Street, Hyderabad
+ *                           dateOfBirth:
+ *                             type: string
+ *                             format: date
+ *                             example: "1990-05-21"
+ *                           gender:
+ *                             type: string
+ *                             example: Male
+ *                           category:
+ *                             type: string
+ *                             example: IT
+ *                           profile:
+ *                             type: string
+ *                             example: resumes/candidate123/resume.pdf
+ *                           profileUrl:
+ *                             type: string
+ *                             example: https://presigned-url-to-resume.com
+ *                           profilePicture:
+ *                             type: string
+ *                             example: profilepictures/candidate123/photo.jpg
+ *                           profilePictureUrl:
+ *                             type: string
+ *                             example: https://presigned-url-to-photo.com
+ *                           designation:
+ *                             type: string
+ *                             example: Software Engineer
+ *                           experience:
+ *                             type: number
+ *                             example: 4
+ *                           appliedAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2025-01-20T10:30:00.000Z"
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *       404:
+ *         description: Job not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Job not found !"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while fetching job details. Please try again later !"
+ */
+CommonRouter.get('/getjobdetailswithapplicants/:jobId', validateJWT, commonController.getJobWithApplicants);
+
+/**
+ * @swagger
  * /getalljobs:
  *   get:
  *     summary: Get all active jobs [Public]

@@ -139,4 +139,31 @@ const getAllJobsByClient = async (req: Request, res: Response): Promise<Response
     }
 };
 
-export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient };
+const getJobWithApplicants = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { jobId } = req.params;
+        const jobWithApplicants = await commonService.getJobWithApplicants(jobId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: COMMON_SUCCESS_MESSAGES.JOB_WITH_APPLICANTS_FETCH_SUCCESS_MESSAGE,
+            data: jobWithApplicants
+        });
+    } catch (error: any) {
+        console.error(`Error in fetching job with applicants: ${error}`);
+
+        if (error.message === 'JOB_NOT_FOUND') {
+            return res.status(HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: COMMON_ERROR_MESSAGES.JOB_NOT_FOUND
+            });
+        }
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: COMMON_ERROR_MESSAGES.JOB_FETCH_FAILED
+        });
+    }
+};
+
+export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient, getJobWithApplicants };
