@@ -9,6 +9,8 @@ import candidateModel from '../model/candidateModel';
 import ICandidate from '../interfaces/candidate';
 import recruiterModel from '../model/recruiterModel';
 import IRecruiter from '../interfaces/recruiter';
+import { FetchAllJobsResponse } from '../interfaces/jobs';
+import jobsModel from '../model/jobsModel';
 
 const adminLogin = async (username: string, password: string): Promise<{ admin: IAdmin; token: string }> => {
     const admin = await adminModel.findOne({ username }).select('+password');
@@ -186,4 +188,49 @@ const deleteRecruiterByAdminService = async (recruiterId: string): Promise<Delet
     };
 };
 
-export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, deleteRecruiterByAdminService };
+const getAllJobsByAdminService = async (): Promise<FetchAllJobsResponse> => {
+    try {
+        const now = new Date();
+        const jobs = await jobsModel.find({ postStart: { $lte: now } }).populate({
+            path: 'clientId',
+            select: 'organizationName primaryContact logo'
+        });
+
+        const alljobs = jobs.map(job => {
+            const client = job.clientId as any;
+            return {
+                id: job.id,
+                clientId: client?._id || job.clientId,
+                organizationName: client?.organizationName || '',
+                primaryContactFirstName: client?.primaryContact?.firstName || '',
+                primaryContactLastName: client?.primaryContact?.lastName || '',
+                logo: client?.logo || '',
+                jobTitle: job.jobTitle,
+                jobDescription: job.jobDescription,
+                postStart: job.postStart,
+                postEnd: job.postEnd,
+                noOfPositions: job.noOfPositions,
+                minimumSalary: job.minimumSalary,
+                maximumSalary: job.maximumSalary,
+                jobType: job.jobType,
+                jobLocation: job.jobLocation,
+                minimumExperience: job.minimumExperience,
+                maximumExperience: job.maximumExperience,
+                status: job.status,
+                createdAt: job.createdAt,
+                updatedAt: job.updatedAt
+            };
+        });
+
+        return {
+            success: true,
+            jobs: alljobs
+        };
+    } catch (error) {
+        throw new Error(`Failed to fetch all jobs: ${error}`);
+    };
+
+};
+
+
+export default { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, deleteRecruiterByAdminService, getAllJobsByAdminService };
