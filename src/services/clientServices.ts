@@ -256,6 +256,11 @@ const updateClientPassword = async (email: string, newPassword: string): Promise
     console.warn(`Password updated successfully for email: ${email}`);
 };
 
+const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
+    const jobs = await jobsModel.find({ clientId }).sort({ createdAt: -1 });
+    return jobs;
+};
+
 export default {
     clientRegistration,
     clientLogin,
@@ -266,5 +271,6 @@ export default {
     getJobByClient,
     sendForgetPasswordOTP,
     validateForgetPasswordOTP,
-    updateClientPassword
+    updateClientPassword, 
+    getAllJobsByClient
 };
