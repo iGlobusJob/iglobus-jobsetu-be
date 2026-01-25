@@ -713,12 +713,21 @@ CommonRouter.post('/contactus', commonController.sendContactUsMail);
 
 /**
  * @swagger
- * /getalljobsbyclient:
+ * /getalljobsbyclientid/{clientId}:
  *   get:
- *     summary: Get all jobs created by client
- *     description: Retrieves all job postings created by the authenticated client. The client ID is automatically extracted from the JWT token. Jobs are sorted by creation date (newest first).
+ *     summary: Get all jobs created by a specific client
+ *     description: Retrieves all job postings created by the specified client. Jobs are sorted by creation date (newest first).
  *     tags:
  *       - Common
+ *     parameters:
+ *       - in: path
+ *         name: clientId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           pattern: '^[0-9a-fA-F]{24}$'
+ *         description: MongoDB ObjectId of the client (24 character hexadecimal string)
+ *         example: 507f1f77bcf86cd799439012
  *     responses:
  *       200:
  *         description: Jobs fetched successfully.
@@ -741,6 +750,9 @@ CommonRouter.post('/contactus', commonController.sendContactUsMail);
  *                       clientId:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439012
+ *                       organizationName:
+ *                         type: string
+ *                         example: Tech Solutions Inc.
  *                       jobTitle:
  *                         type: string
  *                         example: Senior Full Stack Developer
@@ -792,19 +804,6 @@ CommonRouter.post('/contactus', commonController.sendContactUsMail);
  *                       id:
  *                         type: string
  *                         example: 507f1f77bcf86cd799439011
- *       401:
- *         description: Unauthorized - Invalid or missing JWT token.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Invalid or expired token"
  *       500:
  *         description: Internal server error occurred while fetching jobs.
  *         content:
