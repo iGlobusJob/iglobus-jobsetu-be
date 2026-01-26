@@ -166,4 +166,25 @@ const getJobWithApplicants = async (req: Request, res: Response): Promise<Respon
     }
 };
 
-export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient, getJobWithApplicants };
+const getCandidateJobs = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const candidateId = req.params.candidateId;
+
+        const myJobs = await commonService.getCandidateJobs(candidateId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            success: true,
+            message: COMMON_SUCCESS_MESSAGES.MY_JOBS_FETCHED_SUCCESS,
+            data: myJobs
+        });
+    } catch (error: any) {
+        console.error(`Error in fetching my jobs: ${error}`);
+
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: COMMON_ERROR_MESSAGES.MY_JOBS_FETCH_FAILED
+        });
+    }
+};
+
+export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient, getJobWithApplicants, getCandidateJobs };

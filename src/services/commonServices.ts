@@ -6,6 +6,7 @@ import { FetchAllJobsResponse } from '../interfaces/jobs';
 import presignedUrlUtil from '../util/generatePresignedUrl';
 import sendContactUsMailUtility from '../util/sendContactUsEmail';
 import IJobs from '../interfaces/jobs';
+import ICandidateJob from '../interfaces/candidateJob';
 
 const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
     try {
@@ -264,4 +265,17 @@ const getJobWithApplicants = async (jobId: string): Promise<any> => {
     };
 };
 
-export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient, getJobWithApplicants };
+const getCandidateJobs = async (candidateId: string): Promise<ICandidateJob[]> => {
+    const myJobs = await candidateJobModel.find({ candidateId })
+        .populate({
+            path: 'jobId',
+            populate: {
+                path: 'clientId',
+                select: 'organizationName logo'
+            }
+        })
+        .sort({ createdAt: -1 });
+    return myJobs;
+};
+
+export default { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient, getJobWithApplicants, getCandidateJobs };

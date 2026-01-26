@@ -820,5 +820,127 @@ CommonRouter.post('/contactus', commonController.sendContactUsMail);
  */
 CommonRouter.get('/getalljobsbyclientid/:clientId', commonController.getAllJobsByClient);
 
+/**
+ * @swagger
+ * /getcandidatejobs/{candidateId}:
+ *   get:
+ *     summary: Get all jobs saved or applied by candidate (Admin/Recruiter)
+ *     description: Retrieves all jobs from the candidatejobs collection for the given candidate.
+ *     tags:
+ *       - Common
+ *     parameters:
+ *       - in: path
+ *         name: candidateId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique ID of the candidate
+ *     responses:
+ *       200:
+ *         description: My jobs fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: My jobs fetched successfully !
+ *                 data:
+ *                   type: array
+ *                   description: List of candidate jobs sorted with Inactive jobs first
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *                       candidateId:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439012
+ *                       jobId:
+ *                         type: object
+ *                         description: Populated job details
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: 507f1f77bcf86cd799439013
+ *                           jobTitle:
+ *                             type: string
+ *                             example: Senior Software Engineer
+ *                           status:
+ *                             type: string
+ *                             example: Inactive
+ *                           jobLocation:
+ *                             type: string
+ *                             example: Bangalore
+ *                           minimumSalary:
+ *                             type: number
+ *                             example: 1000000
+ *                           maximumSalary:
+ *                             type: number
+ *                             example: 1500000
+ *                           clientId:
+ *                             type: object
+ *                             properties:
+ *                               organizationName:
+ *                                 type: string
+ *                                 example: Tech Corp
+ *                               logo:
+ *                                 type: string
+ *                                 example: https://example.com/logo.png
+ *                       isJobSaved:
+ *                         type: boolean
+ *                         example: true
+ *                       isJobApplied:
+ *                         type: boolean
+ *                         example: false
+ *                       savedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       appliedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: null
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *       401:
+ *         description: Unauthorized - Invalid or missing candidate credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid candidate ID. Access denied !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while fetching my jobs. Please try again later !
+ */
+CommonRouter.get('/getcandidatejobs/:candidateId',  commonController.getCandidateJobs);
 
 export default CommonRouter;
