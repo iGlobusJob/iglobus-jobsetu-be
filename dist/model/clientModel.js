@@ -33,6 +33,7 @@ const clientSchema = new mongoose_1.default.Schema({
         match: /^\d{5}$/
     },
     otpExpiredAt: { type: Date },
+    isTermsAndConditionsAgreed: { type: Boolean, default: false },
 }, {
     collection: 'client',
     timestamps: true,

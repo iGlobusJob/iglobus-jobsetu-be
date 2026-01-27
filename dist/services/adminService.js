@@ -21,6 +21,7 @@ const clientModel_1 = __importDefault(require("../model/clientModel"));
 const hashPassword_1 = __importDefault(require("../util/hashPassword"));
 const candidateModel_1 = __importDefault(require("../model/candidateModel"));
 const recruiterModel_1 = __importDefault(require("../model/recruiterModel"));
+const jobsModel_1 = __importDefault(require("../model/jobsModel"));
 const adminLogin = async (username, password) => {
     const admin = await adminModel_1.default.findOne({ username }).select('+password');
     if (!admin) {
@@ -91,9 +92,27 @@ const getAllClientsService = async () => {
             createdAt: client.createdAt,
             updatedAt: client.updatedAt
         }));
+        // Sort clients: registered first, then inactive, then active
+        const statusOrder = {
+            'registered': 1,
+            'inactive': 2,
+            'active': 3
+        };
+        const sortedClients = formattedClients.sort((a, b) => {
+            var _a, _b, _c, _d, _e, _f;
+            const statusA = (_a = a.status) !== null && _a !== void 0 ? _a : 'active';
+            const statusB = (_b = b.status) !== null && _b !== void 0 ? _b : 'active';
+            const statusDiff = ((_c = statusOrder[statusA]) !== null && _c !== void 0 ? _c : 4) - ((_d = statusOrder[statusB]) !== null && _d !== void 0 ? _d : 4);
+            if (statusDiff !== 0) {
+                return statusDiff;
+            }
+            const dateA = new Date((_e = a.updatedAt) !== null && _e !== void 0 ? _e : 0).getTime();
+            const dateB = new Date((_f = b.updatedAt) !== null && _f !== void 0 ? _f : 0).getTime();
+            return dateB - dateA;
+        });
         return {
             success: true,
-            clients: formattedClients
+            clients: sortedClients
         };
     }
     catch (error) {
@@ -148,4 +167,47 @@ const deleteRecruiterByAdminService = async (recruiterId) => {
         success: true,
     };
 };
-exports.default = { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, deleteRecruiterByAdminService };
+const getAllJobsByAdminService = async () => {
+    try {
+        const now = new Date();
+        const jobs = await jobsModel_1.default.find({ postStart: { $lte: now } }).populate({
+            path: 'clientId',
+            select: 'organizationName primaryContact logo'
+        });
+        const alljobs = jobs.map(job => {
+            var _a, _b;
+            const client = job.clientId;
+            return {
+                id: job.id,
+                clientId: (client === null || client === void 0 ? void 0 : client._id) || job.clientId,
+                organizationName: (client === null || client === void 0 ? void 0 : client.organizationName) || '',
+                primaryContactFirstName: ((_a = client === null || client === void 0 ? void 0 : client.primaryContact) === null || _a === void 0 ? void 0 : _a.firstName) || '',
+                primaryContactLastName: ((_b = client === null || client === void 0 ? void 0 : client.primaryContact) === null || _b === void 0 ? void 0 : _b.lastName) || '',
+                logo: (client === null || client === void 0 ? void 0 : client.logo) || '',
+                jobTitle: job.jobTitle,
+                jobDescription: job.jobDescription,
+                postStart: job.postStart,
+                postEnd: job.postEnd,
+                noOfPositions: job.noOfPositions,
+                minimumSalary: job.minimumSalary,
+                maximumSalary: job.maximumSalary,
+                jobType: job.jobType,
+                jobLocation: job.jobLocation,
+                minimumExperience: job.minimumExperience,
+                maximumExperience: job.maximumExperience,
+                status: job.status,
+                createdAt: job.createdAt,
+                updatedAt: job.updatedAt
+            };
+        });
+        return {
+            success: true,
+            jobs: alljobs
+        };
+    }
+    catch (error) {
+        throw new Error(`Failed to fetch all jobs: ${error}`);
+    }
+    ;
+};
+exports.default = { adminLogin, createAdminService, updateClientByAdmin, getClientById, getCandidateDetailsByService, getAllClientsService, createRecruiterService, getAllRecruitersService, deleteRecruiterByAdminService, getAllJobsByAdminService };

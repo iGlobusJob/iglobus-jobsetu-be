@@ -94,4 +94,83 @@ const sendContactUsMail = async (req, res) => {
         });
     }
 };
-exports.default = { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail };
+const getAllJobsByClient = async (req, res) => {
+    try {
+        const clientId = req.params.clientId;
+        const jobs = await commonServices_1.default.getAllJobsByClient(clientId);
+        const formattedJobs = jobs.map(job => ({
+            clientId: job.clientId,
+            organizationName: job.organizationName,
+            jobTitle: job.jobTitle,
+            jobDescription: job.jobDescription,
+            postStart: job.postStart,
+            postEnd: job.postEnd,
+            noOfPositions: job.noOfPositions,
+            minimumSalary: job.minimumSalary,
+            maximumSalary: job.maximumSalary,
+            jobType: job.jobType,
+            jobLocation: job.jobLocation,
+            minimumExperience: job.minimumExperience,
+            maximumExperience: job.maximumExperience,
+            status: job.status,
+            createdAt: job.createdAt,
+            updatedAt: job.updatedAt,
+            id: job.id
+        }));
+        return res.status(commonMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: commonMessages_1.COMMON_SUCCESS_MESSAGES.JOBS_FETCHED_SUCCESS_MESSAGE,
+            data: formattedJobs
+        });
+    }
+    catch (error) {
+        console.error(`Error in fetching jobs: ${error}`);
+        return res.status(commonMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: commonMessages_1.COMMON_ERROR_MESSAGES.JOBS_FETCH_FAILED
+        });
+    }
+};
+const getJobWithApplicants = async (req, res) => {
+    try {
+        const { jobId } = req.params;
+        const jobWithApplicants = await commonServices_1.default.getJobWithApplicants(jobId);
+        return res.status(commonMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: commonMessages_1.COMMON_SUCCESS_MESSAGES.JOB_WITH_APPLICANTS_FETCH_SUCCESS_MESSAGE,
+            data: jobWithApplicants
+        });
+    }
+    catch (error) {
+        console.error(`Error in fetching job with applicants: ${error}`);
+        if (error.message === 'JOB_NOT_FOUND') {
+            return res.status(commonMessages_1.HTTP_STATUS.NOT_FOUND).json({
+                success: false,
+                message: commonMessages_1.COMMON_ERROR_MESSAGES.JOB_NOT_FOUND
+            });
+        }
+        return res.status(commonMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: commonMessages_1.COMMON_ERROR_MESSAGES.JOB_FETCH_FAILED
+        });
+    }
+};
+const getCandidateJobs = async (req, res) => {
+    try {
+        const candidateId = req.params.candidateId;
+        const myJobs = await commonServices_1.default.getCandidateJobs(candidateId);
+        return res.status(commonMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: commonMessages_1.COMMON_SUCCESS_MESSAGES.MY_JOBS_FETCHED_SUCCESS,
+            data: myJobs
+        });
+    }
+    catch (error) {
+        console.error(`Error in fetching my jobs: ${error}`);
+        return res.status(commonMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: commonMessages_1.COMMON_ERROR_MESSAGES.MY_JOBS_FETCH_FAILED
+        });
+    }
+};
+exports.default = { getAllCandidates, getCandidateById, getJobById, getAllJobs, sendContactUsMail, getAllJobsByClient, getJobWithApplicants, getCandidateJobs };
