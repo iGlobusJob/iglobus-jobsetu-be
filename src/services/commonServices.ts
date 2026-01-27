@@ -134,7 +134,7 @@ const getAllJobs = async (): Promise<FetchAllJobsResponse> => {
 
         const activeClientJobs = jobs.filter(job => {
             const client = job.clientId as any;
-            return client?.status === 'active';
+            return client?.status === 'active' && job.status === 'active';
         });
 
         const sortedJobs = activeClientJobs.sort((a, b) => {
