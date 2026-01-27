@@ -94,7 +94,7 @@ const getJobByIdService = async (jobId: string) => {
 
 const getAllClientsService = async () => {
   try {
-    const clients = await clientModel.find({ status: 'active' });
+    const clients = await clientModel.find({ status: 'active' }).sort({ createdAt: -1 });
 
     const formattedClients = clients.map(client => ({
       id: client.id,

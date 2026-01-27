@@ -113,9 +113,17 @@ const getAllClientsService = async (): Promise<FetchAllClientsResponse> => {
             'active': 3
         };
         const sortedClients = formattedClients.sort((a, b) => {
-            const statusA = a.status as string;
-            const statusB = b.status as string;
-            return (statusOrder[statusA] || 4) - (statusOrder[statusB] || 4);
+            const statusA = a.status ?? 'active';
+            const statusB = b.status ?? 'active';
+
+            const statusDiff = (statusOrder[statusA] ?? 4) - (statusOrder[statusB] ?? 4);
+            if (statusDiff !== 0) {
+                return statusDiff;
+            }
+
+            const dateA = new Date(a.updatedAt ?? 0).getTime();
+            const dateB = new Date(b.updatedAt ?? 0).getTime();
+            return dateB - dateA;
         });
 
         return {
