@@ -43,12 +43,16 @@ const recruiterLogin = async (
 
 const getAllJobsService = async () => {
   try {
-    const jobs = await jobsModel.find().populate({
+    const jobs = await jobsModel.find({ status: 'active' }).populate({
       path: 'clientId',
+      match: { status: 'active' },
       select: 'organizationName primaryContact logo'
     });
 
-    const alljobs = jobs.map(job => {
+     const validJobs = jobs.filter((job)=>{
+       return job.clientId !== null;
+     })
+    const alljobs = validJobs.map(job => {
       const client = job.clientId as any;
       return {
         id: job.id,
@@ -90,7 +94,7 @@ const getJobByIdService = async (jobId: string) => {
 
 const getAllClientsService = async () => {
   try {
-    const clients = await clientModel.find();
+    const clients = await clientModel.find({ status: 'active' }).sort({ createdAt: -1 });
 
     const formattedClients = clients.map(client => ({
       id: client.id,

@@ -131,11 +131,6 @@ const updateJobByClient = async (clientId: string, jobId: string, jobData: Parti
     return updatedJob;
 };
 
-const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
-    const jobs = await jobsModel.find({ clientId }).sort({ createdAt: -1 });
-    return jobs;
-};
-
 const updateClientProfile = async (
     clientId: string,
     updateData: Partial<IClient>,
@@ -261,16 +256,21 @@ const updateClientPassword = async (email: string, newPassword: string): Promise
     console.warn(`Password updated successfully for email: ${email}`);
 };
 
+const getAllJobsByClient = async (clientId: string): Promise<IJobs[]> => {
+    const jobs = await jobsModel.find({ clientId }).sort({ createdAt: -1 });
+    return jobs;
+};
+
 export default {
     clientRegistration,
     clientLogin,
     getClientById,
     createJobByClient,
     updateJobByClient,
-    getAllJobsByClient,
     updateClientProfile,
     getJobByClient,
     sendForgetPasswordOTP,
     validateForgetPasswordOTP,
-    updateClientPassword
+    updateClientPassword, 
+    getAllJobsByClient
 };

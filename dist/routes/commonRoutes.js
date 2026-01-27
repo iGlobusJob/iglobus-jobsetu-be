@@ -341,6 +341,197 @@ CommonRouter.get('/getcandidatedetailsbyid/:candidateID', validateJWT_1.default,
 CommonRouter.get('/getjobdetailsbyid/:jobId', commonController_1.default.getJobById);
 /**
  * @swagger
+ * /getjobdetailswithapplicants/{jobId}:
+ *   get:
+ *     summary: Get job details with applicants - [Admin/Recruiter]
+ *     description: Fetches detailed information about a specific job by its ID along with all candidates who applied for the job.
+ *     tags:
+ *       - Common
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: jobId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique ID of the job to fetch
+ *         example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: Job details with applicants fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Job details with applicants fetched successfully !"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 507f1f77bcf86cd799439011
+ *                     clientId:
+ *                       type: string
+ *                       example: 507f191e810c19729de860ea
+ *                     organizationName:
+ *                       type: string
+ *                       example: Tech Solutions Inc.
+ *                     primaryContactFirstName:
+ *                       type: string
+ *                       example: John
+ *                     primaryContactLastName:
+ *                       type: string
+ *                       example: Doe
+ *                     logo:
+ *                       type: string
+ *                       example: https://iglobus-job-sethu.s3.amazonaws.com/clients/507f191e810c19729de860ea/logos/logo.png
+ *                     jobTitle:
+ *                       type: string
+ *                       example: Senior Backend Developer
+ *                     jobDescription:
+ *                       type: string
+ *                       example: Looking for an experienced backend developer with Node.js expertise
+ *                     postStart:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-01-01T00:00:00.000Z
+ *                     postEnd:
+ *                       type: string
+ *                       format: date-time
+ *                       example: 2025-03-01T00:00:00.000Z
+ *                     noOfPositions:
+ *                       type: number
+ *                       example: 5
+ *                     minimumSalary:
+ *                       type: number
+ *                       example: 800000
+ *                     maximumSalary:
+ *                       type: number
+ *                       example: 1500000
+ *                     jobType:
+ *                       type: string
+ *                       enum: [full-time, part-time, internship, freelance, contract]
+ *                       example: full-time
+ *                     jobLocation:
+ *                       type: string
+ *                       example: Hyderabad
+ *                     minimumExperience:
+ *                       type: number
+ *                       example: 3
+ *                     maximumExperience:
+ *                       type: number
+ *                       example: 7
+ *                     status:
+ *                       type: string
+ *                       enum: [active, closed, drafted]
+ *                       example: active
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                     totalApplicants:
+ *                       type: number
+ *                       example: 3
+ *                     applicants:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: 65a8d7f82c4a3f6f12345678
+ *                           email:
+ *                             type: string
+ *                             example: john.doe@example.com
+ *                           firstName:
+ *                             type: string
+ *                             example: John
+ *                           lastName:
+ *                             type: string
+ *                             example: Doe
+ *                           mobileNumber:
+ *                             type: string
+ *                             example: "9876543210"
+ *                           address:
+ *                             type: string
+ *                             example: 123 Street, Hyderabad
+ *                           dateOfBirth:
+ *                             type: string
+ *                             format: date
+ *                             example: "1990-05-21"
+ *                           gender:
+ *                             type: string
+ *                             example: Male
+ *                           category:
+ *                             type: string
+ *                             example: IT
+ *                           profile:
+ *                             type: string
+ *                             example: resumes/candidate123/resume.pdf
+ *                           profileUrl:
+ *                             type: string
+ *                             example: https://presigned-url-to-resume.com
+ *                           profilePicture:
+ *                             type: string
+ *                             example: profilepictures/candidate123/photo.jpg
+ *                           profilePictureUrl:
+ *                             type: string
+ *                             example: https://presigned-url-to-photo.com
+ *                           designation:
+ *                             type: string
+ *                             example: Software Engineer
+ *                           experience:
+ *                             type: number
+ *                             example: 4
+ *                           appliedAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2025-01-20T10:30:00.000Z"
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *       404:
+ *         description: Job not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Job not found !"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while fetching job details. Please try again later !"
+ */
+CommonRouter.get('/getjobdetailswithapplicants/:jobId', validateJWT_1.default, commonController_1.default.getJobWithApplicants);
+/**
+ * @swagger
  * /getalljobs:
  *   get:
  *     summary: Get all active jobs [Public]
@@ -516,4 +707,234 @@ CommonRouter.get('/getalljobs', commonController_1.default.getAllJobs);
  *                   example: "Failed to send email. Please try again later !"
  */
 CommonRouter.post('/contactus', commonController_1.default.sendContactUsMail);
+/**
+ * @swagger
+ * /getalljobsbyclientid/{clientId}:
+ *   get:
+ *     summary: Get all jobs created by a specific client - [Admin/Recruiter]
+ *     description: Retrieves all job postings created by the specified client. Jobs are sorted by creation date (newest first).
+ *     tags:
+ *       - Common
+ *     parameters:
+ *       - in: path
+ *         name: clientId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           pattern: '^[0-9a-fA-F]{24}$'
+ *         description: MongoDB ObjectId of the client (24 character hexadecimal string)
+ *         example: 507f1f77bcf86cd799439012
+ *     responses:
+ *       200:
+ *         description: Jobs fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Jobs fetched successfully !"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       clientId:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439012
+ *                       organizationName:
+ *                         type: string
+ *                         example: Tech Solutions Inc.
+ *                       jobTitle:
+ *                         type: string
+ *                         example: Senior Full Stack Developer
+ *                       jobDescription:
+ *                         type: string
+ *                         example: We are looking for an experienced Full Stack Developer to join our dynamic team.
+ *                       postStart:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-01T00:00:00.000Z
+ *                       postEnd:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-03-31T23:59:59.000Z
+ *                       noOfPositions:
+ *                         type: integer
+ *                         example: 3
+ *                       minimumSalary:
+ *                         type: number
+ *                         example: 800000
+ *                       maximumSalary:
+ *                         type: number
+ *                         example: 1500000
+ *                       jobType:
+ *                         type: string
+ *                         enum: [full-time, part-time, internship, freelance, contract]
+ *                         example: full-time
+ *                       jobLocation:
+ *                         type: string
+ *                         example: Hyderabad, India
+ *                       minimumExperience:
+ *                         type: number
+ *                         example: 3
+ *                       maximumExperience:
+ *                         type: number
+ *                         example: 7
+ *                       status:
+ *                         type: string
+ *                         enum: [active, closed, drafted]
+ *                         example: active
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-01T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-15T14:20:00.000Z
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *       500:
+ *         description: Internal server error occurred while fetching jobs.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while fetching jobs. Please try again later !"
+ */
+CommonRouter.get('/getalljobsbyclientid/:clientId', commonController_1.default.getAllJobsByClient);
+/**
+ * @swagger
+ * /getcandidatejobs/{candidateId}:
+ *   get:
+ *     summary: Get all jobs saved or applied by candidate (Admin/Recruiter)
+ *     description: Retrieves all jobs from the candidatejobs collection for the given candidate.
+ *     tags:
+ *       - Common
+ *     parameters:
+ *       - in: path
+ *         name: candidateId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique ID of the candidate
+ *     responses:
+ *       200:
+ *         description: My jobs fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: My jobs fetched successfully !
+ *                 data:
+ *                   type: array
+ *                   description: List of candidate jobs sorted with Inactive jobs first
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *                       candidateId:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439012
+ *                       jobId:
+ *                         type: object
+ *                         description: Populated job details
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             example: 507f1f77bcf86cd799439013
+ *                           jobTitle:
+ *                             type: string
+ *                             example: Senior Software Engineer
+ *                           status:
+ *                             type: string
+ *                             example: Inactive
+ *                           jobLocation:
+ *                             type: string
+ *                             example: Bangalore
+ *                           minimumSalary:
+ *                             type: number
+ *                             example: 1000000
+ *                           maximumSalary:
+ *                             type: number
+ *                             example: 1500000
+ *                           clientId:
+ *                             type: object
+ *                             properties:
+ *                               organizationName:
+ *                                 type: string
+ *                                 example: Tech Corp
+ *                               logo:
+ *                                 type: string
+ *                                 example: https://example.com/logo.png
+ *                       isJobSaved:
+ *                         type: boolean
+ *                         example: true
+ *                       isJobApplied:
+ *                         type: boolean
+ *                         example: false
+ *                       savedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       appliedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: null
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-12-15T10:30:00.000Z
+ *       401:
+ *         description: Unauthorized - Invalid or missing candidate credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid candidate ID. Access denied !
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: An error occurred while fetching my jobs. Please try again later !
+ */
+CommonRouter.get('/getcandidatejobs/:candidateId', commonController_1.default.getCandidateJobs);
 exports.default = CommonRouter;

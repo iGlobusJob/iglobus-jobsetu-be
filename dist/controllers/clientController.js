@@ -187,44 +187,6 @@ const updateJobByClient = async (req, res) => {
         });
     }
 };
-const getAllJobsByClient = async (req, res) => {
-    var _a;
-    try {
-        const clientId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.clientId;
-        const jobs = await clientServices_1.default.getAllJobsByClient(clientId);
-        const formattedJobs = jobs.map(job => ({
-            clientId: job.clientId,
-            organizationName: job.organizationName,
-            jobTitle: job.jobTitle,
-            jobDescription: job.jobDescription,
-            postStart: job.postStart,
-            postEnd: job.postEnd,
-            noOfPositions: job.noOfPositions,
-            minimumSalary: job.minimumSalary,
-            maximumSalary: job.maximumSalary,
-            jobType: job.jobType,
-            jobLocation: job.jobLocation,
-            minimumExperience: job.minimumExperience,
-            maximumExperience: job.maximumExperience,
-            status: job.status,
-            createdAt: job.createdAt,
-            updatedAt: job.updatedAt,
-            id: job.id
-        }));
-        return res.status(clientMessages_1.HTTP_STATUS.OK).json({
-            success: true,
-            message: clientMessages_1.CLIENT_SUCCESS_MESSAGES.JOBS_FETCHED_SUCCESS_MESSAGE,
-            data: formattedJobs
-        });
-    }
-    catch (error) {
-        console.error(`Error in fetching jobs: ${error}`);
-        return res.status(clientMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            message: clientMessages_1.CLIENT_ERROR_MESSAGES.JOBS_FETCH_FAILED
-        });
-    }
-};
 const updateClientProfile = async (req, res) => {
     var _a;
     try {
@@ -403,6 +365,44 @@ const updateClientPassword = async (req, res) => {
         });
     }
 };
+const getAllJobsByClient = async (req, res) => {
+    var _a;
+    try {
+        const clientId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.clientId;
+        const jobs = await clientServices_1.default.getAllJobsByClient(clientId);
+        const formattedJobs = jobs.map(job => ({
+            clientId: job.clientId,
+            organizationName: job.organizationName,
+            jobTitle: job.jobTitle,
+            jobDescription: job.jobDescription,
+            postStart: job.postStart,
+            postEnd: job.postEnd,
+            noOfPositions: job.noOfPositions,
+            minimumSalary: job.minimumSalary,
+            maximumSalary: job.maximumSalary,
+            jobType: job.jobType,
+            jobLocation: job.jobLocation,
+            minimumExperience: job.minimumExperience,
+            maximumExperience: job.maximumExperience,
+            status: job.status,
+            createdAt: job.createdAt,
+            updatedAt: job.updatedAt,
+            id: job.id
+        }));
+        return res.status(clientMessages_1.HTTP_STATUS.OK).json({
+            success: true,
+            message: clientMessages_1.CLIENT_SUCCESS_MESSAGES.JOBS_FETCHED_SUCCESS_MESSAGE,
+            data: formattedJobs
+        });
+    }
+    catch (error) {
+        console.error(`Error in fetching jobs: ${error}`);
+        return res.status(clientMessages_1.HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: clientMessages_1.CLIENT_ERROR_MESSAGES.JOBS_FETCH_FAILED
+        });
+    }
+};
 exports.default = {
     clientRegistration,
     clientLogin,
@@ -410,9 +410,9 @@ exports.default = {
     updateClientProfile,
     createJobByClient,
     updateJobByClient,
-    getAllJobsByClient,
     getJobByClient,
     sendForgetPasswordOTP,
     validateForgetPasswordOTP,
-    updateClientPassword
+    updateClientPassword,
+    getAllJobsByClient
 };

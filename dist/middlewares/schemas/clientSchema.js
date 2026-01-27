@@ -61,6 +61,10 @@ const clientSchema = joi_1.default.object({
         'string.empty': 'Category is required',
         'any.only': 'Category must be either IT or Non-IT',
         'any.required': 'Category is required'
-    })
+    }),
+    isTermsAndConditionsAgreed: joi_1.default.boolean().valid(true).required().messages({
+        'any.only': 'Terms and Conditions must be accepted',
+    }),
+    logo: joi_1.default.any().optional().allow(''),
 });
 exports.default = clientSchema;

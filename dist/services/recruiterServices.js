@@ -31,11 +31,15 @@ const recruiterLogin = async (email, password) => {
 };
 const getAllJobsService = async () => {
     try {
-        const jobs = await jobsModel_1.default.find().populate({
+        const jobs = await jobsModel_1.default.find({ status: 'active' }).populate({
             path: 'clientId',
+            match: { status: 'active' },
             select: 'organizationName primaryContact logo'
         });
-        const alljobs = jobs.map(job => {
+        const validJobs = jobs.filter((job) => {
+            return job.clientId !== null;
+        });
+        const alljobs = validJobs.map(job => {
             var _a, _b;
             const client = job.clientId;
             return {
@@ -76,7 +80,7 @@ const getJobByIdService = async (jobId) => {
 };
 const getAllClientsService = async () => {
     try {
-        const clients = await clientModel_1.default.find();
+        const clients = await clientModel_1.default.find({ status: 'active' }).sort({ createdAt: -1 });
         const formattedClients = clients.map(client => ({
             id: client.id,
             organizationName: client.organizationName,

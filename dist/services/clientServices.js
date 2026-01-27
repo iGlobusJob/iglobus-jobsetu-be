@@ -86,10 +86,6 @@ const updateJobByClient = async (clientId, jobId, jobData) => {
     const updatedJob = await jobsModel_1.default.findByIdAndUpdate(jobId, { $set: jobData }, { new: true, runValidators: true });
     return updatedJob;
 };
-const getAllJobsByClient = async (clientId) => {
-    const jobs = await jobsModel_1.default.find({ clientId }).sort({ createdAt: -1 });
-    return jobs;
-};
 const updateClientProfile = async (clientId, updateData, file) => {
     if (file) {
         const timestamp = Date.now();
@@ -170,16 +166,20 @@ const updateClientPassword = async (email, newPassword) => {
     await client.save();
     console.warn(`Password updated successfully for email: ${email}`);
 };
+const getAllJobsByClient = async (clientId) => {
+    const jobs = await jobsModel_1.default.find({ clientId }).sort({ createdAt: -1 });
+    return jobs;
+};
 exports.default = {
     clientRegistration,
     clientLogin,
     getClientById,
     createJobByClient,
     updateJobByClient,
-    getAllJobsByClient,
     updateClientProfile,
     getJobByClient,
     sendForgetPasswordOTP,
     validateForgetPasswordOTP,
-    updateClientPassword
+    updateClientPassword,
+    getAllJobsByClient
 };

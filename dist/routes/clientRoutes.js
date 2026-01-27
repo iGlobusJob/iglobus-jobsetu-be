@@ -108,6 +108,10 @@ const ClientRouter = express_1.default.Router();
  *                 type: string
  *                 format: binary
  *                 description: Company logo image (JPEG, JPG, PNG, GIF, WEBP, BMP, SVG, TIFF, max 5MB, optional)
+ *               isTermsAndConditionsAgreed:
+ *                 type: boolean
+ *                 description: Indicates if the client has agreed to the terms and conditions (required)
+ *                 example: true
  *     responses:
  *       201:
  *         description: Client registered successfully
@@ -829,117 +833,6 @@ ClientRouter.put('/updateclientprofile', validateJWT_1.default, clientPermission
 ClientRouter.post('/createjobbyclient', validateJWT_1.default, clientPermission_1.default, (0, validateRequest_1.default)(createJobSchema_1.default), clientController_1.default.createJobByClient);
 /**
  * @swagger
- * /getalljobsbyclient:
- *   get:
- *     summary: Get all jobs created by client
- *     description: Retrieves all job postings created by the authenticated client. The client ID is automatically extracted from the JWT token. Jobs are sorted by creation date (newest first).
- *     tags:
- *       - Client
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Jobs fetched successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Jobs fetched successfully !"
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       clientId:
- *                         type: string
- *                         example: 507f1f77bcf86cd799439012
- *                       jobTitle:
- *                         type: string
- *                         example: Senior Full Stack Developer
- *                       jobDescription:
- *                         type: string
- *                         example: We are looking for an experienced Full Stack Developer to join our dynamic team.
- *                       postStart:
- *                         type: string
- *                         format: date-time
- *                         example: 2025-01-01T00:00:00.000Z
- *                       postEnd:
- *                         type: string
- *                         format: date-time
- *                         example: 2025-03-31T23:59:59.000Z
- *                       noOfPositions:
- *                         type: integer
- *                         example: 3
- *                       minimumSalary:
- *                         type: number
- *                         example: 800000
- *                       maximumSalary:
- *                         type: number
- *                         example: 1500000
- *                       jobType:
- *                         type: string
- *                         enum: [full-time, part-time, internship, freelance, contract]
- *                         example: full-time
- *                       jobLocation:
- *                         type: string
- *                         example: Hyderabad, India
- *                       minimumExperience:
- *                         type: number
- *                         example: 3
- *                       maximumExperience:
- *                         type: number
- *                         example: 7
- *                       status:
- *                         type: string
- *                         enum: [active, closed, drafted]
- *                         example: active
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2025-01-01T10:30:00.000Z
- *                       updatedAt:
- *                         type: string
- *                         format: date-time
- *                         example: 2025-01-15T14:20:00.000Z
- *                       id:
- *                         type: string
- *                         example: 507f1f77bcf86cd799439011
- *       401:
- *         description: Unauthorized - Invalid or missing JWT token.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Invalid or expired token"
- *       500:
- *         description: Internal server error occurred while fetching jobs.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "An error occurred while fetching jobs. Please try again later !"
- */
-ClientRouter.get('/getalljobsbyclient', validateJWT_1.default, clientPermission_1.default, clientController_1.default.getAllJobsByClient);
-/**
- * @swagger
  * /getjobbyclient/{jobId}:
  *   get:
  *     summary: Get a specific job by ID
@@ -1533,4 +1426,115 @@ ClientRouter.post('/clientvalidateOTP', (0, validateRequest_1.default)(validateF
  *                   example: "An error occurred while updating password. Please try again later !"
  */
 ClientRouter.put('/updateClientPassword', (0, validateRequest_1.default)(updateClientPasswordSchema_1.default), clientController_1.default.updateClientPassword);
+/**
+ * @swagger
+ * /getalljobsbyclient:
+ *   get:
+ *     summary: Get all jobs created by client
+ *     description: Retrieves all job postings created by the authenticated client. The client ID is automatically extracted from the JWT token. Jobs are sorted by creation date (newest first).
+ *     tags:
+ *       - Client
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Jobs fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Jobs fetched successfully !"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       clientId:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439012
+ *                       jobTitle:
+ *                         type: string
+ *                         example: Senior Full Stack Developer
+ *                       jobDescription:
+ *                         type: string
+ *                         example: We are looking for an experienced Full Stack Developer to join our dynamic team.
+ *                       postStart:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-01T00:00:00.000Z
+ *                       postEnd:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-03-31T23:59:59.000Z
+ *                       noOfPositions:
+ *                         type: integer
+ *                         example: 3
+ *                       minimumSalary:
+ *                         type: number
+ *                         example: 800000
+ *                       maximumSalary:
+ *                         type: number
+ *                         example: 1500000
+ *                       jobType:
+ *                         type: string
+ *                         enum: [full-time, part-time, internship, freelance, contract]
+ *                         example: full-time
+ *                       jobLocation:
+ *                         type: string
+ *                         example: Hyderabad, India
+ *                       minimumExperience:
+ *                         type: number
+ *                         example: 3
+ *                       maximumExperience:
+ *                         type: number
+ *                         example: 7
+ *                       status:
+ *                         type: string
+ *                         enum: [active, closed, drafted]
+ *                         example: active
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-01T10:30:00.000Z
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2025-01-15T14:20:00.000Z
+ *                       id:
+ *                         type: string
+ *                         example: 507f1f77bcf86cd799439011
+ *       401:
+ *         description: Unauthorized - Invalid or missing JWT token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid or expired token"
+ *       500:
+ *         description: Internal server error occurred while fetching jobs.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "An error occurred while fetching jobs. Please try again later !"
+ */
+ClientRouter.get('/getalljobsbyclient', validateJWT_1.default, clientPermission_1.default, clientController_1.default.getAllJobsByClient);
 exports.default = ClientRouter;
