@@ -10,7 +10,7 @@ import ICandidateJob from '../interfaces/candidateJob';
 
 const getAllCandidates = async (): Promise<FetchAllCandidateResponse> => {
     try {
-        const candidates = await candidateModel.find().sort({ createdAt: -1 });;
+        const candidates = await candidateModel.find().sort({ createdAt: -1 });
 
         const formattedCandidates = await Promise.all(candidates.map(async candidate => {
             let profileUrl: string | null = null;
