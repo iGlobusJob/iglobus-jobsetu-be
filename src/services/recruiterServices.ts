@@ -131,7 +131,7 @@ const getClientByIdService = async (
 
 const getAllCandidatesService = async () => {
   try {
-    const candidates = await candidateModel.find();
+    const candidates = await candidateModel.find().sort({ createdAt: -1 });;
 
     const formattedCandidates = await Promise.all(candidates.map(async candidate => {
       let profilePictureUrl: string | null = null;

@@ -160,7 +160,7 @@ const createRecruiterService = async (firstName: string, lastName: string, email
 
 const getAllRecruitersService = async (): Promise<FetchAllRecruitersResponse> => {
     try {
-        const recruiters = await recruiterModel.find({ isDeleted: false });
+        const recruiters = await recruiterModel.find({ isDeleted: false }).sort({ createdAt: -1 });;
 
         const formattedRecruiters = recruiters.map(recruiter => ({
             id: recruiter.id,
