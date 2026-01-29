@@ -10,7 +10,7 @@ const generatePresignedUrl_1 = __importDefault(require("../util/generatePresigne
 const sendContactUsEmail_1 = __importDefault(require("../util/sendContactUsEmail"));
 const getAllCandidates = async () => {
     try {
-        const candidates = await candidateModel_1.default.find();
+        const candidates = await candidateModel_1.default.find().sort({ createdAt: -1 });
         const formattedCandidates = await Promise.all(candidates.map(async (candidate) => {
             let profileUrl = null;
             if (candidate.profile) {
