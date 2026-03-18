@@ -39,6 +39,7 @@ const updateClientProfileSchema = Joi.object({
         .pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)
         .uppercase()
         .optional()
+        .allow('')
         .messages({
             'string.pattern.base': 'GSTIN must be in valid format (e.g., 22AAAAA0000A1Z5)'
         }),
@@ -46,6 +47,7 @@ const updateClientProfileSchema = Joi.object({
         .pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)
         .uppercase()
         .optional()
+        .allow('')
         .messages({
             'string.pattern.base': 'PAN Card must be in valid format (e.g., ABCDE1234F)'
         }),

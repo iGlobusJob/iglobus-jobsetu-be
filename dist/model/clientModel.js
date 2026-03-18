@@ -22,8 +22,8 @@ const clientSchema = new mongoose_1.default.Schema({
     mobile: { type: String, trim: true },
     mobileStatus: { type: String, enum: ['verified', 'notverified'], default: 'notverified' },
     location: { type: String, trim: true },
-    gstin: { type: String, trim: true, uppercase: true, required: true },
-    panCard: { type: String, trim: true, uppercase: true, required: true },
+    gstin: { type: String, trim: true, uppercase: true },
+    panCard: { type: String, trim: true, uppercase: true },
     category: { type: String, enum: ['IT', 'Non-IT'], required: true },
     logo: { type: String, trim: true },
     otp: {
