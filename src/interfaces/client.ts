@@ -18,8 +18,8 @@ interface IClient extends Document {
     mobile: string;
     mobileStatus?: VerificationStatus;
     location?: string;
-    gstin: string;
-    panCard: string;
+    gstin?: string;
+    panCard?: string;
     category: 'IT' | 'Non-IT';
     logo?: string;
     otp?: string;
