@@ -45,15 +45,15 @@ const clientSchema = joi_1.default.object({
     }),
     mobileStatus: joi_1.default.string().valid('verified', 'notverified').optional(),
     location: joi_1.default.string().trim().optional(),
-    gstin: joi_1.default.string().pattern(/^[A-Z0-9]+$/).min(15).max(15).uppercase().required().messages({
+    gstin: joi_1.default.string().pattern(/^[A-Z0-9]+$/).min(15).max(15).uppercase().allow('').messages({
         'string.pattern.base': 'GSTIN must contain only uppercase letters and numbers',
         'string.min': 'GSTIN must be exactly 15 characters',
         'string.max': 'GSTIN must be exactly 15 characters',
         'string.empty': 'GSTIN is required',
         'any.required': 'GSTIN is required',
     }),
-    panCard: joi_1.default.string().pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/).uppercase().required().messages({
-        'string.pattern.base': 'Invalid PAN card format',
+    panCard: joi_1.default.string().pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/).uppercase().allow('').messages({
+        'string.pattern.base': 'Invalid PAN Card format',
         'string.empty': 'PAN Card is required',
         'any.required': 'PAN Card is required',
     }),
