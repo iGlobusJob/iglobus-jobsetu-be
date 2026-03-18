@@ -49,7 +49,7 @@ const clientSchema = Joi.object({
         'any.required': 'GSTIN is required',
     }),
     panCard: Joi.string().pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/).uppercase().allow('').messages({
-        'string.pattern.base': 'Invalid PAN card format',
+        'string.pattern.base': 'Invalid PAN Card format',
         'string.empty': 'PAN Card is required',
         'any.required': 'PAN Card is required',
     }),
